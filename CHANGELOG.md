@@ -1,5 +1,26 @@
 # Changelog
 
+## 3.4.0 — 2026-07-19
+
+### Dedicated top-level workspaces
+- Added permanent **Library** and **Scene Studio** buttons to the top toolbar. Each opens as a full-width workspace while preserving the existing editor and right-sidebar shortcuts.
+- The live WebGL canvas is moved into Scene Studio while it is open and restored to the normal viewport on close; no duplicate renderer or disconnected preview state is created.
+
+### Professional Asset Library
+- Added searchable visual browsing with type filters, newest/oldest/name/type sorting, persistent Grid/List/Compact layouts, collection counts and storage totals.
+- Added thumbnail, image, video, scene-schematic, and structured JSON previews plus a metadata detail inspector.
+- Added apply, rename, individual export, delete, direct multi-file intake, save-current-appearance, save-current-scene, and export-all actions.
+- Appearances and scenes now save live viewport preview PNGs. Full-library ZIPs include preview sidecars in the manifest and integrity hashes.
+
+### Scene Studio
+- Added a focused live stage editor with room, chroma, tracking-marker, room-size, contact-shadow, skymap, and six-face media controls.
+- Added a saved-scene gallery that applies presets directly to the live stage and links into the full Library.
+- Added explicit responsive grid placement so the preview, controls, and scene rail remain ordered without overlap at compact desktop widths.
+
+### Quality
+- Added cancel-safe save dialogs, focus-preserving debounced Library search, selected-state styling, keyboard Escape close behavior, responsive QA, and v3.4.0 regression assertions.
+- Existing automated suite remains green: 28 tests total, 27 pass and one optional fixture test skipped.
+
 ## 3.3.0 — 2026-07-18
 
 ### Backdrop & Post FX

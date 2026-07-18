@@ -1,7 +1,7 @@
 {
   "name": "@aeiou/character-studio",
-  "version": "3.3.0",
-  "description": "CHARACTER STUDIO - made by AEiOU \u2014 offline WebGL2 character customization studio with per-geoset texture alignment/warp, eye-region correction, GLB/texture bundle auto-wiring, reusable asset-source presets, content packs, GLB export, MCP, and headless mode",
+  "version": "3.4.0",
+  "description": "CHARACTER STUDIO - made by AEiOU \u2014 offline WebGL2 character customization studio with per-geoset texture alignment/warp, eye-region correction, GLB/texture bundle auto-wiring, reusable asset-source presets, content packs, GLB export, MCP, headless mode, and dedicated Asset Library and Scene Studio workspaces",
   "type": "module",
   "main": "./src/engine/index.ts",
   "exports": {
@@ -14,6 +14,7 @@
     "test": "node --test qa/unit.test.mjs",
     "qa:smoke": "node qa/browser-smoke.mjs",
     "qa:visual": "node qa/visual-regression.mjs",
+    "qa:v340": "node qa/v340-check.mjs",
     "qa:mcp": "node qa/mcp-test.mjs",
     "mcp": "node qa/mcp-server.mjs"
   },

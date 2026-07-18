@@ -5,7 +5,7 @@ Offline, dependency-free WebGL2 character customization studio for glTF/GLB char
 server for agents. Single-file app: `demo/character-studio.html` — open it in a browser.
 No internet access is ever required or used.
 
-### Per-geoset texture alignment and eye correction (v3.3.0)
+### Per-geoset texture alignment and eye correction (v3.4.0)
 
 Select any geoset in **Geoset Visibility** and press **UV**. The **Texture Align & Warp** panel supports:
 
@@ -19,7 +19,7 @@ Select any geoset in **Geoset Visibility** and press **UV**. The **Texture Align
 
 The feature modifies sampling in the studio shader; it does not destructively edit the source PNG.
 
-## Feature overview (v3.3.0)
+## Feature overview (v3.4.0)
 
 ### Rendering & animation
 - **Unlimited-bone skinning** — joint matrices in an RGBA32F bone texture read via
@@ -46,7 +46,14 @@ The feature modifies sampling in the studio shader; it does not destructively ed
   onboarding tour + in-app help (`?` in the header).
 - Performance HUD (draw calls / triangles).
 
-### Asset bundle and source-library workflow (v3.3.0)
+### Dedicated Library and Scene Studio workspaces (v3.4.0)
+- Two permanent top-toolbar buttons open full-width **Library** and **Scene Studio** workspaces without leaving the editor.
+- **Library** provides visual thumbnails and file previews, search, type filters, sorting, grid/list/compact layouts, a detail inspector, rename/apply/export/delete actions, direct multi-file intake, and a full-library ZIP export.
+- Saved appearances and scenes capture a live viewport thumbnail. Imported images and videos preview directly; scene JSON falls back to a readable stage schematic.
+- **Scene Studio** moves the real WebGL viewport into a focused stage editor with room, chroma, marker, shadow, sky, and per-face media controls plus a saved-scene gallery. Closing the workspace restores the canvas to the normal editor.
+- Both workspaces reuse the existing IndexedDB library and optional Node workspace mirror, so sidebar saves and full-workspace saves stay in one coherent collection.
+
+### Asset bundle and source-library workflow (v3.4.0)
 - Open or drag a `.glb` / `.gltf` together with its `.png` / `.jpg` / `.webp` images.
   Strongly named base textures such as `humanmale_hd_texture_1.png` are detected and
   auto-bound to the base body material. External `.gltf` `.bin` and image URIs resolve

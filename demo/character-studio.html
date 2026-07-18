@@ -131,7 +131,7 @@ body.headless #vp{grid-column:1;grid-row:1}
 #timeline .tlab{font:11px var(--mono);color:var(--muted);min-width:120px;text-align:right}
 #timeline button.on{background:linear-gradient(180deg,#5b96e6,#3c7bd4 55%,#2f66b6);color:#fff;border-color:#1e4477}
 body.headless #timeline{display:none!important}
-/* v3.3.0 — backdrop, scene studio, asset library */
+/* v3.4.0 — backdrop, scene studio, asset library */
 #gl.cs-alpha{background-image:linear-gradient(45deg,#2a2d34 25%,transparent 25%,transparent 75%,#2a2d34 75%),linear-gradient(45deg,#2a2d34 25%,#1c1f24 25%,#1c1f24 75%,#2a2d34 75%);background-size:24px 24px;background-position:0 0,12px 12px}
 .cs-btnrow{display:flex;gap:6px;flex-wrap:wrap}
 .cs-btnrow button{flex:1;min-width:0;white-space:nowrap}
@@ -145,6 +145,41 @@ body.headless #timeline{display:none!important}
 .cs-libname{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
 .cs-librow button{padding:1px 6px;font-size:11px}
 .cs-librow button[disabled]{opacity:.3}
+
+
+/* v3.4.0 — dedicated Library and Scene Studio workspaces */
+.top-workspaces{display:flex;align-items:center;gap:4px;padding-left:4px;border-left:1px solid #ffffff12}
+header .workspace-tab{display:inline-flex;align-items:center;gap:7px;min-height:30px;padding:6px 10px;font-weight:700;letter-spacing:.01em}
+header .workspace-tab svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
+header .workspace-tab.on{background:var(--bluesel);border-color:#1e4477;color:#fff;box-shadow:inset 0 1px 0 #ffffff38,inset 0 -1px 0 #174d8b,0 1px 3px #0008}
+#left{grid-column:1;grid-row:2}#vp{grid-column:2;grid-row:2}#right{grid-column:3;grid-row:2}
+#workspaceLayer{grid-column:1/-1;grid-row:2;min-width:0;min-height:0;display:none;position:relative;z-index:20;background:linear-gradient(180deg,#181a1f,#121419),var(--noise);overflow:hidden}
+#workspaceLayer.open{display:flex;flex-direction:column}
+.cs-workspace-head{height:66px;flex:none;display:flex;align-items:center;gap:14px;padding:10px 16px;border-bottom:1px solid #08090b;background:linear-gradient(180deg,#2c3037,#22252b);box-shadow:inset 0 1px 0 #ffffff10,0 3px 12px #0008}
+.cs-workspace-mark{width:38px;height:38px;display:grid;place-items:center;border:1px solid #0c0d10;border-radius:8px;background:linear-gradient(145deg,#3d4652,#252a31);box-shadow:inset 0 1px 0 #ffffff20,0 3px 8px #0008;color:#9fc3ec}
+.cs-workspace-mark svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.cs-workspace-heading{min-width:0}.cs-workspace-heading h2{margin:0;font-size:17px;line-height:1.15;color:#f0f2f5;letter-spacing:.01em}.cs-workspace-heading p{margin:4px 0 0;font-size:11px;color:#969ca6}
+.cs-workspace-head .spacer{flex:1}.cs-workspace-switch{display:flex;gap:4px;padding:3px;border:1px solid #0c0d0f;border-radius:6px;background:#16181c;box-shadow:inset 0 2px 5px #0008}
+.cs-workspace-switch button,.cs-toolbtn,.cs-iconbtn,.cs-primarybtn,.cs-dangerbtn{appearance:none;border:1px solid #0c0d0f;border-radius:4px;background:var(--metal);color:#cdd1d7;font:600 11px/1 Segoe UI,system-ui,sans-serif;min-height:30px;padding:7px 10px;cursor:pointer;box-shadow:inset 0 1px 0 #ffffff18,0 1px 2px #0008}
+.cs-workspace-switch button:hover,.cs-toolbtn:hover,.cs-iconbtn:hover{background:var(--metalh);color:#fff}.cs-workspace-switch button.on,.cs-primarybtn,.cs-scene-seg button.on{background:var(--bluesel);border-color:#1e4477;color:#fff}.cs-dangerbtn{color:#ef9289}.cs-dangerbtn:hover{background:#56302f;color:#fff}.cs-iconbtn{width:31px;padding:0;display:grid;place-items:center}.cs-iconbtn svg,.cs-toolbtn svg,.cs-primarybtn svg,.cs-dangerbtn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-2px;margin-right:5px}.cs-iconbtn svg{margin:0}
+#csWorkspaceContent{min-height:0;flex:1;overflow:hidden}
+.cs-library-shell{height:100%;display:grid;grid-template-rows:auto 1fr;min-height:0}
+.cs-library-toolbar{display:grid;grid-template-columns:minmax(220px,1fr) auto auto auto;gap:8px;align-items:center;padding:12px 16px;border-bottom:1px solid #0b0c0e;background:#1d2025}
+.cs-search{position:relative;min-width:0}.cs-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;stroke:#89909a;fill:none;stroke-width:1.8}.cs-search input{width:100%;height:34px;padding:7px 10px 7px 32px;background:#111318;border-color:#090a0c;font-size:12px}
+.cs-library-toolbar select{height:34px;min-width:128px}.cs-toolbar-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.cs-view-toggle{display:flex;gap:2px;padding:2px;border:1px solid #0b0c0e;border-radius:5px;background:#121418}.cs-view-toggle button{width:30px;height:29px;padding:0;display:grid;place-items:center;background:transparent;border:0;border-radius:3px;color:#8d949e;cursor:pointer}.cs-view-toggle button:hover{color:#fff;background:#ffffff0b}.cs-view-toggle button.on{color:#fff;background:#3f7fd4}.cs-view-toggle svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8}
+.cs-library-body{min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 330px}.cs-library-main{min-width:0;min-height:0;display:flex;flex-direction:column}.cs-library-summary{height:44px;flex:none;display:flex;align-items:center;gap:16px;padding:0 16px;border-bottom:1px solid #0b0c0e;color:#979da6;font-size:11px}.cs-library-summary strong{color:#e3e6ea}.cs-library-summary .push{margin-left:auto}.cs-gallery-scroll{min-height:0;overflow:auto;padding:14px 16px 32px}.cs-gallery{display:grid;gap:10px}.cs-gallery[data-view=grid]{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}.cs-gallery[data-view=compact]{grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:7px}.cs-gallery[data-view=list]{grid-template-columns:1fr;gap:5px}
+.cs-asset-card{position:relative;min-width:0;border:1px solid #101216;border-radius:7px;background:linear-gradient(180deg,#25282e,#1d2025);box-shadow:inset 0 1px 0 #ffffff0c,0 2px 8px #0005;overflow:hidden;cursor:pointer;transition:border-color .15s,transform .15s,box-shadow .15s}.cs-asset-card:hover{border-color:#46505c;transform:translateY(-1px);box-shadow:inset 0 1px 0 #ffffff10,0 5px 14px #0007}.cs-asset-card.selected{border-color:#4d8bdb;box-shadow:inset 0 0 0 1px #4d8bdb66,0 5px 16px #0008}.cs-asset-thumb{position:relative;aspect-ratio:16/10;background:radial-gradient(circle at 50% 38%,#313640,#15171b 72%);overflow:hidden;border-bottom:1px solid #0c0d0f}.cs-asset-thumb img,.cs-asset-thumb video{width:100%;height:100%;display:block;object-fit:cover}.cs-asset-thumb video{background:#090a0c}.cs-asset-thumb .cs-type-art{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:7px;color:#78828e}.cs-type-art svg{width:34px;height:34px;stroke:currentColor;fill:none;stroke-width:1.35}.cs-type-art span{font:700 9px var(--mono);letter-spacing:.12em;text-transform:uppercase}.cs-card-type{position:absolute;left:7px;top:7px;padding:3px 6px;border:1px solid #0a0b0dbb;border-radius:3px;background:#111318d9;color:#c3c8cf;font:700 8px var(--mono);text-transform:uppercase;letter-spacing:.08em;backdrop-filter:blur(5px)}.cs-card-body{padding:9px 10px}.cs-card-name{font-size:12px;font-weight:650;color:#e5e8ec;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cs-card-meta{display:flex;gap:7px;align-items:center;margin-top:5px;color:#8e949d;font-size:10px}.cs-card-meta span:last-child{margin-left:auto}.cs-card-actions{display:flex;gap:4px;padding:0 8px 8px}.cs-card-actions button{flex:1;min-width:0;height:27px;padding:0 7px;font-size:10px}
+.cs-gallery[data-view=compact] .cs-asset-thumb{aspect-ratio:4/3}.cs-gallery[data-view=compact] .cs-card-body{padding:7px 8px}.cs-gallery[data-view=compact] .cs-card-meta,.cs-gallery[data-view=compact] .cs-card-actions{display:none}.cs-gallery[data-view=list] .cs-asset-card{display:grid;grid-template-columns:112px minmax(0,1fr) auto;align-items:center;min-height:72px}.cs-gallery[data-view=list] .cs-asset-thumb{height:70px;aspect-ratio:auto;border:0;border-right:1px solid #0c0d0f}.cs-gallery[data-view=list] .cs-card-actions{padding:0 10px;min-width:170px}.cs-gallery[data-view=list] .cs-card-actions button{min-width:64px}.cs-gallery[data-view=list] .cs-card-body{padding:8px 12px}
+.cs-detail{min-width:0;min-height:0;border-left:1px solid #0b0c0e;background:linear-gradient(180deg,#202329,#181a1f);overflow:auto}.cs-detail-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;color:#818891}.cs-detail-empty svg{width:42px;height:42px;stroke:currentColor;fill:none;stroke-width:1.3;margin-bottom:10px}.cs-detail-inner{padding:14px}.cs-detail-preview{aspect-ratio:16/10;border:1px solid #0a0b0d;border-radius:7px;background:#101216;overflow:hidden;display:grid;place-items:center;box-shadow:inset 0 2px 8px #000b}.cs-detail-preview img,.cs-detail-preview video{width:100%;height:100%;object-fit:contain;background:#090a0c}.cs-detail-title{margin:14px 0 3px;font-size:16px;color:#eef0f3;word-break:break-word}.cs-detail-kind{font:700 9px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#7eb0eb}.cs-detail-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:12px 0}.cs-meta-grid{display:grid;grid-template-columns:92px minmax(0,1fr);gap:6px 10px;padding:10px 0;border-top:1px solid #ffffff0d;border-bottom:1px solid #ffffff0d;font-size:10.5px}.cs-meta-grid dt{color:#7f8791}.cs-meta-grid dd{margin:0;color:#c6cbd2;overflow-wrap:anywhere}.cs-json-preview{margin-top:12px;max-height:260px;overflow:auto;white-space:pre-wrap;background:#111318;border:1px solid #090a0c;border-radius:5px;padding:9px;color:#94be84;font:9.5px/1.45 var(--mono)}
+.cs-empty-gallery{grid-column:1/-1;min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#818893;border:1px dashed #343942;border-radius:8px;background:#ffffff02;padding:28px}.cs-empty-gallery svg{width:44px;height:44px;stroke:currentColor;fill:none;stroke-width:1.25}.cs-empty-gallery b{margin-top:10px;color:#d6d9de;font-size:13px}.cs-empty-gallery span{margin-top:5px;max-width:430px;font-size:11px;line-height:1.5}
+.cs-scene-swatch{position:absolute;inset:0;background:#00b140}.cs-scene-swatch.blue{background:#0047bb}.cs-scene-swatch.markers:after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,#ee4f60 0 2px,transparent 2.7px);background-size:34px 34px;opacity:.9}.cs-scene-swatch:before{content:'';position:absolute;left:17%;right:17%;bottom:0;height:48%;background:linear-gradient(165deg,#ffffff08,#00000022);clip-path:polygon(20% 0,80% 0,100% 100%,0 100%);border-top:1px solid #ffffff2a}.cs-scene-swatch .room-lines{position:absolute;inset:16% 17% 0;border:1px solid #ffffff40;border-bottom:0;box-shadow:0 0 0 1px #0002 inset}.cs-scene-swatch .room-lines:before,.cs-scene-swatch .room-lines:after{content:'';position:absolute;top:0;bottom:0;width:1px;background:#ffffff35}.cs-scene-swatch .room-lines:before{left:20%}.cs-scene-swatch .room-lines:after{right:20%}
+.cs-scene-shell{height:100%;min-height:0;display:grid;grid-template-columns:minmax(520px,1fr) 370px;grid-template-rows:minmax(0,1fr) 214px}.cs-live-panel{grid-column:1;grid-row:1;min-width:0;min-height:0;display:flex;flex-direction:column;border-right:1px solid #0b0c0e}.cs-live-toolbar{height:43px;flex:none;display:flex;align-items:center;gap:7px;padding:0 10px;border-bottom:1px solid #0b0c0e;background:#1d2025}.cs-live-toolbar strong{font-size:11px;color:#dadddf}.cs-live-toolbar .state{font:700 9px var(--mono);color:#79c990}.cs-live-toolbar .state.off{color:#da756c}.cs-live-toolbar .push{margin-left:auto}.cs-canvas-dock{position:relative;min-height:0;flex:1;background:radial-gradient(ellipse at 50% 30%,#343942,#111318 68%);overflow:hidden}.cs-canvas-dock #gl{position:absolute;inset:0;width:100%;height:100%;display:block}.cs-canvas-dock:after{content:'LMB orbit  •  Wheel zoom  •  RMB pan';position:absolute;left:10px;bottom:10px;padding:5px 8px;border:1px solid #08090a;border-radius:4px;background:#111318d9;color:#9aa1aa;font-size:10px;pointer-events:none;box-shadow:0 2px 6px #0008}.cs-canvas-dock .cs-no-model{position:absolute;inset:0;display:none;place-items:center;color:#9299a3;pointer-events:none;font-size:12px}.cs-canvas-dock.no-model .cs-no-model{display:grid}
+.cs-scene-controls{grid-column:2;grid-row:1;min-height:0;overflow:auto;padding:12px 13px 30px;background:linear-gradient(180deg,#23262c,#1a1c21)}.cs-control-section{margin-bottom:14px}.cs-control-section h3{display:flex;align-items:center;gap:8px;margin:0 0 8px;color:#d5d9de;font-size:10px;text-transform:uppercase;letter-spacing:.1em}.cs-control-section h3:after{content:'';height:1px;background:#ffffff0d;flex:1}.cs-control-row{display:grid;grid-template-columns:120px minmax(0,1fr) 42px;gap:8px;align-items:center;min-height:32px}.cs-control-row>label{font-size:10.5px;color:#a4aab2}.cs-control-row output{text-align:right;color:#9fc3ec;font:9.5px var(--mono)}.cs-control-row input[type=range]{width:100%}.cs-switch{position:relative;width:38px;height:20px;display:inline-block}.cs-switch input{opacity:0;width:0;height:0}.cs-switch span{position:absolute;inset:0;border:1px solid #0b0c0e;border-radius:11px;background:#34383f;box-shadow:inset 0 2px 4px #0008;cursor:pointer}.cs-switch span:before{content:'';position:absolute;width:14px;height:14px;left:2px;top:2px;border-radius:50%;background:#b9bec5;box-shadow:0 1px 3px #000b;transition:.15s}.cs-switch input:checked+span{background:#3979ca}.cs-switch input:checked+span:before{transform:translateX(18px);background:#fff}.cs-scene-seg{display:grid;grid-template-columns:1fr 1fr;gap:4px}.cs-scene-seg button{min-height:31px}.cs-face-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.cs-face-card{border:1px solid #101216;border-radius:5px;background:#202329;padding:7px}.cs-face-card label{display:block;margin-bottom:5px;color:#b9bec6;font-size:10px}.cs-face-card select{width:100%;height:30px;padding:4px 6px}.cs-face-card input[type=file]{width:100%;margin-top:5px;font-size:9px;color:#8f969f}.cs-face-file{margin-top:5px;color:#75808a;font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cs-scene-note{font-size:9.5px;line-height:1.45;color:#7f8790;padding:7px 8px;border-left:2px solid #3f7fd4;background:#151b23}
+.cs-scene-gallery-panel{grid-column:1/-1;grid-row:2;min-width:0;border-top:1px solid #0b0c0e;background:#17191d;display:flex;flex-direction:column}.cs-scene-gallery-head{height:43px;display:flex;align-items:center;gap:9px;padding:0 12px;border-bottom:1px solid #0b0c0e}.cs-scene-gallery-head strong{font-size:11px}.cs-scene-gallery-head span{font-size:10px;color:#858c95}.cs-scene-gallery-head .push{margin-left:auto}.cs-scene-rail{display:flex;gap:9px;overflow:auto;padding:10px 12px 15px;min-height:0}.cs-scene-preset{position:relative;flex:0 0 190px;height:137px;border:1px solid #101216;border-radius:6px;background:#23262c;overflow:hidden;cursor:pointer;box-shadow:0 2px 7px #0006}.cs-scene-preset:hover{border-color:#4c75a5}.cs-scene-preset .cs-asset-thumb{height:93px;aspect-ratio:auto}.cs-scene-preset .caption{display:flex;align-items:center;gap:7px;padding:7px 8px}.cs-scene-preset .caption b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10.5px}.cs-scene-preset .caption span{color:#858c95;font-size:9px}.cs-scene-preset.current{border-color:#4d8bdb;box-shadow:inset 0 0 0 1px #4d8bdb55}
+body.headless #workspaceLayer{display:none!important}
+@media(max-width:1250px){#app{grid-template-columns:290px 1fr 310px}.cs-library-body{grid-template-columns:minmax(0,1fr) 290px}.cs-scene-shell{grid-template-columns:minmax(420px,1fr) 340px}.top-workspaces .workspace-tab span{display:none}.top-workspaces .workspace-tab{padding:6px 8px}}
+@media(max-width:980px){#app{grid-template-columns:250px 1fr 270px}header{overflow-x:auto}.cs-library-toolbar{grid-template-columns:minmax(190px,1fr) auto}.cs-library-toolbar .cs-toolbar-actions{grid-column:1/-1;justify-content:flex-start}.cs-library-body{grid-template-columns:1fr}.cs-detail{display:none}.cs-scene-shell{grid-template-columns:1fr;grid-template-rows:430px max-content 210px;align-content:start;overflow:auto}.cs-live-panel{grid-column:1;grid-row:1;min-height:0;border-right:0}.cs-scene-controls{grid-column:1;grid-row:2;overflow:visible}.cs-scene-gallery-panel{grid-column:1;grid-row:3;min-height:210px}}
+
 </style>
 </head>
 <body>
@@ -162,6 +197,15 @@ body.headless #timeline{display:none!important}
     <select id="animSel" title="Animation"><option value="">— animations —</option></select>
     <button type="button" id="btnPlay">Play</button>
     <button type="button" id="btnSources" title="Configure objectcomponents and texturecomponents libraries">Asset Sources</button>
+
+    <nav class="top-workspaces" aria-label="Workspace tabs">
+      <button type="button" class="workspace-tab" id="btnLibraryWorkspace" title="Open the full Asset Library">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h6l1.7 2H20v10.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18z"/><path d="M4 8h16"/></svg><span>Library</span>
+      </button>
+      <button type="button" class="workspace-tab" id="btnSceneStudioWorkspace" title="Open the full Scene Studio">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 7 8-4 8 4v10l-8 4-8-4z"/><path d="m4 7 8 4 8-4M12 11v10"/><path d="M8 9v8m8-8v8"/></svg><span>Scene Studio</span>
+      </button>
+    </nav>
     <div class="spacer"></div>
     <span id="status">Drop a .glb / .gltf to begin</span>
     <button type="button" id="btnRandom">Randomize</button>
@@ -186,10 +230,26 @@ body.headless #timeline{display:none!important}
   <aside class="side r" id="right">
     <div class="pad" id="rightBody"></div>
   </aside>
+
+  <section id="workspaceLayer" aria-hidden="true">
+    <div class="cs-workspace-head">
+      <div class="cs-workspace-mark" id="csWorkspaceMark"></div>
+      <div class="cs-workspace-heading"><h2 id="csWorkspaceTitle">Workspace</h2><p id="csWorkspaceSubtitle"></p></div>
+      <div class="spacer"></div>
+      <div class="cs-workspace-switch" aria-label="Switch workspace">
+        <button type="button" data-workspace="library">Library</button>
+        <button type="button" data-workspace="scene">Scene Studio</button>
+      </div>
+      <button type="button" class="cs-iconbtn" id="csWorkspaceClose" title="Close workspace" aria-label="Close workspace">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div id="csWorkspaceContent"></div>
+  </section>
 </div>
 <script type="module">
 /**
- * Character Studio v3.3.0 — pure WebGL2
+ * Character Studio v3.4.0 — pure WebGL2
  * - Load GLB/GLTF (+ .bj if glTF magic)
  * - Geoset visibility toggles (all mesh nodes)
  * - Head sculpt + gear-safe body sculpt
@@ -1895,7 +1955,7 @@ function renderRight(){
     const br=document.createElement('div'); br.className='btnrow';
     br.innerHTML=`<button type="button" id="gsExp">Export JSON</button><button type="button" id="gsImp">Import JSON</button>`;
     c.appendChild(br);
-    br.querySelector('#gsExp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({version:1,engine:'character-studio_v3.3.0',gearsets},null,2)],{type:'application/json'}));a.download='gearsets.json';a.click();};
+    br.querySelector('#gsExp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({version:1,engine:'character-studio_v3.4.0',gearsets},null,2)],{type:'application/json'}));a.download='gearsets.json';a.click();};
     br.querySelector('#gsImp').onclick=()=>fileGearset.click();
     c.insertAdjacentHTML('beforeend','<div class="hint">Gearsets store slot variants + texture names. Textures resolve from the loaded texture library. Saved locally and exportable as JSON for game wiring.</div>');
   }
@@ -1914,7 +1974,7 @@ function body_appendSlotStatus(card,group){
 }
 function getAppearance(){
   const geosetVisibility={}; if(model) model.geosets.forEach(g=>geosetVisibility[g.name]=g.visible);
-  return {version:2,engine:'character-studio_v3.3.0',model:model?.fileName||null,
+  return {version:2,engine:'character-studio_v3.4.0',model:model?.fileName||null,
     headMorphs:{...headVals},bodyMorphs:{...bodyVals},geosetVisibility,colors:{...colors},
     equippedTextures:{...slotTexChoice},baseTexture:baseTextureName,textureFolder:texFolderName||null,viewMode,
     geosetTextureTransforms:compactUvTransforms(),
@@ -2069,7 +2129,7 @@ renderRight=function(){ _renderRightV15(); appendPackSection(); };
 
 // ── StudioAPI: scriptable surface for agents / automation / headless ──
 const StudioAPI={
-  version:'3.3.0',
+  version:'3.4.0',
   brand:'CHARACTER STUDIO - made by AEiOU',
   loadFile:f=>loadModelFromFile(f),
   loadPack:f=>loadPackFromZip(f),
@@ -2099,7 +2159,7 @@ window.StudioAPI=StudioAPI;
 // ── headless mode: ?headless=1 hides all chrome, StudioAPI drives everything ──
 if(new URLSearchParams(location.search).get('headless')==='1') document.body.classList.add('headless');
 
-document.dispatchEvent(new CustomEvent('studio:ready',{detail:{version:'3.3.0',brand:StudioAPI.brand,headless:document.body.classList.contains('headless')}}));
+document.dispatchEvent(new CustomEvent('studio:ready',{detail:{version:'3.4.0',brand:StudioAPI.brand,headless:document.body.classList.contains('headless')}}));
 window.__studioReady=true;
 
 renderLeft(); renderRight();
@@ -2169,7 +2229,7 @@ Object.assign(window.StudioAPI,{
     boneCount:(model&&model.skin)?model.skin.joints.length:0,
     poseHash:(model&&model.skin)?Array.from(model.skin.boneMats.slice(0,128)).reduce((h,x)=>(h*31+Math.round(x*1000))|0,0):0 }),
 });
-window.StudioAPI.version='3.3.0';
+window.StudioAPI.version='3.4.0';
 
 
 /* ═══════════ v3.0 Tier 2 — undo/redo · projects · profiles · texture layers · pack authoring ═══════════ */
@@ -2348,7 +2408,7 @@ function idb(){
   });
 }
 function projectRecord(name){
-  return { name, savedAt:new Date().toISOString(), engine:'character-studio_v3.3.0',
+  return { name, savedAt:new Date().toISOString(), engine:'character-studio_v3.4.0',
     appearance:(model?getAppearance():null), gearsets:JSON.parse(JSON.stringify(gearsets)),
     settings:{...settings}, texLayers:JSON.parse(JSON.stringify(texLayers)),
     modelName:(window._modelFileRef&&window._modelFileRef.name)||null,
@@ -2489,7 +2549,7 @@ async function bitmapPng(bmp){
   return canvasPng(cv);
 }
 function genManifest(name,version){
-  return { name, version, generated:new Date().toISOString(), engine:'character-studio_v3.3.0', profile:activeProfile.id,
+  return { name, version, generated:new Date().toISOString(), engine:'character-studio_v3.4.0', profile:activeProfile.id,
     model: model?{ name:(window._modelFileRef&&window._modelFileRef.name)||null, geosets:model.geosets.length,
       bones:model.skin?model.skin.joints.length:0, animations:model.animations.length }:null,
     geosetGroups: model?[...new Set(model.geosets.map(g=>g.group))]:[],
@@ -2503,7 +2563,7 @@ async function buildPack(opts){
   const enc=new TextEncoder();
   const files=[];
   const add=(n,data)=>files.push({name:`${base}/${n}`,data});
-  add('version.txt',enc.encode(`${base}\nengine: character-studio_v3.3.0\ngenerated: ${new Date().toISOString()}\n`));
+  add('version.txt',enc.encode(`${base}\nengine: character-studio_v3.4.0\ngenerated: ${new Date().toISOString()}\n`));
   const manifest=genManifest(name,version);
   const v=validateManifest(manifest);
   if(!v.ok) throw new Error('generated manifest invalid: '+v.errors.join('; '));
@@ -2534,7 +2594,7 @@ async function buildPack(opts){
     add('preview/preview.png',u8);
   }
   add('docs/integration_notes.txt',enc.encode(
-`${base}\nAuthored with CHARACTER STUDIO - made by AEiOU (v3.3.0).\n\nLayout:\n  customization/customization_manifest.json  machine-readable manifest (validated)\n  appearance.json                             portable appearance state\n  geoset_list.txt                             geoset name / group / default visibility\n  textures/                                   texture library + baked atlases (PNG)\n  models/                                     source model (optional)\n  preview/preview.png                         viewport render\n  SHA256SUMS.txt                              integrity (sha256sum -c compatible)\n`));
+`${base}\nAuthored with CHARACTER STUDIO - made by AEiOU (v3.4.0).\n\nLayout:\n  customization/customization_manifest.json  machine-readable manifest (validated)\n  appearance.json                             portable appearance state\n  geoset_list.txt                             geoset name / group / default visibility\n  textures/                                   texture library + baked atlases (PNG)\n  models/                                     source model (optional)\n  preview/preview.png                         viewport render\n  SHA256SUMS.txt                              integrity (sha256sum -c compatible)\n`));
   const sums=[];
   for(const f of files) sums.push(`${await sha256Hex(f.data)}  ${f.name}`);
   files.push({name:`${base}/SHA256SUMS.txt`,data:enc.encode(sums.join('\n')+'\n')});
@@ -2640,14 +2700,14 @@ function exportGlbBytes(opts={}){
   }
   const uvMeta=compactUvTransforms();
   for(const [name,cfg] of Object.entries(uvMeta)){const g=model.geosets.find(x=>x.name===name);if(!g)continue;const nd=json.nodes[g.nodeIndex];nd.extras={...(nd.extras||{}),characterStudioTextureTransform:cfg};}
-  json.asset=json.asset||{};json.asset.extras={...(json.asset.extras||{}),characterStudio:{version:'3.3.0',geosetTextureTransforms:uvMeta}};
+  json.asset=json.asset||{};json.asset.extras={...(json.asset.extras||{}),characterStudio:{version:'3.4.0',geosetTextureTransforms:uvMeta}};
   if(!includeHidden){
     for(const g of model.geosets){
       if(!g.visible&&json.nodes[g.nodeIndex]&&json.nodes[g.nodeIndex].mesh!=null){ delete json.nodes[g.nodeIndex].mesh; strippedNodes++; }
     }
   }
   json.asset=json.asset||{};
-  json.asset.generator='CHARACTER STUDIO - made by AEiOU (v3.3.0)';
+  json.asset.generator='CHARACTER STUDIO - made by AEiOU (v3.4.0)';
   const enc=new TextEncoder();
   let jbytes=enc.encode(JSON.stringify(json));
   const jpad=(4-(jbytes.length%4))%4;
@@ -3409,7 +3469,7 @@ Object.assign(window.StudioAPI,{
 });
 
 
-/* ═══════════ v3.3.0 — Backdrop & Chroma system · Post FX (rasterize/posterize/outline) · Capture suite · Scene Studio · Asset Library ═══════════ */
+/* ═══════════ v3.4.0 — Backdrop & Chroma system · Post FX (rasterize/posterize/outline) · Capture suite · Scene Studio · Asset Library ═══════════ */
 
 /* ── pure helpers (unit-tested from the shipped HTML) ── */
 function csChromaPresetColor(mode){
@@ -3841,7 +3901,7 @@ function csRenderSpriteSheet(opts={}){
     canvas.width=prev.w; canvas.height=prev.h;
     csRenderFrame(performance.now());
   }
-  const meta={version:1,engine:'character-studio_v3.3.0',directions:dirs,cell:{w:cell,h:cell},cols,rows,
+  const meta={version:1,engine:'character-studio_v3.4.0',directions:dirs,cell:{w:cell,h:cell},cols,rows,
     order:'row-major, clockwise turnaround starting at the current camera yaw',
     yawRadians:yaws.map(v=>Number(v.toFixed(6))),transparent,
     projection:settings.ortho?'orthographic':'perspective',fov:settings.fov,generated:new Date().toISOString()};
@@ -3876,24 +3936,28 @@ function csLibExt(rec){
 }
 function csSafeFileName(s){ return String(s||'asset').replace(/[^\w.\- ]+/g,'_').replace(/\s+/g,'_').slice(0,80)||'asset'; }
 async function libSave(type,name,payload,meta={}){
-  const rec={id:csLibId(),type,name:String(name||type),createdAt:new Date().toISOString(),meta,engine:'character-studio_v3.3.0'};
+  const rec={id:csLibId(),type,name:String(name||type),createdAt:new Date().toISOString(),meta,engine:'character-studio_v3.4.0'};
   if(typeof payload==='string') rec.json=payload;
-  else if(payload&&payload.blob){ rec.blob=payload.blob; rec.mime=payload.blob.type||payload.mime||'application/octet-stream'; rec.size=payload.blob.size; }
+  else if(payload&&typeof payload.json==='string'){
+    rec.json=payload.json;
+    if(payload.previewBlob instanceof Blob){ rec.previewBlob=payload.previewBlob; rec.previewMime=payload.previewBlob.type||'image/png'; rec.previewSize=payload.previewBlob.size; }
+  } else if(payload&&payload.blob){ rec.blob=payload.blob; rec.mime=payload.blob.type||payload.mime||'application/octet-stream'; rec.size=payload.blob.size; }
   else rec.json=JSON.stringify(payload??null);
   const v=validateLibraryRecord(rec);
   if(!v.ok) throw new Error('Library record invalid: '+v.errors.join('; '));
   await csLibTx('readwrite',store=>store.put(rec));
   csLibMirror(rec).catch(()=>{});
   try{ renderRight(); }catch{}
+  try{ window.__csWorkspaceRefresh?.(); }catch{}
   return {id:rec.id,type:rec.type,name:rec.name,createdAt:rec.createdAt};
 }
 async function libList(){
   const rows=await csLibTx('readonly',store=>store.getAll());
-  return (rows||[]).map(r=>({id:r.id,type:r.type,name:r.name,createdAt:r.createdAt,size:r.size||(r.json?r.json.length:0),mime:r.mime||null,meta:r.meta||{}}))
+  return (rows||[]).map(r=>({id:r.id,type:r.type,name:r.name,createdAt:r.createdAt,size:r.size||(r.json?r.json.length:0),mime:r.mime||null,hasPreview:!!r.previewBlob,previewSize:r.previewSize||0,meta:r.meta||{}}))
     .sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
 }
 function libGet(id){ return csLibTx('readonly',store=>store.get(id)); }
-async function libDelete(id){ await csLibTx('readwrite',store=>store.delete(id)); try{ renderRight(); }catch{} return true; }
+async function libDelete(id){ await csLibTx('readwrite',store=>store.delete(id)); try{ renderRight(); }catch{} try{ window.__csWorkspaceRefresh?.(); }catch{} return true; }
 async function libExportOne(id){
   const rec=await libGet(id); if(!rec) throw new Error('Library item not found: '+id);
   const fname=csSafeFileName(rec.name)+'_'+rec.id.slice(0,8)+csLibExt(rec);
@@ -3909,9 +3973,11 @@ async function libExportAll(){
     const rel='library/'+rec.type+'/'+csSafeFileName(rec.name)+'_'+rec.id.slice(0,8)+csLibExt(rec);
     const data=rec.json!=null?enc.encode(rec.json):new Uint8Array(await rec.blob.arrayBuffer());
     files.push({name:rel,data});
-    manifest.push({id:rec.id,type:rec.type,name:rec.name,createdAt:rec.createdAt,file:rel,bytes:data.length,meta:rec.meta||{}});
+    let preview=null;
+    if(rec.previewBlob){ preview='library/'+rec.type+'/'+csSafeFileName(rec.name)+'_'+rec.id.slice(0,8)+'_preview.png'; files.push({name:preview,data:new Uint8Array(await rec.previewBlob.arrayBuffer())}); }
+    manifest.push({id:rec.id,type:rec.type,name:rec.name,createdAt:rec.createdAt,file:rel,preview,bytes:data.length,meta:rec.meta||{}});
   }
-  files.push({name:'library/library_manifest.json',data:enc.encode(JSON.stringify({version:1,engine:'character-studio_v3.3.0',exported:new Date().toISOString(),items:manifest},null,2))});
+  files.push({name:'library/library_manifest.json',data:enc.encode(JSON.stringify({version:1,engine:'character-studio_v3.4.0',exported:new Date().toISOString(),items:manifest},null,2))});
   const sums=[];
   for(const f of files) sums.push(`${await sha256Hex(f.data)}  ${f.name}`);
   files.push({name:'SHA256SUMS.txt',data:enc.encode(sums.join('\n')+'\n')});
@@ -4091,6 +4157,7 @@ function appendCaptureSection(){
 function appendSceneSection(){
   const host=document.getElementById('rightBody'); if(!host) return;
   const c=section(host,'Scene Studio (Chroma Room)',false); if(!c) return;
+  const launch=document.createElement('div'); launch.className='row cs-btnrow'; launch.innerHTML='<button class="primary" data-open-scene>Open full Scene Studio</button>'; launch.querySelector('button').onclick=()=>csOpenWorkspace('scene'); c.appendChild(launch);
   const s=csNormalizeScene(sceneState); sceneState=s;
   const er=document.createElement('div'); er.className='row';
   er.innerHTML=`<label>Room</label><div class="seg"><button data-v="0"${s.enabled?'':' class="on"'}>Off</button><button data-v="1"${s.enabled?' class="on"':''}>On</button></div>`;
@@ -4149,9 +4216,7 @@ function appendSceneSection(){
     const rr=document.createElement('div'); rr.className='row cs-btnrow';
     rr.innerHTML=`<button id="csSceneSave">Save scene to library</button><button id="csSceneReset">Reset scene</button>`;
     rr.querySelector('#csSceneSave').onclick=async()=>{
-      const name=prompt('Scene name','Scene '+new Date().toLocaleDateString())||'Scene';
-      await libSave('scene',name,JSON.stringify(csNormalizeScene(sceneState),null,2),{chroma:sceneState.chroma});
-      setStatus(`Scene “${name}” saved to Asset Library`);
+      await csSaveCurrentScene();
     };
     rr.querySelector('#csSceneReset').onclick=()=>{ for(const k of CS_FACE_KEYS) csDisposeFaceMedia(k); if(skyTex){gl.deleteTexture(skyTex);skyTex=null;} sceneState=csDefaultScene(); sceneState.enabled=true; csPersistScene(); renderRight(); };
     c.appendChild(rr);
@@ -4165,17 +4230,14 @@ function appendSceneSection(){
 function appendLibrarySection(){
   const host=document.getElementById('rightBody'); if(!host) return;
   const c=section(host,'Asset Library',false); if(!c) return;
+  const launch=document.createElement('div'); launch.className='row cs-btnrow'; launch.innerHTML='<button class="primary" data-open-library>Open full Library</button>'; launch.querySelector('button').onclick=()=>csOpenWorkspace('library'); c.appendChild(launch);
   const tr=document.createElement('div'); tr.className='row cs-btnrow';
   tr.innerHTML=`<button id="csLibSaveApp">Save appearance</button><button id="csLibSaveGear">Save gearsets</button><button id="csLibExportAll">Export all (ZIP)</button>`;
   tr.querySelector('#csLibSaveApp').onclick=async()=>{
-    const name=prompt('Appearance name',(model?.fileName||'Appearance')+' '+new Date().toLocaleDateString())||'Appearance';
-    await libSave('appearance',name,JSON.stringify(getAppearance(),null,2),{model:model?.fileName||null});
-    setStatus(`Appearance “${name}” saved to Asset Library`);
+    await csSaveCurrentAppearance();
   };
   tr.querySelector('#csLibSaveGear').onclick=async()=>{
-    if(!gearsets.length){ setStatus('No gearsets to save'); return; }
-    await libSave('gearset','Gearsets '+new Date().toLocaleDateString(),JSON.stringify({version:1,engine:'character-studio_v3.3.0',gearsets},null,2),{count:gearsets.length});
-    setStatus(`${gearsets.length} gearset(s) saved to Asset Library`);
+    await csSaveCurrentGearsets();
   };
   tr.querySelector('#csLibExportAll').onclick=()=>libExportAll().catch(e=>setStatus('Export failed: '+e.message));
   c.appendChild(tr);
@@ -4239,6 +4301,277 @@ Object.assign(window.StudioAPI,{
   },
   library:{ list:libList, get:libGet, save:libSave, remove:libDelete, exportOne:libExportOne, exportAll:libExportAll },
 });
+
+
+/* ═══════════ v3.4.0 — full Library + Scene Studio workspaces ═══════════ */
+const csWorkspaceState={
+  active:null,
+  library:{query:'',type:'all',sort:'newest',view:localStorage.getItem('cs_library_view')||'grid',selected:null},
+  scene:{query:''},
+};
+let csWorkspaceUrls=[];
+let csLibrarySearchTimer=null;
+const csCanvasHome={parent:canvas.parentNode,next:canvas.nextSibling};
+const csWorkspaceEl=document.getElementById('workspaceLayer');
+const csWorkspaceContent=document.getElementById('csWorkspaceContent');
+const csWorkspaceTitle=document.getElementById('csWorkspaceTitle');
+const csWorkspaceSubtitle=document.getElementById('csWorkspaceSubtitle');
+const csWorkspaceMark=document.getElementById('csWorkspaceMark');
+
+function csIcon(name){
+  const paths={
+    library:'<path d="M4 5.5h6l1.7 2H20v10.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18z"/><path d="M4 8h16"/>',
+    scene:'<path d="m4 7 8-4 8 4v10l-8 4-8-4z"/><path d="m4 7 8 4 8-4M12 11v10"/><path d="M8 9v8m8-8v8"/>',
+    search:'<circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/>',
+    grid:'<rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/>',
+    list:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="5" cy="6" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="18" r="1"/>',
+    compact:'<rect x="4" y="5" width="5" height="5"/><rect x="4" y="14" width="5" height="5"/><path d="M12 7.5h8M12 16.5h8"/>',
+    plus:'<path d="M12 5v14M5 12h14"/>',
+    save:'<path d="M5 4h12l2 2v14H5z"/><path d="M8 4v6h8V4M8 20v-6h8v6"/>',
+    download:'<path d="M12 4v11m0 0 4-4m-4 4-4-4"/><path d="M5 19h14"/>',
+    upload:'<path d="M12 20V9m0 0 4 4m-4-4-4 4"/><path d="M5 5h14"/>',
+    apply:'<path d="M20 11a8 8 0 1 1-2.3-5.7"/><path d="M20 4v7h-7"/>',
+    edit:'<path d="m4 16-.7 4 4-.7L18 8.6 14.4 5z"/><path d="m13.5 6 3.5 3.5"/>',
+    trash:'<path d="M5 7h14M9 7V4h6v3m-8 0 1 13h8l1-13M10 10v7m4-7v7"/>',
+    file:'<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5"/>',
+    image:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m4 18 5-5 4 4 2-2 5 4"/>',
+    gear:'<circle cx="12" cy="12" r="3"/><path d="M19 13.5v-3l-2-.7-.7-1.7.9-1.9-2.1-2.1-1.9.9-1.7-.7L10.5 2h-3l-.7 2-1.7.7-1.9-.9-2.1 2.1.9 1.9-.7 1.7-2 .7v3l2 .7.7 1.7-.9 1.9 2.1 2.1 1.9-.9 1.7.7.7 2h3l.7-2 1.7-.7 1.9.9 2.1-2.1-.9-1.9.7-1.7z" transform="scale(.8) translate(3 3)"/>',
+    appearance:'<circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/>',
+    close:'<path d="M6 6l12 12M18 6 6 18"/>',
+    camera:'<path d="M4 8h4l2-3h4l2 3h4v11H4z"/><circle cx="12" cy="13" r="4"/>',
+    reset:'<path d="M4 8V4h4"/><path d="M5.5 5.5A8 8 0 1 1 4 12"/>',
+  };
+  return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[name]||paths.file}</svg>`;
+}
+function csEscape(v){ return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+function csBytes(n){ n=Number(n)||0; if(n<1024)return n+' B'; if(n<1048576)return (n/1024).toFixed(n<10240?1:0)+' KB'; return (n/1048576).toFixed(n<10485760?1:0)+' MB'; }
+function csDate(v){ const d=new Date(v); return Number.isNaN(+d)?'—':d.toLocaleString([], {dateStyle:'medium',timeStyle:'short'}); }
+function csRevokeWorkspaceUrls(){ for(const u of csWorkspaceUrls) URL.revokeObjectURL(u); csWorkspaceUrls=[]; }
+function csObjectUrl(blob){ const u=URL.createObjectURL(blob); csWorkspaceUrls.push(u); return u; }
+function csCanvasBlob(){
+  try{ csRenderFrame(performance.now()); }catch{}
+  return new Promise(resolve=>canvas.toBlob(b=>resolve(b), 'image/png'));
+}
+async function csSaveCurrentScene(){
+  const typed=prompt('Scene name','Scene '+new Date().toLocaleDateString());
+  if(typed===null) return null;
+  const name=typed.trim()||'Scene';
+  const previewBlob=await csCanvasBlob();
+  await libSave('scene',name,{json:JSON.stringify(csNormalizeScene(sceneState),null,2),previewBlob},{chroma:sceneState.chroma,markers:sceneState.markers});
+  setStatus(`Scene “${name}” saved to Asset Library`); return name;
+}
+async function csSaveCurrentAppearance(){
+  const typed=prompt('Appearance name',(model?.fileName||'Appearance')+' '+new Date().toLocaleDateString());
+  if(typed===null) return null;
+  const name=typed.trim()||'Appearance';
+  const previewBlob=await csCanvasBlob();
+  await libSave('appearance',name,{json:JSON.stringify(getAppearance(),null,2),previewBlob},{model:model?.fileName||null});
+  setStatus(`Appearance “${name}” saved to Asset Library`); return name;
+}
+async function csSaveCurrentGearsets(){
+  if(!gearsets.length){ setStatus('No gearsets to save'); return null; }
+  const typed=prompt('Gearset collection name','Gearsets '+new Date().toLocaleDateString());
+  if(typed===null) return null;
+  const name=typed.trim()||'Gearsets';
+  await libSave('gearset',name,JSON.stringify({version:1,engine:'character-studio_v3.4.0',gearsets},null,2),{count:gearsets.length});
+  setStatus(`${gearsets.length} gearset(s) saved to Asset Library`); return name;
+}
+async function csImportLibraryFiles(files){
+  let count=0;
+  for(const file of Array.from(files||[])){
+    const lower=file.name.toLowerCase();
+    if(lower.endsWith('.json')) await libSave('json',file.name,await file.text(),{originalName:file.name});
+    else if(file.type.startsWith('image/')) await libSave('texture',file.name,{blob:file},{originalName:file.name});
+    else if(lower.endsWith('.zip')) await libSave('pack',file.name,{blob:file},{originalName:file.name});
+    else await libSave('file',file.name,{blob:file},{originalName:file.name});
+    count++;
+  }
+  if(count) setStatus(`${count} file${count===1?'':'s'} added to Asset Library`);
+}
+async function libRename(id,name){
+  const rec=await libGet(id); if(!rec) throw new Error('Library item not found');
+  rec.name=String(name||'').trim()||rec.name; rec.updatedAt=new Date().toISOString();
+  await csLibTx('readwrite',store=>store.put(rec));
+  try{ renderRight(); }catch{} window.__csWorkspaceRefresh?.(); return rec;
+}
+async function csApplyLibraryRecord(rec){
+  if(!rec||rec.json==null) return false;
+  if(rec.type==='appearance'){ window.StudioAPI.applyAppearance(rec.json); setStatus(`Applied appearance “${rec.name}”`); return true; }
+  if(rec.type==='scene'){ sceneState=csNormalizeScene(JSON.parse(rec.json)); csPersistScene(); renderRight(); if(csWorkspaceState.active==='scene') csRenderSceneWorkspace(); setStatus(`Applied scene “${rec.name}”`); return true; }
+  if(rec.type==='gearset'){
+    const g=JSON.parse(rec.json); if(Array.isArray(g.gearsets)){ for(const gs of g.gearsets) if(!gearsets.some(x=>x.name===gs.name)) gearsets.push(gs); persistGearsets(); renderRight(); setStatus(`Imported ${g.gearsets.length} gearset(s) from library`); return true; }
+  }
+  return false;
+}
+function csCanApply(type){ return ['appearance','scene','gearset'].includes(type); }
+function csSceneSwatch(scene){
+  const s=csNormalizeScene(scene); const el=document.createElement('div'); el.className='cs-scene-swatch '+(s.chroma==='blue'?'blue ':'')+(s.markers?'markers':''); el.innerHTML='<span class="room-lines"></span>'; return el;
+}
+function csTypeIcon(type){ return type==='scene'?'scene':type==='appearance'?'appearance':type==='gearset'?'gear':['screenshot','spritesheet','texture'].includes(type)?'image':'file'; }
+function csRecordPreview(rec,detail=false){
+  const wrap=document.createElement('div'); wrap.className=detail?'cs-detail-preview':'cs-asset-thumb';
+  const preview=rec.previewBlob || (rec.blob&&String(rec.mime||rec.blob.type||'').startsWith('image/')?rec.blob:null);
+  if(preview){ const img=document.createElement('img'); img.src=csObjectUrl(preview); img.alt=rec.name||'Library preview'; wrap.appendChild(img); return wrap; }
+  if(rec.blob&&String(rec.mime||rec.blob.type||'').startsWith('video/')){ const v=document.createElement('video'); v.src=csObjectUrl(rec.blob); v.muted=true; v.loop=true; v.playsInline=true; v.controls=!!detail; v.preload='metadata'; wrap.appendChild(v); if(!detail){ wrap.onmouseenter=()=>v.play().catch(()=>{}); wrap.onmouseleave=()=>{v.pause();v.currentTime=0;}; } return wrap; }
+  if(rec.type==='scene'&&rec.json){ try{ wrap.appendChild(csSceneSwatch(JSON.parse(rec.json))); return wrap; }catch{} }
+  const art=document.createElement('div'); art.className='cs-type-art'; art.innerHTML=csIcon(csTypeIcon(rec.type))+`<span>${csEscape(rec.type)}</span>`; wrap.appendChild(art); return wrap;
+}
+function csDockCanvas(mode){
+  if(mode==='scene'){
+    const dock=document.getElementById('csSceneCanvasDock'); if(dock&&canvas.parentNode!==dock) dock.prepend(canvas);
+  } else if(canvas.parentNode!==csCanvasHome.parent){
+    if(csCanvasHome.next&&csCanvasHome.next.parentNode===csCanvasHome.parent) csCanvasHome.parent.insertBefore(canvas,csCanvasHome.next); else csCanvasHome.parent.prepend(canvas);
+  }
+  requestAnimationFrame(()=>{ try{ resize(); csRenderFrame(performance.now()); }catch{} });
+}
+function csOpenWorkspace(which){
+  if(!['library','scene'].includes(which)) return;
+  csWorkspaceState.active=which; csWorkspaceEl.classList.add('open'); csWorkspaceEl.setAttribute('aria-hidden','false'); document.body.classList.add('workspace-open');
+  document.getElementById('btnLibraryWorkspace').classList.toggle('on',which==='library');
+  document.getElementById('btnSceneStudioWorkspace').classList.toggle('on',which==='scene');
+  csWorkspaceEl.querySelectorAll('[data-workspace]').forEach(b=>b.classList.toggle('on',b.dataset.workspace===which));
+  if(which==='library') csRenderLibraryWorkspace(); else csRenderSceneWorkspace();
+}
+function csCloseWorkspace(){
+  csWorkspaceState.active=null; csDockCanvas('home'); csRevokeWorkspaceUrls(); csWorkspaceEl.classList.remove('open'); csWorkspaceEl.setAttribute('aria-hidden','true'); document.body.classList.remove('workspace-open');
+  document.getElementById('btnLibraryWorkspace').classList.remove('on'); document.getElementById('btnSceneStudioWorkspace').classList.remove('on');
+  csWorkspaceContent.innerHTML='';
+}
+function csSetWorkspaceHead(which){
+  const scene=which==='scene'; csWorkspaceTitle.textContent=scene?'Scene Studio':'Asset Library';
+  csWorkspaceSubtitle.textContent=scene?'Build, preview, save and reuse complete stage setups.':'Preview, organize, apply and export every saved studio asset.';
+  csWorkspaceMark.innerHTML=csIcon(scene?'scene':'library');
+  csWorkspaceEl.querySelectorAll('[data-workspace]').forEach(b=>b.classList.toggle('on',b.dataset.workspace===which));
+}
+async function csAllLibraryRecords(){
+  const rows=await csLibTx('readonly',store=>store.getAll());
+  return (rows||[]).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+}
+function csSortRecords(rows,sort){
+  const out=[...rows];
+  if(sort==='oldest') out.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));
+  else if(sort==='name') out.sort((a,b)=>String(a.name).localeCompare(String(b.name),undefined,{sensitivity:'base'}));
+  else if(sort==='type') out.sort((a,b)=>String(a.type).localeCompare(String(b.type))||String(a.name).localeCompare(String(b.name)));
+  else out.sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+  return out;
+}
+async function csRenderLibraryWorkspace(){
+  if(csWorkspaceState.active!=='library') return;
+  csSetWorkspaceHead('library'); csDockCanvas('home'); csRevokeWorkspaceUrls();
+  const st=csWorkspaceState.library;
+  csWorkspaceContent.innerHTML=`<div class="cs-library-shell">
+    <div class="cs-library-toolbar">
+      <div class="cs-search">${csIcon('search')}<input id="csLibQuery" type="text" placeholder="Search names, types and metadata…" value="${csEscape(st.query)}"></div>
+      <select id="csLibType" aria-label="Filter by asset type"><option value="all">All asset types</option>${['appearance','scene','gearset','screenshot','spritesheet','turntable','texture','pack','json','file'].map(t=>`<option value="${t}"${st.type===t?' selected':''}>${t[0].toUpperCase()+t.slice(1)}</option>`).join('')}</select>
+      <select id="csLibSort" aria-label="Sort library"><option value="newest"${st.sort==='newest'?' selected':''}>Newest first</option><option value="oldest"${st.sort==='oldest'?' selected':''}>Oldest first</option><option value="name"${st.sort==='name'?' selected':''}>Name A–Z</option><option value="type"${st.sort==='type'?' selected':''}>Group by type</option></select>
+      <div class="cs-toolbar-actions">
+        <button class="cs-toolbtn" id="csLibAdd">${csIcon('plus')}Add files</button><input id="csLibAddInput" type="file" multiple hidden>
+        <button class="cs-toolbtn" id="csLibSaveAppearance">${csIcon('appearance')}Save appearance</button>
+        <button class="cs-toolbtn" id="csLibSaveScene">${csIcon('scene')}Save scene</button>
+        <button class="cs-primarybtn" id="csLibExportAllTop">${csIcon('download')}Export all</button>
+        <div class="cs-view-toggle" aria-label="Library view"><button data-view="grid" title="Grid view">${csIcon('grid')}</button><button data-view="list" title="List view">${csIcon('list')}</button><button data-view="compact" title="Compact view">${csIcon('compact')}</button></div>
+      </div>
+    </div>
+    <div class="cs-library-body"><div class="cs-library-main"><div class="cs-library-summary" id="csLibSummary">Loading library…</div><div class="cs-gallery-scroll"><div class="cs-gallery" id="csLibGallery" data-view="${csEscape(st.view)}"></div></div></div><aside class="cs-detail" id="csLibDetail"></aside></div>
+  </div>`;
+  const query=document.getElementById('csLibQuery'); query.oninput=()=>{
+    st.query=query.value;
+    clearTimeout(csLibrarySearchTimer);
+    csLibrarySearchTimer=setTimeout(()=>csRenderLibraryWorkspace().then(()=>{
+      const next=document.getElementById('csLibQuery');
+      if(next){ next.focus(); next.setSelectionRange(st.query.length,st.query.length); }
+    }),120);
+  };
+  document.getElementById('csLibType').onchange=e=>{ st.type=e.target.value; csRenderLibraryWorkspace(); };
+  document.getElementById('csLibSort').onchange=e=>{ st.sort=e.target.value; csRenderLibraryWorkspace(); };
+  csWorkspaceContent.querySelectorAll('[data-view]').forEach(b=>{ b.classList.toggle('on',b.dataset.view===st.view); b.onclick=()=>{st.view=b.dataset.view;localStorage.setItem('cs_library_view',st.view);csRenderLibraryWorkspace();}; });
+  document.getElementById('csLibAdd').onclick=()=>document.getElementById('csLibAddInput').click();
+  document.getElementById('csLibAddInput').onchange=async e=>{await csImportLibraryFiles(e.target.files);csRenderLibraryWorkspace();};
+  document.getElementById('csLibSaveAppearance').onclick=()=>csSaveCurrentAppearance().catch(e=>setStatus('Save failed: '+e.message));
+  document.getElementById('csLibSaveScene').onclick=()=>csSaveCurrentScene().catch(e=>setStatus('Save failed: '+e.message));
+  document.getElementById('csLibExportAllTop').onclick=()=>libExportAll().catch(e=>setStatus('Export failed: '+e.message));
+  let rows=[]; try{ rows=await csAllLibraryRecords(); }catch(e){ document.getElementById('csLibGallery').innerHTML=`<div class="cs-empty-gallery">${csIcon('library')}<b>Library unavailable</b><span>${csEscape(e.message)}</span></div>`; return; }
+  if(csWorkspaceState.active!=='library') return;
+  const needle=st.query.trim().toLowerCase();
+  let filtered=rows.filter(r=>(st.type==='all'||r.type===st.type)&&(!needle||`${r.name} ${r.type} ${JSON.stringify(r.meta||{})}`.toLowerCase().includes(needle)));
+  filtered=csSortRecords(filtered,st.sort);
+  if(st.selected&&!rows.some(r=>r.id===st.selected)) st.selected=null;
+  if(!st.selected&&filtered.length) st.selected=filtered[0].id;
+  const totalBytes=rows.reduce((n,r)=>n+(r.size||r.previewSize||(r.json?.length||0)),0);
+  const kinds=new Set(rows.map(r=>r.type)).size;
+  document.getElementById('csLibSummary').innerHTML=`<span><strong>${filtered.length}</strong> shown</span><span><strong>${rows.length}</strong> total assets</span><span><strong>${kinds}</strong> categories</span><span class="push"><strong>${csBytes(totalBytes)}</strong> indexed${csBridgeAvailable()?' · disk mirror active':''}</span>`;
+  const gallery=document.getElementById('csLibGallery'); gallery.innerHTML='';
+  if(!filtered.length){ gallery.innerHTML=`<div class="cs-empty-gallery">${csIcon('search')}<b>${rows.length?'No matching assets':'Your library is empty'}</b><span>${rows.length?'Try a different search or asset type.':'Save an appearance or scene, capture a render, or add files directly.'}</span></div>`; csRenderLibraryDetail(null); return; }
+  for(const rec of filtered){
+    const card=document.createElement('article'); card.className='cs-asset-card'+(rec.id===st.selected?' selected':''); card.tabIndex=0;
+    const thumb=csRecordPreview(rec); const badge=document.createElement('span'); badge.className='cs-card-type'; badge.textContent=rec.type; thumb.appendChild(badge); card.appendChild(thumb);
+    const size=rec.size||(rec.json?.length||0);
+    card.insertAdjacentHTML('beforeend',`<div class="cs-card-body"><div class="cs-card-name" title="${csEscape(rec.name)}">${csEscape(rec.name)}</div><div class="cs-card-meta"><span>${csDate(rec.createdAt).split(',')[0]}</span><span>${csBytes(size)}</span></div></div><div class="cs-card-actions">${csCanApply(rec.type)?'<button class="cs-toolbtn" data-action="apply">Apply</button>':''}<button class="cs-toolbtn" data-action="export">Export</button></div>`);
+    const select=()=>{st.selected=rec.id;csRenderLibraryWorkspace();}; card.onclick=e=>{if(!e.target.closest('button'))select();}; card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select();}};
+    card.querySelector('[data-action=apply]')?.addEventListener('click',e=>{e.stopPropagation();csApplyLibraryRecord(rec).catch(x=>setStatus('Apply failed: '+x.message));});
+    card.querySelector('[data-action=export]').onclick=e=>{e.stopPropagation();libExportOne(rec.id).then(f=>setStatus('Exported '+f)).catch(x=>setStatus('Export failed: '+x.message));};
+    gallery.appendChild(card);
+  }
+  csRenderLibraryDetail(rows.find(r=>r.id===st.selected)||filtered[0]);
+}
+function csRenderLibraryDetail(rec){
+  const detail=document.getElementById('csLibDetail'); if(!detail) return;
+  if(!rec){ detail.innerHTML=`<div class="cs-detail-empty">${csIcon('library')}<b>Select an asset</b><span>Its preview and file actions will appear here.</span></div>`; return; }
+  detail.innerHTML='<div class="cs-detail-inner"></div>'; const inner=detail.firstElementChild; inner.appendChild(csRecordPreview(rec,true));
+  const size=rec.size||(rec.json?.length||0); const meta=rec.meta&&Object.keys(rec.meta).length?JSON.stringify(rec.meta,null,2):'No custom metadata';
+  inner.insertAdjacentHTML('beforeend',`<div class="cs-detail-kind">${csEscape(rec.type)}</div><h3 class="cs-detail-title">${csEscape(rec.name)}</h3><div class="cs-detail-actions">${csCanApply(rec.type)?`<button class="cs-primarybtn" data-detail="apply">${csIcon('apply')}Apply</button>`:''}<button class="cs-toolbtn" data-detail="export">${csIcon('download')}Export</button><button class="cs-toolbtn" data-detail="rename">${csIcon('edit')}Rename</button><button class="cs-dangerbtn" data-detail="delete">${csIcon('trash')}Delete</button></div><dl class="cs-meta-grid"><dt>Created</dt><dd>${csDate(rec.createdAt)}</dd><dt>File size</dt><dd>${csBytes(size)}</dd><dt>Engine</dt><dd>${csEscape(rec.engine||'—')}</dd><dt>Identifier</dt><dd>${csEscape(rec.id)}</dd><dt>Metadata</dt><dd><pre style="margin:0;white-space:pre-wrap;font:inherit">${csEscape(meta)}</pre></dd></dl>${rec.json?`<pre class="cs-json-preview">${csEscape(rec.json.slice(0,7000))}${rec.json.length>7000?'\n…':''}</pre>`:''}`);
+  inner.querySelector('[data-detail=apply]')?.addEventListener('click',()=>csApplyLibraryRecord(rec).catch(e=>setStatus('Apply failed: '+e.message)));
+  inner.querySelector('[data-detail=export]').onclick=()=>libExportOne(rec.id).then(f=>setStatus('Exported '+f)).catch(e=>setStatus('Export failed: '+e.message));
+  inner.querySelector('[data-detail=rename]').onclick=async()=>{ const name=prompt('Rename library item',rec.name); if(name&&name.trim()&&name.trim()!==rec.name){await libRename(rec.id,name);csWorkspaceState.library.selected=rec.id;csRenderLibraryWorkspace();} };
+  inner.querySelector('[data-detail=delete]').onclick=async()=>{ if(confirm(`Delete “${rec.name}” from the library?`)){await libDelete(rec.id);csWorkspaceState.library.selected=null;csRenderLibraryWorkspace();} };
+}
+function csSceneChange(mutator,rerender=false){ mutator(sceneState); sceneState=csNormalizeScene(sceneState); csPersistScene(); try{renderRight();}catch{} if(rerender) csRenderSceneWorkspace(); }
+async function csRenderSceneWorkspace(){
+  if(csWorkspaceState.active!=='scene') return;
+  csSetWorkspaceHead('scene'); csRevokeWorkspaceUrls(); const s=sceneState=csNormalizeScene(sceneState);
+  csWorkspaceContent.innerHTML=`<div class="cs-scene-shell">
+    <section class="cs-live-panel"><div class="cs-live-toolbar"><strong>Live stage preview</strong><span class="state ${s.enabled?'':'off'}">${s.enabled?'ROOM ACTIVE':'ROOM OFF'}</span><span class="push"></span><button class="cs-toolbtn" id="csSceneShot">${csIcon('camera')}Snapshot</button><button class="cs-primarybtn" id="csSceneSaveTop">${csIcon('save')}Save scene</button></div><div class="cs-canvas-dock ${model?'':'no-model'}" id="csSceneCanvasDock"><div class="cs-no-model">Load a model to preview the character inside this stage.</div></div></section>
+    <aside class="cs-scene-controls">
+      <div class="cs-control-section"><h3>Room setup</h3><div class="cs-control-row"><label>Scene room</label><label class="cs-switch"><input id="csSceneEnabled" type="checkbox"${s.enabled?' checked':''}><span></span></label><output>${s.enabled?'On':'Off'}</output></div>
+      <div class="cs-control-row"><label>Chroma color</label><div class="cs-scene-seg"><button class="cs-toolbtn ${s.chroma==='green'?'on':''}" data-chroma="green">Green</button><button class="cs-toolbtn ${s.chroma==='blue'?'on':''}" data-chroma="blue">Blue</button></div><output>${s.chroma}</output></div>
+      <div class="cs-control-row"><label>Tracking points</label><label class="cs-switch"><input id="csSceneMarkers" type="checkbox"${s.markers?' checked':''}><span></span></label><output>${s.markers?'On':'Off'}</output></div>
+      ${[['Marker density','markerTiles',2,20,1,s.markerTiles,v=>String(v)],['Marker strength','markerStrength',0,1,.05,s.markerStrength,v=>(+v).toFixed(2)],['Room size','sizeMul',1.05,4,.05,s.sizeMul,v=>(+v).toFixed(2)+'×']].map(([label,key,min,max,step,val])=>`<div class="cs-control-row"><label>${label}</label><input type="range" data-scene-range="${key}" min="${min}" max="${max}" step="${step}" value="${val}"><output data-scene-output="${key}">${key==='markerStrength'?(+val).toFixed(2):key==='sizeMul'?(+val).toFixed(2)+'×':val}</output></div>`).join('')}
+      <div class="cs-control-row"><label>Contact shadow</label><label class="cs-switch"><input id="csSceneShadow" type="checkbox"${s.shadow?' checked':''}><span></span></label><output>${s.shadow?'On':'Off'}</output></div></div>
+      <div class="cs-control-section"><h3>Environment</h3><div class="cs-control-row"><label>Skymap enabled</label><label class="cs-switch"><input id="csSceneSkyEnabled" type="checkbox"${s.sky.enabled?' checked':''}><span></span></label><output>${s.sky.enabled?'On':'Off'}</output></div><div class="btnrow"><button class="cs-toolbtn" id="csSceneSkyFile">${csIcon('upload')}Choose equirect image</button><input id="csSceneSkyInput" type="file" accept="image/*" hidden><button class="cs-toolbtn" id="csSceneSkyClear">Clear</button></div><div class="cs-scene-note">${csEscape(s.sky.name||'No skymap selected. Open one or more room faces to reveal the skymap or backdrop.')}</div></div>
+      <div class="cs-control-section"><h3>Room surfaces</h3><div class="cs-face-grid">${CS_FACE_KEYS.map(key=>{const f=s.faces[key],m=sceneMedia[key];return `<div class="cs-face-card"><label>${csEscape(CS_FACE_LABELS[key])}</label><select data-scene-face="${key}"><option value="chroma"${f.media==='chroma'?' selected':''}>Chroma</option><option value="image"${f.media==='image'?' selected':''}>Image</option><option value="video"${f.media==='video'?' selected':''}>Video</option><option value="off"${f.media==='off'?' selected':''}>Open</option></select><input data-scene-file="${key}" type="file" accept="${f.media==='video'?'video/*':'image/*'}"${f.media==='image'||f.media==='video'?'':' hidden'}><div class="cs-face-file">${csEscape(m?.name||f.name||'No media')}</div></div>`}).join('')}</div></div>
+      <div class="btnrow"><button class="cs-dangerbtn" id="csSceneResetFull">${csIcon('reset')}Reset scene</button></div><div class="cs-scene-note">Local image and video files remain session media. Scene geometry, chroma, markers, face modes and remembered filenames are saved permanently.</div>
+    </aside>
+    <section class="cs-scene-gallery-panel"><div class="cs-scene-gallery-head"><strong>Saved scene gallery</strong><span>Click a preset to apply it to the live stage.</span><span class="push"></span><button class="cs-toolbtn" id="csSceneOpenLibrary">${csIcon('library')}Open full Library</button></div><div class="cs-scene-rail" id="csSceneRail"></div></section>
+  </div>`;
+  csDockCanvas('scene');
+  document.getElementById('csSceneEnabled').onchange=e=>csSceneChange(x=>x.enabled=e.target.checked,true);
+  csWorkspaceContent.querySelectorAll('[data-chroma]').forEach(b=>{b.onclick=()=>csSceneChange(x=>x.chroma=b.dataset.chroma,true); b.classList.toggle('on',b.dataset.chroma===s.chroma);});
+  document.getElementById('csSceneMarkers').onchange=e=>csSceneChange(x=>x.markers=e.target.checked,true);
+  document.getElementById('csSceneShadow').onchange=e=>csSceneChange(x=>x.shadow=e.target.checked,true);
+  csWorkspaceContent.querySelectorAll('[data-scene-range]').forEach(inp=>inp.oninput=()=>{const key=inp.dataset.sceneRange; sceneState[key]=+inp.value; sceneState=csNormalizeScene(sceneState); csPersistScene(); const out=csWorkspaceContent.querySelector(`[data-scene-output="${key}"]`); out.textContent=key==='markerStrength'?(+inp.value).toFixed(2):key==='sizeMul'?(+inp.value).toFixed(2)+'×':inp.value;});
+  document.getElementById('csSceneSkyEnabled').onchange=e=>csSceneChange(x=>x.sky.enabled=e.target.checked,false);
+  document.getElementById('csSceneSkyFile').onclick=()=>document.getElementById('csSceneSkyInput').click();
+  document.getElementById('csSceneSkyInput').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{const r=await csLoadImageTex(f);if(skyTex)gl.deleteTexture(skyTex);skyTex=r.tex;skyAspect=r.aspect;sceneState.sky={enabled:true,name:f.name};csPersistScene();setStatus('Skymap: '+f.name);csRenderSceneWorkspace();renderRight();}catch(err){setStatus('Skymap failed: '+err.message);}};
+  document.getElementById('csSceneSkyClear').onclick=()=>{if(skyTex)gl.deleteTexture(skyTex);skyTex=null;sceneState.sky={enabled:false,name:null};csPersistScene();csRenderSceneWorkspace();renderRight();};
+  csWorkspaceContent.querySelectorAll('[data-scene-face]').forEach(sel=>sel.onchange=()=>{const key=sel.dataset.sceneFace;sceneState.faces[key].media=sel.value;if(sel.value==='chroma'||sel.value==='off'){csDisposeFaceMedia(key);sceneState.faces[key].name=null;}csPersistScene();csRenderSceneWorkspace();renderRight();});
+  csWorkspaceContent.querySelectorAll('[data-scene-file]').forEach(inp=>inp.onchange=async()=>{const key=inp.dataset.sceneFile,file=inp.files?.[0];if(!file)return;try{csDisposeFaceMedia(key);if(sceneState.faces[key].media==='video'){const v=await csLoadVideo(file);sceneMedia[key]={kind:'video',tex:v.tex,video:v.video,name:file.name,aspect:v.aspect};}else{const r=await csLoadImageTex(file);sceneMedia[key]={kind:'image',tex:r.tex,name:file.name,aspect:r.aspect};}sceneState.faces[key].name=file.name;csPersistScene();setStatus(CS_FACE_LABELS[key]+' ← '+file.name);csRenderSceneWorkspace();renderRight();}catch(err){setStatus('Media failed: '+err.message);}});
+  document.getElementById('csSceneSaveTop').onclick=()=>csSaveCurrentScene().then(()=>csRenderSceneWorkspace()).catch(e=>setStatus('Save failed: '+e.message));
+  document.getElementById('csSceneShot').onclick=()=>csSaveCapture('screenshot',csCapturePng({scale:settings.shotScale||2}),{scale:settings.shotScale||2,background:settings.bgMode,scene:true});
+  document.getElementById('csSceneResetFull').onclick=()=>{if(confirm('Reset the complete scene setup?')){for(const k of CS_FACE_KEYS)csDisposeFaceMedia(k);if(skyTex){gl.deleteTexture(skyTex);skyTex=null;}sceneState=csDefaultScene();sceneState.enabled=true;csPersistScene();renderRight();csRenderSceneWorkspace();}};
+  document.getElementById('csSceneOpenLibrary').onclick=()=>csOpenWorkspace('library');
+  let scenes=[];try{scenes=(await csAllLibraryRecords()).filter(r=>r.type==='scene');}catch{}
+  if(csWorkspaceState.active!=='scene')return;
+  const rail=document.getElementById('csSceneRail'); rail.innerHTML='';
+  if(!scenes.length){rail.innerHTML=`<div class="cs-empty-gallery" style="min-width:360px;min-height:128px">${csIcon('scene')}<b>No saved scenes yet</b><span>Save the current stage to create the first reusable scene preset.</span></div>`;return;}
+  for(const rec of scenes){const card=document.createElement('article');card.className='cs-scene-preset';card.appendChild(csRecordPreview(rec));card.insertAdjacentHTML('beforeend',`<div class="caption"><b title="${csEscape(rec.name)}">${csEscape(rec.name)}</b><span>${csDate(rec.createdAt).split(',')[0]}</span></div>`);card.onclick=()=>csApplyLibraryRecord(rec).then(()=>csRenderSceneWorkspace()).catch(e=>setStatus('Apply failed: '+e.message));rail.appendChild(card);}
+}
+window.__csWorkspaceRefresh=()=>{ if(csWorkspaceState.active==='library') csRenderLibraryWorkspace(); else if(csWorkspaceState.active==='scene') csRenderSceneWorkspace(); };
+document.getElementById('btnLibraryWorkspace').onclick=()=>csWorkspaceState.active==='library'?csCloseWorkspace():csOpenWorkspace('library');
+document.getElementById('btnSceneStudioWorkspace').onclick=()=>csWorkspaceState.active==='scene'?csCloseWorkspace():csOpenWorkspace('scene');
+document.getElementById('csWorkspaceClose').onclick=csCloseWorkspace;
+csWorkspaceEl.querySelectorAll('[data-workspace]').forEach(b=>b.onclick=()=>csOpenWorkspace(b.dataset.workspace));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&csWorkspaceState.active)csCloseWorkspace();});
+
 renderLeft(); renderRight();
 
 </script>

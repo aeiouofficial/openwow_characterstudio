@@ -1,4 +1,4 @@
-# CHARACTER STUDIO - made by AEiOU — API reference (v3.2.1)
+# CHARACTER STUDIO - made by AEiOU — API reference (v3.4.0)
 
 Everything below is available on `window.StudioAPI` in `demo/character-studio.html`.
 The same surface is exposed to agents via the MCP server (`qa/mcp-server.mjs`) and
@@ -21,7 +21,10 @@ usable headlessly (`?headless=1`, no auto-tour, automation-friendly).
 | `saveGearset(name)` / `applyGearsetByName(name)` | Gearsets (localStorage) |
 | `setViewMode(mode)` | `texture` \| `matid` \| `groups` |
 
-## Bundle and source-library API (v3.2.1)
+## Dedicated workspaces (v3.4.0)
+The header **Library** and **Scene Studio** buttons open full-width, keyboard-accessible workspaces. The Library adds searchable visual browsing and record actions on top of `StudioAPI.library`; Scene Studio operates on the existing `StudioAPI.scene` state while moving the real renderer canvas into the workspace.
+
+## Bundle and source-library API (v3.4.0)
 | Function | Description |
 |---|---|
 | `loadFile(file)` | Load one GLB/GLTF file. |
@@ -68,7 +71,7 @@ texture (`texelFetch`), so joint count is unlimited.
 - `startTour() / endTour() / openHelp()` — onboarding + in-app docs (auto-start suppressed for `navigator.webdriver` and `?headless=1`)
 
 ## Formats
-- **Appearance (v2)**: `{version:2, engine:'character-studio_v3.2.1', model, headMorphs, bodyMorphs, geosetVisibility, colors, equippedTextures, baseTexture, textureFolder, viewMode, geosetTextureTransforms?, materialTextureOverrides, animationIndex}`
+- **Appearance (v2)**: `{version:2, engine:'character-studio_v3.4.0', model, headMorphs, bodyMorphs, geosetVisibility, colors, equippedTextures, baseTexture, textureFolder, viewMode, geosetTextureTransforms?, materialTextureOverrides, animationIndex}`
 - **Project**: `{format:'character-studio/project', version:1, project:{…}}` (`.studio`)
 - **Palette**: `{format:'character-studio/palette', version:1, colors, exposure, eyeGlow}`
 - **Share**: `{format:'character-studio/share', version:1, appearance}` — deflate-raw + base64url in the URL fragment

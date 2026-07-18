@@ -205,7 +205,7 @@ test('Firefox range styling and per-subset controls ship in the UI',()=>{
   assert.match(html,/Shift-drag moves the mask pair/);
 });
 
-/* ───────── v3.3.0 — backdrop & chroma, capture, scene studio, asset library ───────── */
+/* ───────── v3.4.0 — backdrop, capture, dedicated scene studio, visual asset library ───────── */
 ctx.Date=Date;
 for(const name of ['csChromaPresetColor','csResolveBackground','csCoverScale','orthographic','spriteSheetYaws','csNormalizeFx','csDefaultScene','csNormalizeScene','validateLibraryRecord'])
   vm.runInContext(extract(name),ctx);
@@ -307,19 +307,26 @@ test('csCoverScale crops (never letterboxes) for cover-fit backdrops',()=>{
   assert.deepEqual(Array.from(call('csCoverScale(NaN,-1)')),[1,1]);
 });
 
-test('v3.3.0 features ship in the HTML (context alpha, panels, shaders, state)',()=>{
+test('v3.4.0 workspaces and prior scene/capture features ship in the HTML',()=>{
   assert.match(html,/alpha:true,premultipliedAlpha:false,preserveDrawingBuffer:true/);
   assert.match(html,/Scene Studio \(Chroma Room\)/);
   assert.match(html,/'Asset Library'/);
   assert.match(html,/'Capture & Export'/);
   assert.match(html,/'Backdrop & Post FX'/);
+  assert.match(html,/id="btnLibraryWorkspace"/);
+  assert.match(html,/id="btnSceneStudioWorkspace"/);
+  assert.match(html,/id="workspaceLayer"/);
+  assert.match(html,/id="csSceneCanvasDock"/);
+  assert.match(html,/data-view="grid"/);
+  assert.match(html,/previewBlob/);
+  assert.match(html,/csLibrarySearchTimer/);
   assert.match(html,/data-bgmode/);
   assert.match(html,/uMarkerColor/);      // tracking-point shader
   assert.match(html,/uPosterize/);        // post FX shader
   assert.match(html,/csShotAlpha/);       // transparent PNG button
   assert.match(html,/#gl\.cs-alpha/);     // transparency checkerboard CSS
-  assert.match(html,/character-studio_v3\.3\.0/);
+  assert.match(html,/character-studio_v3\.4\.0/);
   assert.match(html,/a\.background=/);    // appearance JSON carries backdrop state
   assert.match(html,/a\.scene=/);         // appearance JSON carries scene state
-  assert.doesNotMatch(html,/version='3\.2\.1'/);
+  assert.doesNotMatch(html,/window\.StudioAPI\.version='3\.3\.0'/);
 });

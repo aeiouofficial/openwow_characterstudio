@@ -1,27 +1,40 @@
-# Scene Studio, Backdrops & Capture — v3.3.0
+# Scene Studio, Backdrops & Capture — v3.4.0
+
+## Dedicated Scene Studio workspace
+Open **Scene Studio** from the top toolbar. The workspace reparents the actual live WebGL canvas into a focused stage editor, so orbit, zoom, animation, model updates, and captures remain the same real scene rather than a duplicate preview. Closing the workspace returns the canvas to the standard editor.
+
+The workspace includes:
+- A large live stage preview with snapshot and save controls.
+- Room enable/disable, green/blue chroma selection, tracking markers, marker density/strength/size, room size, and contact-shadow controls.
+- Skymap upload/clear controls.
+- Per-face media controls for north, south, east, west, floor, and ceiling.
+- A horizontal gallery of saved scene presets; selecting a card applies it immediately to the live stage.
+- Direct switching to the full Asset Library.
+
+Saved scenes share the same IndexedDB collection as the Library and include a live PNG thumbnail when supported by the browser.
 
 ## Backdrop & Post FX (left panel)
-- **Background mode**: Studio, Chroma Green (#00B140), Pure Green, Chroma Blue (#0047BB), Pure Blue, Chroma Magenta, 18% Gray, 50% Gray, Custom color, Gradient (two colors), Image (flat, cover-fit), Transparent (checkerboard preview, true alpha).
-- **Pixelate** 1–16: renders at reduced resolution, nearest-neighbor upscale.
-- **Posterize** 0/2–32 levels + **Dither** (4×4 Bayer) for retro looks.
-- **Outline**: depth-edge pass.
-- **FOV / Orthographic**: ortho is recommended for sprite baking. Note: the sky backdrop keeps perspective-style rays in ortho (cosmetic).
-- FX render via an offscreen framebuffer; MSAA is bypassed while any FX is active.
+- **Background mode:** Studio, Chroma Green (`#00B140`), Pure Green, Chroma Blue (`#0047BB`), Pure Blue, Chroma Magenta, 18% Gray, 50% Gray, Custom color, Gradient, Image, or Transparent.
+- **Pixelate** 1–16: renders at reduced resolution with nearest-neighbor upscale.
+- **Posterize** 0/2–32 levels with optional 4×4 Bayer dithering.
+- **Outline:** depth-edge pass.
+- **FOV / Orthographic:** orthographic is recommended for sprite baking.
+- FX render through an offscreen framebuffer; MSAA is bypassed while an FX pass is active.
 
 ## Capture & Export (right panel)
 - **Screenshot** at 1×/2×/4× supersampling.
-- **Transparent PNG**: exports with a real alpha channel — no keying required.
-- **Sprite sheet**: 8 directions (45° steps), single row, JSON meta sidecar, transparent or current background.
+- **Transparent PNG** with a true alpha channel.
+- **Sprite sheet:** eight directions at 45° intervals, single row, JSON metadata sidecar, transparent or current background.
 
-## Scene Studio (Chroma Room)
-- Enable the room, pick **green** or **blue**; walls, floor and ceiling render in broadcast chroma.
-- **Tracking markers**: cross pattern per face, auto-contrast tint, toggleable — for camera tracking in post.
-- **Skymap**: equirect image drawn as the backdrop.
-- **Per-face media**: assign an image or a looping muted video to any wall, the floor, or the ceiling. Media files live in the session; the persisted scene JSON remembers assignments by file name, so re-pick files after a reload.
-- **Room sizing**: the room always encloses the camera (auto-grows on zoom-out). Faces the camera moves outside of are hidden automatically so the view is never walled off.
-- **Floor**: with a model loaded the floor sits at the model's feet; empty room floor sits at standing height below the orbit target (prevents near-plane clipping).
-- **Contact shadow**: soft radial blob under the model (not raytraced), toggleable.
-- Scene state persists in `localStorage` (`cs_scene`) and in appearance JSON / share links.
+## Chroma room behavior
+- Walls, floor, and ceiling render in broadcast green or blue chroma.
+- Tracking crosses use an automatically contrasting tint and can be toggled.
+- An equirectangular skymap can render behind the room.
+- Each face can independently use chroma, image, video, or off. Media files are session-local; saved JSON remembers filenames and requires the files to be picked again after reload.
+- The room grows to keep the camera enclosed and hides any face the camera crosses.
+- With a model loaded, the floor tracks the model’s feet; an empty room uses a stable standing-height floor.
+- The optional contact shadow is a soft projected blob, not a ray-traced shadow.
+- Scene state persists in `localStorage` (`cs_scene`) and in appearance JSON/share links.
 
 ## StudioAPI
 `setBackground(mode,color,color2)`, `getBackground()`, `setFx({pixelate,posterize,dither,outline})`, `getFx()`, `setProjection({ortho,fov})`, `captureScreenshot({scale,transparent})`, `renderSpriteSheet({directions,size,transparent})`, `scene.{state,set,enable,setChroma,setMarkers,setFaceMedia}`.
