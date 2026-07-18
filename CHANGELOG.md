@@ -1,5 +1,38 @@
 # Changelog
 
+## 3.3.0 — 2026-07-18
+
+### Backdrop & Post FX
+- Added 12 background modes: Studio (legacy dark blue + brightness), Chroma Green `#00B140`, Pure Green `#00FF00`, Chroma Blue `#0047BB`, Pure Blue `#0000FF`, Chroma Magenta `#FF00FF`, 18% Gray, 50% Gray, custom color picker, two-color vertical gradient, flat/equirect backdrop image, and Transparency (live checkerboard).
+- GL context now uses `alpha: true` with non-premultiplied output; the Transparency mode shows a true alpha checkerboard behind the model.
+- Added post FX: Pixelate/Rasterize (1–16 px), Posterize (2–32 levels) with optional ordered Bayer dithering, and a depth-edge Outline pass. FX render through an offscreen target; MSAA is bypassed while FX are active.
+- Added FOV slider (20–90°) and Orthographic projection toggle (sprite-friendly). The sky backdrop uses perspective-style rays even in ortho — cosmetic only.
+
+### Capture & Export
+- Screenshot at 1×/2×/4× supersampling to PNG.
+- Transparent PNG export (true alpha, no chroma keying needed).
+- 8-direction sprite-sheet renderer (single row, fixed yaw steps, transparent or current background) with a JSON meta sidecar.
+
+### Scene Studio (Chroma Room)
+- Full recording-studio room around the character: floor, ceiling and four walls in Chroma Green or Chroma Blue.
+- Tracking markers (cross pattern) can be toggled per scene; marker color is an auto-contrast tint of the chroma color.
+- Skymap (equirect image) can be enabled as the backdrop outside/instead of the room.
+- Any face (walls, floor, ceiling) can individually show an image or a video (videos loop muted). Media files are session-only: persisted scene JSON restores face assignments by name but files must be re-picked after reload.
+- Room auto-grows to always enclose the camera; faces the camera moves outside of are hidden automatically (dollhouse behavior) so the set never blocks the view.
+- With no model loaded the floor sits at standing height below the orbit target to avoid near-plane clipping; with a model it sits exactly at the model's feet.
+- Contact shadow (soft radial blob, not raytraced) under the model on the floor, toggleable.
+
+### Asset Library
+- Workspace-own asset library backed by IndexedDB: save appearances and gearsets, list, re-apply, delete.
+- Every item is exportable any time: single-item ZIP or full-library ZIP with a `SHA256SUMS` manifest.
+- When running through `server.mjs`, saves are mirrored to `workspace/library/` on disk and served back via `/api/library`.
+- Optional auto-save toggle mirrors every saved gearset into the library.
+
+### State & API
+- Background, FX, projection, and scene state are stored in appearance JSON and share links.
+- StudioAPI additions: `setBackground/getBackground`, `setFx/getFx`, `setProjection`, `captureScreenshot`, `renderSpriteSheet`, `scene.*`, `library.*`.
+- 9 new regression tests (28 total: 27 pass, 1 skipped pack fixture).
+
 ## 3.2.1 — 2026-07-18
 
 - Rebuilt the right-side **Texture Align & Warp** controls with fully themed buttons, a readable 2×2 scope selector, a larger UV preview, live-state feedback, and Firefox-specific range styling.

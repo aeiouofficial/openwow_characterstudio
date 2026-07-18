@@ -131,6 +131,20 @@ body.headless #vp{grid-column:1;grid-row:1}
 #timeline .tlab{font:11px var(--mono);color:var(--muted);min-width:120px;text-align:right}
 #timeline button.on{background:linear-gradient(180deg,#5b96e6,#3c7bd4 55%,#2f66b6);color:#fff;border-color:#1e4477}
 body.headless #timeline{display:none!important}
+/* v3.3.0 — backdrop, scene studio, asset library */
+#gl.cs-alpha{background-image:linear-gradient(45deg,#2a2d34 25%,transparent 25%,transparent 75%,#2a2d34 75%),linear-gradient(45deg,#2a2d34 25%,#1c1f24 25%,#1c1f24 75%,#2a2d34 75%);background-size:24px 24px;background-position:0 0,12px 12px}
+.cs-btnrow{display:flex;gap:6px;flex-wrap:wrap}
+.cs-btnrow button{flex:1;min-width:0;white-space:nowrap}
+.cs-checkrow label.cs-check{display:flex;align-items:center;gap:6px;width:100%;cursor:pointer}
+.cs-facerow select{max-width:92px}
+.cs-facerow input[type=file]{min-width:0;font-size:10px}
+.cs-liblist{display:flex;flex-direction:column;gap:2px;max-height:220px;overflow:auto;margin-top:4px}
+.cs-librow{display:flex;align-items:center;gap:6px;padding:3px 6px;border-radius:4px;background:rgba(255,255,255,.03)}
+.cs-librow:hover{background:rgba(255,255,255,.07)}
+.cs-libtype{font-size:9px;text-transform:uppercase;letter-spacing:.4px;opacity:.65;min-width:58px}
+.cs-libname{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
+.cs-librow button{padding:1px 6px;font-size:11px}
+.cs-librow button[disabled]{opacity:.3}
 </style>
 </head>
 <body>
@@ -175,7 +189,7 @@ body.headless #timeline{display:none!important}
 </div>
 <script type="module">
 /**
- * Character Studio v3.2.1 — pure WebGL2
+ * Character Studio v3.3.0 — pure WebGL2
  * - Load GLB/GLTF (+ .bj if glTF magic)
  * - Geoset visibility toggles (all mesh nodes)
  * - Head sculpt + gear-safe body sculpt
@@ -422,7 +436,7 @@ async function resolveGltfBuffer(json,companionFiles){
 
 // ═══════════ WebGL renderer ═══════════
 const canvas=document.getElementById('gl');
-const gl=canvas.getContext('webgl2',{antialias:true,alpha:false,preserveDrawingBuffer:true});
+const gl=canvas.getContext('webgl2',{antialias:true,alpha:true,premultipliedAlpha:false,preserveDrawingBuffer:true});
 if(!gl) alert('WebGL2 required');
 
 const VS=`#version 300 es
@@ -533,7 +547,7 @@ void main(){
   c+=amb*bc.rgb*(1.0-metal)*ao + amb*Fa*(1.0-rough)*ao;
   vec3 em=uEmisF; if(uHasEmis>0.5) em*=srgb2lin(texture(uEmis,sampleUv).rgb);
   c+=em;
-  o=vec4(pow(aces(c),vec3(1.0/2.2)),bc.a);
+  o=vec4(pow(aces(c),vec3(1.0/2.2)),1.0);
 }`;
 function sh(t,s){const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);if(!gl.getShaderParameter(x,gl.COMPILE_STATUS))console.error(gl.getShaderInfoLog(x));return x;}
 const prog=gl.createProgram();
@@ -1206,24 +1220,26 @@ window.addEventListener('resize',resize); resize();
 const proj=new Float32Array(16), view=new Float32Array(16), mvp=new Float32Array(16), nmat=new Float32Array(16);
 let last=performance.now(), frames=0, lastFps=last;
 
-function frame(now){
+function csRenderFrame(now){
   const dt=Math.min(0.05,(now-last)/1000); last=now;
   if (dirtyMorph && model) { applyMorphsToDrawables(); dirtyMorph=false; }
   updateAnimation(dt);
+  csBeginFrameFx();
 
   gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE);
-  {const b=(settings.bg??1); gl.clearColor(0.04*b,0.055*b,0.08*b,1);} gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+  csApplyViewportClear();
+
+  targetY = model ? (model.yMin+model.yMax)*0.5 + panY : panY;
+  if (model && settings.autoRotate) yaw += dt*(settings.rotateSpeed||0.5);
+  const aspect=canvas.width/Math.max(1,canvas.height);
+  csBuildProjection(proj,aspect);
+  const cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
+  const ex=dist*cy*cp, ey=targetY+dist*sp, ez=dist*sy*cp;
+  lookAt(view,ex,ey,ez,0,targetY,0);
+  mul(mvp,proj,view); invertUpper(nmat,view);
+  csDrawBackdrop(view);
 
   if (model) {
-    targetY = (model.yMin+model.yMax)*0.5 + panY;
-    if (settings.autoRotate) yaw += dt*(settings.rotateSpeed||0.5);
-    const aspect=canvas.width/Math.max(1,canvas.height);
-    perspective(proj,(settings.fov||40)*Math.PI/180,aspect,0.05,50);
-    const cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
-    const ex=dist*cy*cp, ey=targetY+dist*sp, ez=dist*sy*cp;
-    lookAt(view,ex,ey,ez,0,targetY,0);
-    mul(mvp,proj,view); invertUpper(nmat,view);
-
     gl.useProgram(prog);
     gl.uniformMatrix4fv(U.mvp,false,mvp);
     gl.uniformMatrix4fv(U.nmat,false,nmat);
@@ -1271,10 +1287,12 @@ function frame(now){
     }
     gl.bindVertexArray(null);
   }
+  csDrawScene(now,dt);
+  csEndFrameFx();
 
   frames++; if(now-lastFps>500){document.getElementById('hudFps').textContent=Math.round(frames*1000/(now-lastFps))+' fps';frames=0;lastFps=now;}
-  requestAnimationFrame(frame);
 }
+function frame(now){ csRenderFrame(now); requestAnimationFrame(frame); }
 requestAnimationFrame(frame);
 
 // ═══════════ UI ═══════════
@@ -1877,7 +1895,7 @@ function renderRight(){
     const br=document.createElement('div'); br.className='btnrow';
     br.innerHTML=`<button type="button" id="gsExp">Export JSON</button><button type="button" id="gsImp">Import JSON</button>`;
     c.appendChild(br);
-    br.querySelector('#gsExp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({version:1,engine:'character-studio_v3.2.1',gearsets},null,2)],{type:'application/json'}));a.download='gearsets.json';a.click();};
+    br.querySelector('#gsExp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({version:1,engine:'character-studio_v3.3.0',gearsets},null,2)],{type:'application/json'}));a.download='gearsets.json';a.click();};
     br.querySelector('#gsImp').onclick=()=>fileGearset.click();
     c.insertAdjacentHTML('beforeend','<div class="hint">Gearsets store slot variants + texture names. Textures resolve from the loaded texture library. Saved locally and exportable as JSON for game wiring.</div>');
   }
@@ -1896,7 +1914,7 @@ function body_appendSlotStatus(card,group){
 }
 function getAppearance(){
   const geosetVisibility={}; if(model) model.geosets.forEach(g=>geosetVisibility[g.name]=g.visible);
-  return {version:2,engine:'character-studio_v3.2.1',model:model?.fileName||null,
+  return {version:2,engine:'character-studio_v3.3.0',model:model?.fileName||null,
     headMorphs:{...headVals},bodyMorphs:{...bodyVals},geosetVisibility,colors:{...colors},
     equippedTextures:{...slotTexChoice},baseTexture:baseTextureName,textureFolder:texFolderName||null,viewMode,
     geosetTextureTransforms:compactUvTransforms(),
@@ -2051,7 +2069,7 @@ renderRight=function(){ _renderRightV15(); appendPackSection(); };
 
 // ── StudioAPI: scriptable surface for agents / automation / headless ──
 const StudioAPI={
-  version:'3.2.1',
+  version:'3.3.0',
   brand:'CHARACTER STUDIO - made by AEiOU',
   loadFile:f=>loadModelFromFile(f),
   loadPack:f=>loadPackFromZip(f),
@@ -2081,7 +2099,7 @@ window.StudioAPI=StudioAPI;
 // ── headless mode: ?headless=1 hides all chrome, StudioAPI drives everything ──
 if(new URLSearchParams(location.search).get('headless')==='1') document.body.classList.add('headless');
 
-document.dispatchEvent(new CustomEvent('studio:ready',{detail:{version:'3.2.1',brand:StudioAPI.brand,headless:document.body.classList.contains('headless')}}));
+document.dispatchEvent(new CustomEvent('studio:ready',{detail:{version:'3.3.0',brand:StudioAPI.brand,headless:document.body.classList.contains('headless')}}));
 window.__studioReady=true;
 
 renderLeft(); renderRight();
@@ -2151,7 +2169,7 @@ Object.assign(window.StudioAPI,{
     boneCount:(model&&model.skin)?model.skin.joints.length:0,
     poseHash:(model&&model.skin)?Array.from(model.skin.boneMats.slice(0,128)).reduce((h,x)=>(h*31+Math.round(x*1000))|0,0):0 }),
 });
-window.StudioAPI.version='3.2.1';
+window.StudioAPI.version='3.3.0';
 
 
 /* ═══════════ v3.0 Tier 2 — undo/redo · projects · profiles · texture layers · pack authoring ═══════════ */
@@ -2330,7 +2348,7 @@ function idb(){
   });
 }
 function projectRecord(name){
-  return { name, savedAt:new Date().toISOString(), engine:'character-studio_v3.2.1',
+  return { name, savedAt:new Date().toISOString(), engine:'character-studio_v3.3.0',
     appearance:(model?getAppearance():null), gearsets:JSON.parse(JSON.stringify(gearsets)),
     settings:{...settings}, texLayers:JSON.parse(JSON.stringify(texLayers)),
     modelName:(window._modelFileRef&&window._modelFileRef.name)||null,
@@ -2471,7 +2489,7 @@ async function bitmapPng(bmp){
   return canvasPng(cv);
 }
 function genManifest(name,version){
-  return { name, version, generated:new Date().toISOString(), engine:'character-studio_v3.2.1', profile:activeProfile.id,
+  return { name, version, generated:new Date().toISOString(), engine:'character-studio_v3.3.0', profile:activeProfile.id,
     model: model?{ name:(window._modelFileRef&&window._modelFileRef.name)||null, geosets:model.geosets.length,
       bones:model.skin?model.skin.joints.length:0, animations:model.animations.length }:null,
     geosetGroups: model?[...new Set(model.geosets.map(g=>g.group))]:[],
@@ -2485,7 +2503,7 @@ async function buildPack(opts){
   const enc=new TextEncoder();
   const files=[];
   const add=(n,data)=>files.push({name:`${base}/${n}`,data});
-  add('version.txt',enc.encode(`${base}\nengine: character-studio_v3.2.1\ngenerated: ${new Date().toISOString()}\n`));
+  add('version.txt',enc.encode(`${base}\nengine: character-studio_v3.3.0\ngenerated: ${new Date().toISOString()}\n`));
   const manifest=genManifest(name,version);
   const v=validateManifest(manifest);
   if(!v.ok) throw new Error('generated manifest invalid: '+v.errors.join('; '));
@@ -2516,7 +2534,7 @@ async function buildPack(opts){
     add('preview/preview.png',u8);
   }
   add('docs/integration_notes.txt',enc.encode(
-`${base}\nAuthored with CHARACTER STUDIO - made by AEiOU (v3.2.1).\n\nLayout:\n  customization/customization_manifest.json  machine-readable manifest (validated)\n  appearance.json                             portable appearance state\n  geoset_list.txt                             geoset name / group / default visibility\n  textures/                                   texture library + baked atlases (PNG)\n  models/                                     source model (optional)\n  preview/preview.png                         viewport render\n  SHA256SUMS.txt                              integrity (sha256sum -c compatible)\n`));
+`${base}\nAuthored with CHARACTER STUDIO - made by AEiOU (v3.3.0).\n\nLayout:\n  customization/customization_manifest.json  machine-readable manifest (validated)\n  appearance.json                             portable appearance state\n  geoset_list.txt                             geoset name / group / default visibility\n  textures/                                   texture library + baked atlases (PNG)\n  models/                                     source model (optional)\n  preview/preview.png                         viewport render\n  SHA256SUMS.txt                              integrity (sha256sum -c compatible)\n`));
   const sums=[];
   for(const f of files) sums.push(`${await sha256Hex(f.data)}  ${f.name}`);
   files.push({name:`${base}/SHA256SUMS.txt`,data:enc.encode(sums.join('\n')+'\n')});
@@ -2622,14 +2640,14 @@ function exportGlbBytes(opts={}){
   }
   const uvMeta=compactUvTransforms();
   for(const [name,cfg] of Object.entries(uvMeta)){const g=model.geosets.find(x=>x.name===name);if(!g)continue;const nd=json.nodes[g.nodeIndex];nd.extras={...(nd.extras||{}),characterStudioTextureTransform:cfg};}
-  json.asset=json.asset||{};json.asset.extras={...(json.asset.extras||{}),characterStudio:{version:'3.2.1',geosetTextureTransforms:uvMeta}};
+  json.asset=json.asset||{};json.asset.extras={...(json.asset.extras||{}),characterStudio:{version:'3.3.0',geosetTextureTransforms:uvMeta}};
   if(!includeHidden){
     for(const g of model.geosets){
       if(!g.visible&&json.nodes[g.nodeIndex]&&json.nodes[g.nodeIndex].mesh!=null){ delete json.nodes[g.nodeIndex].mesh; strippedNodes++; }
     }
   }
   json.asset=json.asset||{};
-  json.asset.generator='CHARACTER STUDIO - made by AEiOU (v3.2.1)';
+  json.asset.generator='CHARACTER STUDIO - made by AEiOU (v3.3.0)';
   const enc=new TextEncoder();
   let jbytes=enc.encode(JSON.stringify(json));
   const jpad=(4-(jbytes.length%4))%4;
@@ -3389,6 +3407,839 @@ Object.assign(window.StudioAPI,{
   refreshAssetSources:refreshSourceBridge,
   listBrowserSourceAssets:(kind)=>[...(browserSourceFiles[kind]||new Map()).keys()],
 });
+
+
+/* ═══════════ v3.3.0 — Backdrop & Chroma system · Post FX (rasterize/posterize/outline) · Capture suite · Scene Studio · Asset Library ═══════════ */
+
+/* ── pure helpers (unit-tested from the shipped HTML) ── */
+function csChromaPresetColor(mode){
+  return ({chromaGreen:'#00B140',chromaGreenPure:'#00FF00',chromaBlue:'#0047BB',chromaBluePure:'#0000FF',chromaMagenta:'#FF00FF',gray18:'#767676',gray50:'#808080'})[mode]||null;
+}
+function csResolveBackground(mode,color,color2,brightness){
+  mode=mode||'studio';
+  if(mode==='transparent') return {type:'transparent',rgba:[0,0,0,0]};
+  if(mode==='studio'){ const b=Number.isFinite(+brightness)?+brightness:1; return {type:'solid',rgba:[0.04*b,0.055*b,0.08*b,1]}; }
+  if(mode==='gradient') return {type:'gradient',rgba:[...hexRgb(color||'#20242c'),1],rgba2:[...hexRgb(color2||'#06080c'),1]};
+  if(mode==='image') return {type:'image',rgba:[...hexRgb(color||'#101318'),1]};
+  const preset=csChromaPresetColor(mode);
+  if(preset) return {type:'solid',rgba:[...hexRgb(preset),1]};
+  return {type:'solid',rgba:[...hexRgb(color||'#20242c'),1]};
+}
+function csCoverScale(imgAspect,viewAspect){
+  if(!Number.isFinite(imgAspect)||imgAspect<=0) imgAspect=1;
+  if(!Number.isFinite(viewAspect)||viewAspect<=0) viewAspect=1;
+  return viewAspect>=imgAspect?[1,imgAspect/viewAspect]:[viewAspect/imgAspect,1];
+}
+function orthographic(out,halfW,halfH,near,far){
+  out.fill(0);
+  out[0]=1/halfW; out[5]=1/halfH; out[10]=2/(near-far); out[14]=(far+near)/(near-far); out[15]=1;
+}
+function spriteSheetYaws(count,base=0){
+  count=Math.max(1,Math.round(Number(count)||1));
+  const out=[]; for(let i=0;i<count;i++) out.push(base+i*(Math.PI*2/count));
+  return out;
+}
+function csNormalizeFx(src){
+  src=src||{};
+  const clamp=(v,lo,hi,d)=>{const n=Number(v);return Number.isFinite(n)?Math.min(hi,Math.max(lo,n)):d;};
+  const pixelate=Math.round(clamp(src.fxPixelate,1,16,1));
+  let posterize=Math.round(clamp(src.fxPosterize,0,64,0));
+  if(posterize===1) posterize=0; // 1 level is meaningless — treat as off
+  return {
+    pixelate, posterize,
+    dither:!!src.fxDither,
+    outline:!!src.fxOutline,
+    outlineColor:(typeof src.fxOutlineColor==='string'&&/^#[0-9a-f]{3,8}$/i.test(src.fxOutlineColor))?src.fxOutlineColor:'#05070a',
+    outlineThreshold:clamp(src.fxOutlineThreshold,0.0002,0.05,0.002),
+  };
+}
+function csDefaultScene(){
+  return {
+    enabled:false, chroma:'green', markers:true, markerTiles:6, markerStrength:0.55,
+    sizeMul:1.5, shadow:true,
+    sky:{enabled:false,name:null},
+    faces:{
+      floor:{media:'chroma',name:null}, ceiling:{media:'chroma',name:null},
+      north:{media:'chroma',name:null}, south:{media:'chroma',name:null},
+      west:{media:'chroma',name:null},  east:{media:'chroma',name:null},
+    },
+  };
+}
+function csNormalizeScene(s){
+  const d=csDefaultScene(); s=(s&&typeof s==='object')?s:{};
+  const out={...d,...s};
+  out.enabled=!!out.enabled;
+  out.chroma=(out.chroma==='blue')?'blue':'green';
+  out.markers=!!out.markers;
+  out.shadow=!!out.shadow;
+  const num=(v,lo,hi,dv)=>{const n=Number(v);return Number.isFinite(n)?Math.min(hi,Math.max(lo,n)):dv;};
+  out.markerTiles=num(out.markerTiles,2,20,d.markerTiles);
+  out.markerStrength=num(out.markerStrength,0,1,d.markerStrength);
+  out.sizeMul=num(out.sizeMul,1.05,4,d.sizeMul);
+  const skySrc=(s.sky&&typeof s.sky==='object')?s.sky:{};
+  out.sky={enabled:!!skySrc.enabled,name:typeof skySrc.name==='string'?skySrc.name:null};
+  const MEDIA=['chroma','image','video','off'];
+  out.faces={};
+  for(const k of Object.keys(d.faces)){
+    const f=(s.faces&&typeof s.faces[k]==='object'&&s.faces[k])||{};
+    out.faces[k]={media:MEDIA.includes(f.media)?f.media:'chroma',name:typeof f.name==='string'?f.name:null};
+  }
+  return out;
+}
+function validateLibraryRecord(rec){
+  const errors=[];
+  const TYPES=['appearance','scene','gearset','screenshot','spritesheet','turntable','pack','texture','json','file'];
+  if(!rec||typeof rec!=='object'){ errors.push('record must be an object'); return {ok:false,errors}; }
+  if(typeof rec.id!=='string'||rec.id.length<4) errors.push('id must be a string of at least 4 chars');
+  if(!TYPES.includes(rec.type)) errors.push('type must be one of: '+TYPES.join(', '));
+  if(typeof rec.name!=='string'||!rec.name.trim()) errors.push('name must be a non-empty string');
+  if(!rec.createdAt||Number.isNaN(Date.parse(rec.createdAt))) errors.push('createdAt must be an ISO date string');
+  if(rec.json==null&&rec.blob==null) errors.push('record needs a json or blob payload');
+  if(rec.json!=null&&typeof rec.json!=='string') errors.push('json payload must be a string');
+  return {ok:!errors.length,errors};
+}
+
+/* ── settings defaults (fill missing keys only; user-persisted values win) ── */
+(function csEnsureSettings(){
+  const d={ bgMode:'studio', bgColor:'#20242c', bgColor2:'#06080c',
+    fxPixelate:1, fxPosterize:0, fxDither:false, fxOutline:false, fxOutlineColor:'#05070a', fxOutlineThreshold:0.002,
+    ortho:false, groundPlane:false, shotScale:2, libAutoSave:true };
+  for(const k of Object.keys(d)) if(settings[k]===undefined) settings[k]=d[k];
+})();
+
+let sceneState=csNormalizeScene((()=>{try{return JSON.parse(localStorage.getItem('cs_scene')||'null');}catch{return null;}})());
+function csPersistScene(){ try{ localStorage.setItem('cs_scene',JSON.stringify(sceneState)); }catch{} }
+const sceneMedia={}; // faceKey -> {kind:'image'|'video', tex, video?, name, aspect}
+let skyTex=null, skyAspect=1;
+let bgImageTex=null, bgImageAspect=1, bgImageName=null;
+
+/* ── viewport clear (replaces the fixed studio clear color) ── */
+function csApplyViewportClear(){
+  const bg=csResolveBackground(settings.bgMode,settings.bgColor,settings.bgColor2,settings.bg??1);
+  try{ canvas.classList.toggle('cs-alpha',bg.type==='transparent'); }catch{}
+  if(bg.type==='transparent') gl.clearColor(0,0,0,0);
+  else gl.clearColor(bg.rgba[0],bg.rgba[1],bg.rgba[2],1);
+  gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+}
+
+/* ── projection: perspective or orthographic (framing matched via dist·tan(fov/2)) ── */
+function csBuildProjection(out,aspect){
+  if(settings.ortho){
+    const halfH=Math.tan(((settings.fov||40)*Math.PI/180)/2)*dist;
+    orthographic(out,halfH*aspect,halfH,0.05,50);
+  } else {
+    perspective(out,(settings.fov||40)*Math.PI/180,aspect,0.05,50);
+  }
+}
+
+/* ── media texture helpers ── */
+function csCreateMediaTex(){
+  const t=gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D,t);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  return t;
+}
+async function csLoadImageTex(file){
+  const bmp=await createImageBitmap(file);
+  const tex=csCreateMediaTex();
+  gl.bindTexture(gl.TEXTURE_2D,tex);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,0);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,bmp);
+  return {tex,aspect:bmp.width/Math.max(1,bmp.height),bmp};
+}
+function csLoadVideo(file){
+  return new Promise((res,rej)=>{
+    const video=document.createElement('video');
+    video.muted=true; video.loop=true; video.playsInline=true; video.autoplay=true;
+    video.src=URL.createObjectURL(file);
+    video.onloadeddata=()=>{ video.play().catch(()=>{}); res({video,tex:csCreateMediaTex(),aspect:(video.videoWidth||16)/Math.max(1,video.videoHeight||9)}); };
+    video.onerror=()=>rej(new Error('Video could not be decoded: '+file.name));
+  });
+}
+function csDisposeFaceMedia(face){
+  const m=sceneMedia[face]; if(!m) return;
+  try{ if(m.tex) gl.deleteTexture(m.tex); }catch{}
+  try{ if(m.video){ m.video.pause(); URL.revokeObjectURL(m.video.src); } }catch{}
+  delete sceneMedia[face];
+}
+
+/* ── backdrop pass: gradient · cover-fit image · equirect skymap (fullscreen triangle) ── */
+let csBdProg=null,csBdU=null;
+function csEnsureBackdropProg(){
+  if(csBdProg) return;
+  const vs=`#version 300 es\nconst vec2 P[3]=vec2[3](vec2(-1.,-1.),vec2(3.,-1.),vec2(-1.,3.));\nout vec2 vNdc;\nvoid main(){ vNdc=P[gl_VertexID]; gl_Position=vec4(P[gl_VertexID],0.0,1.0); }`;
+  const fs=`#version 300 es\nprecision highp float;\nuniform int uMode;\nuniform vec3 uColA; uniform vec3 uColB;\nuniform sampler2D uTex; uniform vec2 uScale;\nuniform vec3 uCamX; uniform vec3 uCamY; uniform vec3 uCamZ; uniform vec2 uTanHalf;\nin vec2 vNdc; out vec4 o;\nvoid main(){\n  if(uMode==1){ float t=clamp(vNdc.y*0.5+0.5,0.0,1.0); o=vec4(mix(uColB,uColA,t),1.0); }\n  else if(uMode==2){ vec2 uv=(vNdc*uScale)*0.5+0.5; o=vec4(texture(uTex,vec2(uv.x,1.0-uv.y)).rgb,1.0); }\n  else { vec3 d=normalize(vNdc.x*uTanHalf.x*uCamX + vNdc.y*uTanHalf.y*uCamY - uCamZ);\n    float u=atan(d.z,d.x)/(2.0*3.14159265)+0.5; float v=acos(clamp(d.y,-1.0,1.0))/3.14159265;\n    o=vec4(texture(uTex,vec2(u,v)).rgb,1.0); }\n}`;
+  csBdProg=gl.createProgram();
+  gl.attachShader(csBdProg,sh(gl.VERTEX_SHADER,vs)); gl.attachShader(csBdProg,sh(gl.FRAGMENT_SHADER,fs)); gl.linkProgram(csBdProg);
+  const L=n=>gl.getUniformLocation(csBdProg,n);
+  csBdU={mode:L('uMode'),colA:L('uColA'),colB:L('uColB'),tex:L('uTex'),scale:L('uScale'),camX:L('uCamX'),camY:L('uCamY'),camZ:L('uCamZ'),tanHalf:L('uTanHalf')};
+}
+function csDrawBackdrop(viewM){
+  const skyOn=sceneState.sky.enabled&&skyTex;
+  const bg=csResolveBackground(settings.bgMode,settings.bgColor,settings.bgColor2,settings.bg??1);
+  const imgOn=bg.type==='image'&&bgImageTex;
+  if(!skyOn&&bg.type!=='gradient'&&!imgOn) return;
+  csEnsureBackdropProg();
+  gl.useProgram(csBdProg);
+  gl.disable(gl.DEPTH_TEST); gl.depthMask(false); gl.disable(gl.CULL_FACE);
+  if(skyOn){
+    gl.uniform1i(csBdU.mode,3);
+    gl.uniform3fv(csBdU.camX,[viewM[0],viewM[4],viewM[8]]);
+    gl.uniform3fv(csBdU.camY,[viewM[1],viewM[5],viewM[9]]);
+    gl.uniform3fv(csBdU.camZ,[viewM[2],viewM[6],viewM[10]]);
+    const fov=(settings.fov||40)*Math.PI/180, aspect=canvas.width/Math.max(1,canvas.height);
+    gl.uniform2fv(csBdU.tanHalf,[Math.tan(fov/2)*aspect,Math.tan(fov/2)]);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D,skyTex); gl.uniform1i(csBdU.tex,0);
+  } else if(imgOn){
+    gl.uniform1i(csBdU.mode,2);
+    gl.uniform2fv(csBdU.scale,csCoverScale(bgImageAspect,canvas.width/Math.max(1,canvas.height)));
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D,bgImageTex); gl.uniform1i(csBdU.tex,0);
+  } else {
+    gl.uniform1i(csBdU.mode,1);
+    gl.uniform3fv(csBdU.colA,bg.rgba.slice(0,3)); gl.uniform3fv(csBdU.colB,(bg.rgba2||bg.rgba).slice(0,3));
+  }
+  gl.drawArrays(gl.TRIANGLES,0,3);
+  gl.depthMask(true); gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE);
+}
+
+/* ── Scene Studio: chroma room with tracking markers, per-face media, contact shadow, ground plane ── */
+const CS_FACE_KEYS=['floor','ceiling','north','south','west','east'];
+const CS_FACE_LABELS={floor:'Floor',ceiling:'Ceiling',north:'Back wall',south:'Front wall',west:'Left wall',east:'Right wall'};
+let csSceneProg=null,csSceneU=null,csSceneVao=null;
+function csRoomVertexData(){
+  const F={
+    floor:  [[-1,-1,-1],[ 1,-1,-1],[ 1,-1, 1],[-1,-1, 1]],
+    ceiling:[[-1, 1,-1],[-1, 1, 1],[ 1, 1, 1],[ 1, 1,-1]],
+    north:  [[-1,-1,-1],[-1, 1,-1],[ 1, 1,-1],[ 1,-1,-1]],
+    south:  [[-1,-1, 1],[ 1,-1, 1],[ 1, 1, 1],[-1, 1, 1]],
+    west:   [[-1,-1,-1],[-1,-1, 1],[-1, 1, 1],[-1, 1,-1]],
+    east:   [[ 1,-1,-1],[ 1, 1,-1],[ 1, 1, 1],[ 1,-1, 1]],
+  };
+  const uvq=[[0,0],[1,0],[1,1],[0,1]], tri=[0,1,2,0,2,3];
+  const out=[];
+  for(const k of CS_FACE_KEYS){ const q=F[k]; for(const i of tri){ out.push(q[i][0],q[i][1],q[i][2],uvq[i][0],uvq[i][1]); } }
+  return new Float32Array(out);
+}
+function csEnsureSceneProg(){
+  if(csSceneProg) return;
+  const vs=`#version 300 es\nuniform mat4 uVP; uniform vec3 uCenter; uniform vec3 uHalf;\nin vec3 aPos; in vec2 aUv;\nout vec2 vUv; out vec3 vW;\nvoid main(){ vec3 w=uCenter+aPos*uHalf; vW=w; vUv=aUv; gl_Position=uVP*vec4(w,1.0); }`;
+  const fs=`#version 300 es\nprecision highp float;\nuniform vec3 uColor; uniform float uUseTex; uniform sampler2D uTex;\nuniform float uPattern; uniform vec2 uTiles; uniform vec3 uMarkerColor; uniform float uMarkerStrength;\nuniform float uShadow; uniform vec3 uShadowCenter; uniform float uShadowRadius; uniform float uShadowStrength;\nin vec2 vUv; in vec3 vW; out vec4 o;\nvoid main(){\n  vec3 c = uUseTex>0.5 ? texture(uTex,vec2(vUv.x,1.0-vUv.y)).rgb : uColor;\n  if(uPattern>0.5&&uPattern<1.5){\n    vec2 t=fract(vUv*uTiles)-0.5;\n    float w=0.035, a=0.16, e=0.012;\n    float c1=(1.0-smoothstep(w,w+e,abs(t.x)))*(1.0-smoothstep(a,a+e,abs(t.y)));\n    float c2=(1.0-smoothstep(w,w+e,abs(t.y)))*(1.0-smoothstep(a,a+e,abs(t.x)));\n    c=mix(c,uMarkerColor,max(c1,c2)*uMarkerStrength);\n  } else if(uPattern>1.5){\n    vec2 t=fract(vUv*uTiles);\n    float lw=0.02;\n    float line=max( max(1.0-smoothstep(0.0,lw,t.x), smoothstep(1.0-lw,1.0,t.x)), max(1.0-smoothstep(0.0,lw,t.y), smoothstep(1.0-lw,1.0,t.y)) );\n    c=mix(c,uMarkerColor,line*uMarkerStrength);\n  }\n  if(uShadow>0.5){\n    float d=distance(vW.xz,uShadowCenter.xz);\n    float s=1.0-smoothstep(uShadowRadius*0.35,uShadowRadius,d);\n    c*=1.0-uShadowStrength*s;\n  }\n  o=vec4(c,1.0);\n}`;
+  csSceneProg=gl.createProgram();
+  gl.attachShader(csSceneProg,sh(gl.VERTEX_SHADER,vs)); gl.attachShader(csSceneProg,sh(gl.FRAGMENT_SHADER,fs)); gl.linkProgram(csSceneProg);
+  const L=n=>gl.getUniformLocation(csSceneProg,n);
+  csSceneU={vp:L('uVP'),center:L('uCenter'),half:L('uHalf'),color:L('uColor'),useTex:L('uUseTex'),tex:L('uTex'),
+    pattern:L('uPattern'),tiles:L('uTiles'),markerColor:L('uMarkerColor'),markerStrength:L('uMarkerStrength'),
+    shadow:L('uShadow'),shadowCenter:L('uShadowCenter'),shadowRadius:L('uShadowRadius'),shadowStrength:L('uShadowStrength')};
+  csSceneVao=gl.createVertexArray();
+  gl.bindVertexArray(csSceneVao);
+  const buf=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,csRoomVertexData(),gl.STATIC_DRAW);
+  const aPos=gl.getAttribLocation(csSceneProg,'aPos'), aUv=gl.getAttribLocation(csSceneProg,'aUv');
+  gl.enableVertexAttribArray(aPos); gl.vertexAttribPointer(aPos,3,gl.FLOAT,false,20,0);
+  gl.enableVertexAttribArray(aUv);  gl.vertexAttribPointer(aUv,2,gl.FLOAT,false,20,12);
+  gl.bindVertexArray(null);
+}
+function csUpdateVideoFaces(){
+  for(const k of Object.keys(sceneMedia)){
+    const m=sceneMedia[k];
+    if(m&&m.kind==='video'&&m.video&&m.video.readyState>=2){
+      try{ gl.bindTexture(gl.TEXTURE_2D,m.tex); gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,m.video); }catch{}
+    }
+  }
+}
+function csDrawScene(){
+  const s=csNormalizeScene(sceneState);
+  const groundOnly=!s.enabled&&settings.groundPlane;
+  if(!s.enabled&&!groundOnly) return;
+  csEnsureSceneProg();
+  csUpdateVideoFaces();
+  const H=model?Math.max(0.5,model.yMax-model.yMin):1.8;
+  const yMin=model?model.yMin:0;
+  // With a model the floor sits at its feet. With no model the orbit target is y=0,
+  // so a floor at ~0 would be 9mm under the eye and near-plane-clip across the bottom
+  // of the screen - place it at standing height below the eye instead.
+  const floorY=model?(yMin-0.005*H):(-0.5*H);
+  // Room always encloses the camera (auto-grows with zoom-out) so it reads as a real
+  // studio instead of a small box the camera can fall out of. Marker count per wall is
+  // constant, so tracking crosses stay evenly spaced at any size.
+  const _cp=Math.cos(pitch),_sp=Math.sin(pitch);
+  const camX=dist*Math.cos(yaw)*_cp, camY=targetY+dist*_sp, camZ=dist*Math.sin(yaw)*_cp;
+  const camR=Math.hypot(camX,camZ);
+  const hx=Math.max(H*s.sizeMul,camR*1.08), hz=hx;
+  const hy=Math.max(H*Math.max(0.75,s.sizeMul*0.8),(camY-floorY)*0.56);
+  const center=[0,floorY+hy,0];
+  const chromaHex=s.chroma==='blue'?'#0047BB':'#00B140';
+  const base=hexRgb(chromaHex);
+  const markerColor=[base[0]+(1-base[0])*0.45,base[1]+(1-base[1])*0.45,base[2]+(1-base[2])*0.45];
+  const tileWorld=(2*hx)/Math.max(2,s.markerTiles);
+  const faceDims={floor:[2*hx,2*hz],ceiling:[2*hx,2*hz],north:[2*hx,2*hy],south:[2*hx,2*hy],west:[2*hz,2*hy],east:[2*hz,2*hy]};
+  gl.useProgram(csSceneProg);
+  gl.disable(gl.CULL_FACE); gl.enable(gl.DEPTH_TEST); gl.depthMask(true);
+  gl.uniformMatrix4fv(csSceneU.vp,false,mvp);
+  gl.uniform3fv(csSceneU.center,center);
+  gl.uniform3fv(csSceneU.half,[hx,hy,hz]);
+  gl.uniform3fv(csSceneU.markerColor,markerColor);
+  gl.uniform1f(csSceneU.markerStrength,s.markerStrength);
+  gl.bindVertexArray(csSceneVao);
+  for(let i=0;i<CS_FACE_KEYS.length;i++){
+    const key=CS_FACE_KEYS[i];
+    if(groundOnly&&key!=='floor') continue;
+    const face=s.faces[key];
+    if(!groundOnly&&face.media==='off') continue;
+    // Dollhouse rule: never draw a surface the camera is outside of — it would wall off the set.
+    if(!groundOnly){
+      if(key==='floor'&&camY<floorY) continue;
+      if(key==='ceiling'&&camY>floorY+2*hy) continue;
+      if(key==='north'&&camZ<-hz) continue;
+      if(key==='south'&&camZ>hz) continue;
+      if(key==='west'&&camX<-hx) continue;
+      if(key==='east'&&camX>hx) continue;
+    }
+    const media=sceneMedia[key];
+    const hasTex=!groundOnly&&(face.media==='image'||face.media==='video')&&media&&media.tex;
+    const dims=faceDims[key];
+    gl.uniform2fv(csSceneU.tiles,[dims[0]/tileWorld,dims[1]/tileWorld]);
+    if(groundOnly){
+      gl.uniform3fv(csSceneU.color,[0.16,0.175,0.2]);
+      gl.uniform1f(csSceneU.useTex,0);
+      gl.uniform1f(csSceneU.pattern,2);
+      gl.uniform3fv(csSceneU.markerColor,[0.28,0.3,0.34]);
+      gl.uniform1f(csSceneU.markerStrength,0.5);
+    } else {
+      gl.uniform3fv(csSceneU.color,base);
+      gl.uniform1f(csSceneU.useTex,hasTex?1:0);
+      if(hasTex){ gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D,media.tex); gl.uniform1i(csSceneU.tex,0); }
+      gl.uniform1f(csSceneU.pattern,(s.markers&&!hasTex)?1:0);
+    }
+    const shadowOn=key==='floor'&&(groundOnly?true:s.shadow)&&model;
+    gl.uniform1f(csSceneU.shadow,shadowOn?1:0);
+    if(shadowOn){
+      gl.uniform3fv(csSceneU.shadowCenter,[0,floorY,0]);
+      gl.uniform1f(csSceneU.shadowRadius,H*0.38);
+      gl.uniform1f(csSceneU.shadowStrength,0.45);
+    }
+    gl.drawArrays(gl.TRIANGLES,i*6,6);
+  }
+  gl.bindVertexArray(null);
+  gl.enable(gl.CULL_FACE);
+}
+
+/* ── Post FX: low-res rasterize target + posterize / ordered dither / depth outline ── */
+let csFxFbo=null,csFxColor=null,csFxDepth=null,csFxW=0,csFxH=0,csFxOn=false,csFxCfg=null,csFxBroken=false;
+let csPostProg=null,csPostU=null;
+function csEnsurePostProg(){
+  if(csPostProg) return;
+  const vs=`#version 300 es\nconst vec2 P[3]=vec2[3](vec2(-1.,-1.),vec2(3.,-1.),vec2(-1.,3.));\nout vec2 vUv;\nvoid main(){ vUv=P[gl_VertexID]*0.5+0.5; gl_Position=vec4(P[gl_VertexID],0.0,1.0); }`;
+  const fs=`#version 300 es\nprecision highp float;\nuniform sampler2D uColor; uniform sampler2D uDepth;\nuniform float uPosterize; uniform float uDither; uniform float uOutline; uniform vec3 uOutlineColor; uniform float uOutlineThresh;\nuniform vec2 uTexel; uniform vec2 uSize;\nin vec2 vUv; out vec4 o;\nfloat bayer4(ivec2 p){ int m[16]=int[16](0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5); return (float(m[(p.y%4)*4+(p.x%4)])+0.5)/16.0; }\nvoid main(){\n  vec4 c=texture(uColor,vUv);\n  if(uOutline>0.5){\n    float d0=texture(uDepth,vUv).r;\n    float dx=abs(texture(uDepth,vUv+vec2(uTexel.x,0.0)).r-d0)+abs(texture(uDepth,vUv-vec2(uTexel.x,0.0)).r-d0);\n    float dy=abs(texture(uDepth,vUv+vec2(0.0,uTexel.y)).r-d0)+abs(texture(uDepth,vUv-vec2(0.0,uTexel.y)).r-d0);\n    float e=step(uOutlineThresh,dx+dy);\n    c=mix(c,vec4(uOutlineColor,1.0),e);\n  }\n  if(uPosterize>1.5){\n    vec3 q=c.rgb;\n    if(uDither>0.5){ q+=(bayer4(ivec2(vUv*uSize))-0.5)/uPosterize; }\n    c.rgb=floor(clamp(q,0.0,1.0)*(uPosterize-1.0)+0.5)/(uPosterize-1.0);\n  }\n  o=c;\n}`;
+  csPostProg=gl.createProgram();
+  gl.attachShader(csPostProg,sh(gl.VERTEX_SHADER,vs)); gl.attachShader(csPostProg,sh(gl.FRAGMENT_SHADER,fs)); gl.linkProgram(csPostProg);
+  const L=n=>gl.getUniformLocation(csPostProg,n);
+  csPostU={color:L('uColor'),depth:L('uDepth'),posterize:L('uPosterize'),dither:L('uDither'),outline:L('uOutline'),outlineColor:L('uOutlineColor'),outlineThresh:L('uOutlineThresh'),texel:L('uTexel'),size:L('uSize')};
+}
+function csEnsureFxTargets(w,h){
+  if(csFxFbo&&csFxW===w&&csFxH===h) return true;
+  if(!csFxFbo){ csFxFbo=gl.createFramebuffer(); csFxColor=gl.createTexture(); csFxDepth=gl.createTexture(); }
+  csFxW=w; csFxH=h;
+  gl.bindTexture(gl.TEXTURE_2D,csFxColor);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA8,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
+  gl.bindTexture(gl.TEXTURE_2D,csFxDepth);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.DEPTH_COMPONENT24,w,h,0,gl.DEPTH_COMPONENT,gl.UNSIGNED_INT,null);
+  gl.bindFramebuffer(gl.FRAMEBUFFER,csFxFbo);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,csFxColor,0);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.TEXTURE_2D,csFxDepth,0);
+  const ok=gl.checkFramebufferStatus(gl.FRAMEBUFFER)===gl.FRAMEBUFFER_COMPLETE;
+  gl.bindFramebuffer(gl.FRAMEBUFFER,null);
+  if(!ok&&!csFxBroken){ csFxBroken=true; console.warn('Post FX framebuffer incomplete — FX disabled on this device'); }
+  return ok;
+}
+function csBeginFrameFx(){
+  csFxCfg=csNormalizeFx(settings);
+  csFxOn=!csFxBroken&&(csFxCfg.pixelate>1||csFxCfg.posterize>=2||csFxCfg.outline);
+  if(!csFxOn){
+    gl.bindFramebuffer(gl.FRAMEBUFFER,null);
+    gl.viewport(0,0,canvas.width,canvas.height);
+    return;
+  }
+  const w=Math.max(2,Math.floor(canvas.width/csFxCfg.pixelate));
+  const h=Math.max(2,Math.floor(canvas.height/csFxCfg.pixelate));
+  if(!csEnsureFxTargets(w,h)){ csFxOn=false; gl.bindFramebuffer(gl.FRAMEBUFFER,null); gl.viewport(0,0,canvas.width,canvas.height); return; }
+  gl.bindFramebuffer(gl.FRAMEBUFFER,csFxFbo);
+  gl.viewport(0,0,w,h);
+}
+function csEndFrameFx(){
+  if(!csFxOn) return;
+  csEnsurePostProg();
+  gl.bindFramebuffer(gl.FRAMEBUFFER,null);
+  gl.viewport(0,0,canvas.width,canvas.height);
+  gl.disable(gl.DEPTH_TEST); gl.depthMask(false);
+  gl.useProgram(csPostProg);
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D,csFxColor); gl.uniform1i(csPostU.color,0);
+  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D,csFxDepth); gl.uniform1i(csPostU.depth,1);
+  gl.uniform1f(csPostU.posterize,csFxCfg.posterize);
+  gl.uniform1f(csPostU.dither,csFxCfg.dither?1:0);
+  gl.uniform1f(csPostU.outline,csFxCfg.outline?1:0);
+  gl.uniform3fv(csPostU.outlineColor,hexRgb(csFxCfg.outlineColor));
+  gl.uniform1f(csPostU.outlineThresh,csFxCfg.outlineThreshold);
+  gl.uniform2fv(csPostU.texel,[1/csFxW,1/csFxH]);
+  gl.uniform2fv(csPostU.size,[csFxW,csFxH]);
+  gl.drawArrays(gl.TRIANGLES,0,3);
+  gl.depthMask(true); gl.enable(gl.DEPTH_TEST);
+}
+
+/* ── Capture suite: PNG screenshots (any scale, transparent), sprite sheets ── */
+function csDataUrlToU8(durl){
+  const bin=atob(durl.split(',')[1]); const u8=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) u8[i]=bin.charCodeAt(i);
+  return u8;
+}
+function csCapturePng(opts={}){
+  const scale=Math.max(1,Math.min(4,Math.round(Number(opts.scale)||1)));
+  const ow=canvas.width, oh=canvas.height;
+  const prevMode=settings.bgMode;
+  if(opts.transparent) settings.bgMode='transparent';
+  let durl;
+  try{
+    canvas.width=ow*scale; canvas.height=oh*scale;
+    csRenderFrame(performance.now());
+    durl=canvas.toDataURL('image/png');
+  } finally {
+    settings.bgMode=prevMode;
+    canvas.width=ow; canvas.height=oh;
+    csRenderFrame(performance.now());
+  }
+  return durl;
+}
+function csRenderSpriteSheet(opts={}){
+  const dirs=Math.max(1,Math.min(64,Math.round(Number(opts.directions)||8)));
+  const cell=Math.max(64,Math.min(2048,Math.round(Number(opts.cell)||512)));
+  const transparent=opts.transparent!==false;
+  const cols=Math.min(dirs,8), rows=Math.ceil(dirs/cols);
+  const yaws=spriteSheetYaws(dirs,yaw);
+  const sheet=document.createElement('canvas'); sheet.width=cols*cell; sheet.height=rows*cell;
+  const ctx=sheet.getContext('2d');
+  const prev={yaw,w:canvas.width,h:canvas.height,bgMode:settings.bgMode};
+  if(transparent) settings.bgMode='transparent';
+  try{
+    canvas.width=cell; canvas.height=cell;
+    for(let i=0;i<dirs;i++){
+      yaw=yaws[i];
+      csRenderFrame(performance.now());
+      ctx.drawImage(canvas,(i%cols)*cell,Math.floor(i/cols)*cell);
+    }
+  } finally {
+    yaw=prev.yaw; settings.bgMode=prev.bgMode;
+    canvas.width=prev.w; canvas.height=prev.h;
+    csRenderFrame(performance.now());
+  }
+  const meta={version:1,engine:'character-studio_v3.3.0',directions:dirs,cell:{w:cell,h:cell},cols,rows,
+    order:'row-major, clockwise turnaround starting at the current camera yaw',
+    yawRadians:yaws.map(v=>Number(v.toFixed(6))),transparent,
+    projection:settings.ortho?'orthographic':'perspective',fov:settings.fov,generated:new Date().toISOString()};
+  return {dataUrl:sheet.toDataURL('image/png'),meta};
+}
+
+/* ── Asset Library: IndexedDB-backed workspace library, export any time ── */
+const CS_LIB_DB='cs_asset_library', CS_LIB_STORE='assets';
+function csLibOpen(){
+  return new Promise((res,rej)=>{
+    const q=indexedDB.open(CS_LIB_DB,1);
+    q.onupgradeneeded=()=>{ if(!q.result.objectStoreNames.contains(CS_LIB_STORE)) q.result.createObjectStore(CS_LIB_STORE,{keyPath:'id'}); };
+    q.onsuccess=()=>res(q.result);
+    q.onerror=()=>rej(q.error||new Error('IndexedDB unavailable'));
+  });
+}
+function csLibTx(mode,fn){
+  return csLibOpen().then(db=>new Promise((res,rej)=>{
+    const tx=db.transaction(CS_LIB_STORE,mode); const store=tx.objectStore(CS_LIB_STORE);
+    const out=fn(store);
+    tx.oncomplete=()=>{ db.close(); res(out&&out.result!==undefined?out.result:out); };
+    tx.onerror=()=>{ db.close(); rej(tx.error); };
+  }));
+}
+function csLibId(){ return (crypto.randomUUID?crypto.randomUUID():('id-'+Date.now()+'-'+Math.random().toString(36).slice(2,10))); }
+function csLibExt(rec){
+  if(rec.json!=null) return '.json';
+  const m=rec.mime||'';
+  if(m.includes('png'))return '.png'; if(m.includes('webm'))return '.webm'; if(m.includes('zip'))return '.zip';
+  if(m.includes('jpeg'))return '.jpg'; if(m.includes('gif'))return '.gif'; if(m.includes('mp4'))return '.mp4';
+  return '.bin';
+}
+function csSafeFileName(s){ return String(s||'asset').replace(/[^\w.\- ]+/g,'_').replace(/\s+/g,'_').slice(0,80)||'asset'; }
+async function libSave(type,name,payload,meta={}){
+  const rec={id:csLibId(),type,name:String(name||type),createdAt:new Date().toISOString(),meta,engine:'character-studio_v3.3.0'};
+  if(typeof payload==='string') rec.json=payload;
+  else if(payload&&payload.blob){ rec.blob=payload.blob; rec.mime=payload.blob.type||payload.mime||'application/octet-stream'; rec.size=payload.blob.size; }
+  else rec.json=JSON.stringify(payload??null);
+  const v=validateLibraryRecord(rec);
+  if(!v.ok) throw new Error('Library record invalid: '+v.errors.join('; '));
+  await csLibTx('readwrite',store=>store.put(rec));
+  csLibMirror(rec).catch(()=>{});
+  try{ renderRight(); }catch{}
+  return {id:rec.id,type:rec.type,name:rec.name,createdAt:rec.createdAt};
+}
+async function libList(){
+  const rows=await csLibTx('readonly',store=>store.getAll());
+  return (rows||[]).map(r=>({id:r.id,type:r.type,name:r.name,createdAt:r.createdAt,size:r.size||(r.json?r.json.length:0),mime:r.mime||null,meta:r.meta||{}}))
+    .sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+}
+function libGet(id){ return csLibTx('readonly',store=>store.get(id)); }
+async function libDelete(id){ await csLibTx('readwrite',store=>store.delete(id)); try{ renderRight(); }catch{} return true; }
+async function libExportOne(id){
+  const rec=await libGet(id); if(!rec) throw new Error('Library item not found: '+id);
+  const fname=csSafeFileName(rec.name)+'_'+rec.id.slice(0,8)+csLibExt(rec);
+  if(rec.json!=null) downloadBlob(new Blob([rec.json],{type:'application/json'}),fname);
+  else downloadBlob(rec.blob,fname);
+  return fname;
+}
+async function libExportAll(){
+  const rows=await csLibTx('readonly',store=>store.getAll());
+  if(!rows||!rows.length){ setStatus('Asset library is empty — nothing to export'); return null; }
+  const enc=new TextEncoder(); const files=[]; const manifest=[];
+  for(const rec of rows){
+    const rel='library/'+rec.type+'/'+csSafeFileName(rec.name)+'_'+rec.id.slice(0,8)+csLibExt(rec);
+    const data=rec.json!=null?enc.encode(rec.json):new Uint8Array(await rec.blob.arrayBuffer());
+    files.push({name:rel,data});
+    manifest.push({id:rec.id,type:rec.type,name:rec.name,createdAt:rec.createdAt,file:rel,bytes:data.length,meta:rec.meta||{}});
+  }
+  files.push({name:'library/library_manifest.json',data:enc.encode(JSON.stringify({version:1,engine:'character-studio_v3.3.0',exported:new Date().toISOString(),items:manifest},null,2))});
+  const sums=[];
+  for(const f of files) sums.push(`${await sha256Hex(f.data)}  ${f.name}`);
+  files.push({name:'SHA256SUMS.txt',data:enc.encode(sums.join('\n')+'\n')});
+  const zip=zipStore(files);
+  const fname='character-studio_asset-library_'+new Date().toISOString().slice(0,10)+'.zip';
+  downloadBlob(new Blob([zip],{type:'application/zip'}),fname);
+  setStatus(`Asset library exported — ${rows.length} assets → ${fname}`);
+  return fname;
+}
+/* best-effort mirror to the Node workspace bridge when served via npm start (file:// stays IndexedDB-only) */
+function csBridgeAvailable(){ return /^https?:$/.test(location.protocol); }
+async function csLibMirror(rec){
+  if(!csBridgeAvailable()) return false;
+  const rel=rec.type+'/'+csSafeFileName(rec.name)+'_'+rec.id.slice(0,8)+csLibExt(rec);
+  const body=rec.json!=null?new Blob([rec.json],{type:'application/json'}):rec.blob;
+  const r=await fetch('/api/library?name='+encodeURIComponent(rel),{method:'POST',body});
+  return r.ok;
+}
+
+/* ── appearance + persistence integration ── */
+const _ga33=getAppearance;
+getAppearance=function(){
+  const a=_ga33();
+  a.background={mode:settings.bgMode||'studio',color:settings.bgColor,color2:settings.bgColor2,brightness:settings.bg??1,imageName:bgImageName};
+  a.fx=csNormalizeFx(settings);
+  a.projection={ortho:!!settings.ortho,fov:settings.fov||40,groundPlane:!!settings.groundPlane};
+  a.scene=cloneJson(csNormalizeScene(sceneState));
+  return a;
+};
+const _la33=loadAppearance;
+loadAppearance=function(a){
+  _la33(a);
+  try{
+    if(a&&typeof a==='object'){
+      if(a.background&&typeof a.background==='object'){
+        if(typeof a.background.mode==='string') settings.bgMode=a.background.mode;
+        if(typeof a.background.color==='string') settings.bgColor=a.background.color;
+        if(typeof a.background.color2==='string') settings.bgColor2=a.background.color2;
+        if(Number.isFinite(+a.background.brightness)) settings.bg=+a.background.brightness;
+      }
+      if(a.fx&&typeof a.fx==='object'){
+        const fx=csNormalizeFx({fxPixelate:a.fx.pixelate,fxPosterize:a.fx.posterize,fxDither:a.fx.dither,fxOutline:a.fx.outline,fxOutlineColor:a.fx.outlineColor,fxOutlineThreshold:a.fx.outlineThreshold});
+        settings.fxPixelate=fx.pixelate; settings.fxPosterize=fx.posterize; settings.fxDither=fx.dither;
+        settings.fxOutline=fx.outline; settings.fxOutlineColor=fx.outlineColor; settings.fxOutlineThreshold=fx.outlineThreshold;
+      }
+      if(a.projection&&typeof a.projection==='object'){
+        settings.ortho=!!a.projection.ortho;
+        if(Number.isFinite(+a.projection.fov)) settings.fov=+a.projection.fov;
+        settings.groundPlane=!!a.projection.groundPlane;
+      }
+      if(a.scene&&typeof a.scene==='object'){ sceneState=csNormalizeScene(a.scene); csPersistScene(); }
+      persistSettings();
+      renderLeft(); renderRight();
+    }
+  }catch(e){ console.warn('v3.3 appearance state apply failed',e); }
+};
+
+/* ── UI: Backdrop & Post FX (left panel) ── */
+const CS_BG_MODES=[
+  ['studio','Studio (brightness slider)'],
+  ['chromaGreen','Chroma green — broadcast #00B140'],
+  ['chromaGreenPure','Chroma green — pure #00FF00'],
+  ['chromaBlue','Chroma blue — broadcast #0047BB'],
+  ['chromaBluePure','Chroma blue — pure #0000FF'],
+  ['chromaMagenta','Chroma magenta — #FF00FF'],
+  ['gray18','Neutral gray 18%'],
+  ['gray50','Neutral gray 50%'],
+  ['custom','Custom color'],
+  ['gradient','Gradient (two colors)'],
+  ['image','Backdrop image'],
+  ['transparent','Transparent (checkerboard)'],
+];
+function csSlider(c,label,min,max,step,val,fmt,on){
+  const row=document.createElement('div'); row.className='row';
+  row.innerHTML=`<label>${label}</label><input type="range" min="${min}" max="${max}" step="${step}" value="${val}"><span class="v">${fmt(val)}</span>`;
+  const inp=row.querySelector('input'), v=row.querySelector('.v');
+  inp.oninput=()=>{ v.textContent=fmt(+inp.value); on(+inp.value); };
+  c.appendChild(row); return row;
+}
+function csCheck(c,label,val,on){
+  const row=document.createElement('div'); row.className='row cs-checkrow';
+  row.innerHTML=`<label class="cs-check"><input type="checkbox"${val?' checked':''}> ${label}</label>`;
+  row.querySelector('input').onchange=e=>on(e.target.checked);
+  c.appendChild(row); return row;
+}
+function appendBackdropSection(){
+  const host=document.getElementById('leftBody'); if(!host) return;
+  const c=section(host,'Backdrop & Post FX',false); if(!c) return;
+  const selRow=document.createElement('div'); selRow.className='row';
+  selRow.innerHTML=`<label>Background</label><select id="csBgMode" data-bgmode style="flex:1">${CS_BG_MODES.map(([v,l])=>`<option value="${v}"${settings.bgMode===v?' selected':''}>${l}</option>`).join('')}</select>`;
+  selRow.querySelector('select').onchange=e=>{ settings.bgMode=e.target.value; persistSettings(); renderLeft(); };
+  c.appendChild(selRow);
+  if(settings.bgMode==='custom'||settings.bgMode==='gradient'){
+    const cr=document.createElement('div'); cr.className='row';
+    cr.innerHTML=`<label>${settings.bgMode==='gradient'?'Top color':'Color'}</label><input type="color" value="${settings.bgColor||'#20242c'}">`;
+    cr.querySelector('input').oninput=e=>{ settings.bgColor=e.target.value; persistSettings(); };
+    c.appendChild(cr);
+  }
+  if(settings.bgMode==='gradient'){
+    const cr2=document.createElement('div'); cr2.className='row';
+    cr2.innerHTML=`<label>Bottom color</label><input type="color" value="${settings.bgColor2||'#06080c'}">`;
+    cr2.querySelector('input').oninput=e=>{ settings.bgColor2=e.target.value; persistSettings(); };
+    c.appendChild(cr2);
+  }
+  if(settings.bgMode==='image'){
+    const fr=document.createElement('div'); fr.className='row';
+    fr.innerHTML=`<label>Image</label><input type="file" accept="image/*" style="flex:1"><span class="hint">${bgImageName||'none'}</span>`;
+    fr.querySelector('input').onchange=async e=>{
+      const f=e.target.files&&e.target.files[0]; if(!f) return;
+      try{ const r=await csLoadImageTex(f); if(bgImageTex) gl.deleteTexture(bgImageTex); bgImageTex=r.tex; bgImageAspect=r.aspect; bgImageName=f.name; setStatus('Backdrop image: '+f.name); renderLeft(); }
+      catch(err){ setStatus('Backdrop image failed: '+err.message); }
+    };
+    c.appendChild(fr);
+  }
+  if(settings.bgMode==='transparent'){
+    const h=document.createElement('div'); h.className='hint'; h.style.padding='2px 6px';
+    h.textContent='Checkerboard is display-only. Use “Transparent PNG” in Capture & Export for real alpha output.';
+    c.appendChild(h);
+  }
+  const pr=document.createElement('div'); pr.className='row';
+  pr.innerHTML=`<label>Projection</label><div class="seg" id="csProjSeg"><button data-v="0"${settings.ortho?'':' class="on"'}>Perspective</button><button data-v="1"${settings.ortho?' class="on"':''}>Orthographic</button></div>`;
+  pr.querySelectorAll('button').forEach(b=>b.onclick=()=>{ settings.ortho=b.dataset.v==='1'; persistSettings(); renderLeft(); });
+  c.appendChild(pr);
+  csCheck(c,'Ground plane (when Scene Studio is off)',!!settings.groundPlane,v=>{ settings.groundPlane=v; persistSettings(); });
+  const fxTitle=document.createElement('div'); fxTitle.className='hint'; fxTitle.style.padding='4px 6px 0'; fxTitle.textContent='Post FX — rasterize / stylize'; c.appendChild(fxTitle);
+  csSlider(c,'Pixelate',1,16,1,csNormalizeFx(settings).pixelate,v=>v===1?'off':v+'px',v=>{ settings.fxPixelate=v; persistSettings(); });
+  csSlider(c,'Posterize',0,32,1,csNormalizeFx(settings).posterize,v=>v<2?'off':v+' levels',v=>{ settings.fxPosterize=v; persistSettings(); });
+  csCheck(c,'Bayer dithering (with posterize)',!!settings.fxDither,v=>{ settings.fxDither=v; persistSettings(); });
+  csCheck(c,'Outline (depth edges)',!!settings.fxOutline,v=>{ settings.fxOutline=v; persistSettings(); renderLeft(); });
+  if(settings.fxOutline){
+    const oc=document.createElement('div'); oc.className='row';
+    oc.innerHTML=`<label>Outline color</label><input type="color" value="${csNormalizeFx(settings).outlineColor}">`;
+    oc.querySelector('input').oninput=e=>{ settings.fxOutlineColor=e.target.value; persistSettings(); };
+    c.appendChild(oc);
+    csSlider(c,'Outline sens.',1,50,1,Math.round(csNormalizeFx(settings).outlineThreshold*10000),v=>String(v),v=>{ settings.fxOutlineThreshold=v/10000; persistSettings(); });
+  }
+}
+
+/* ── UI: Capture & Export (right panel) ── */
+function csTimestamp(){ return new Date().toISOString().replace(/[:.]/g,'-').slice(0,19); }
+async function csSaveCapture(kind,durl,meta){
+  const u8=csDataUrlToU8(durl);
+  const blob=new Blob([u8],{type:'image/png'});
+  const fname=`character-studio_${kind}_${csTimestamp()}.png`;
+  downloadBlob(blob,fname);
+  if(settings.libAutoSave){ try{ await libSave(kind==='spritesheet'?'spritesheet':'screenshot',fname,{blob},meta||{}); }catch(e){ console.warn('library save failed',e); } }
+  setStatus(`Saved ${fname} (${(blob.size/1024).toFixed(0)} KB)${settings.libAutoSave?' — added to Asset Library':''}`);
+  return fname;
+}
+function appendCaptureSection(){
+  const host=document.getElementById('rightBody'); if(!host) return;
+  const c=section(host,'Capture & Export',false); if(!c) return;
+  const sr=document.createElement('div'); sr.className='row';
+  sr.innerHTML=`<label>Resolution</label><div class="seg">${[1,2,4].map(s=>`<button data-s="${s}"${(+settings.shotScale||2)===s?' class="on"':''}>${s}×</button>`).join('')}</div>`;
+  sr.querySelectorAll('button').forEach(b=>b.onclick=()=>{ settings.shotScale=+b.dataset.s; persistSettings(); renderRight(); });
+  c.appendChild(sr);
+  const br=document.createElement('div'); br.className='row cs-btnrow';
+  br.innerHTML=`<button id="csShotBg">Screenshot PNG</button><button id="csShotAlpha">Transparent PNG</button>`;
+  br.querySelector('#csShotBg').onclick=()=>csSaveCapture('screenshot',csCapturePng({scale:settings.shotScale}),{scale:settings.shotScale,background:settings.bgMode});
+  br.querySelector('#csShotAlpha').onclick=()=>csSaveCapture('screenshot-alpha',csCapturePng({scale:settings.shotScale,transparent:true}),{scale:settings.shotScale,background:'transparent'});
+  c.appendChild(br);
+  const spr=document.createElement('div'); spr.className='row';
+  spr.innerHTML=`<label>Sprite sheet</label><select id="csSprDirs">${[4,8,16].map(d=>`<option value="${d}"${d===8?' selected':''}>${d} directions</option>`).join('')}</select><select id="csSprCell">${[256,512,1024].map(d=>`<option value="${d}"${d===512?' selected':''}>${d}px</option>`).join('')}</select><button id="csSprGo">Render</button>`;
+  spr.querySelector('#csSprGo').onclick=async()=>{
+    if(!model){ setStatus('Load a model before rendering a sprite sheet'); return; }
+    const r=csRenderSpriteSheet({directions:+spr.querySelector('#csSprDirs').value,cell:+spr.querySelector('#csSprCell').value,transparent:true});
+    await csSaveCapture('spritesheet',r.dataUrl,r.meta);
+    downloadBlob(new Blob([JSON.stringify(r.meta,null,2)],{type:'application/json'}),`character-studio_spritesheet_${csTimestamp()}.json`);
+  };
+  c.appendChild(spr);
+  const h=document.createElement('div'); h.className='hint'; h.style.padding='2px 6px';
+  h.textContent='Transparent PNG and sprite sheets render with real alpha (no keying needed). Sprite sheets start at the current camera yaw, clockwise.';
+  c.appendChild(h);
+}
+
+/* ── UI: Scene Studio (right panel) ── */
+function appendSceneSection(){
+  const host=document.getElementById('rightBody'); if(!host) return;
+  const c=section(host,'Scene Studio (Chroma Room)',false); if(!c) return;
+  const s=csNormalizeScene(sceneState); sceneState=s;
+  const er=document.createElement('div'); er.className='row';
+  er.innerHTML=`<label>Room</label><div class="seg"><button data-v="0"${s.enabled?'':' class="on"'}>Off</button><button data-v="1"${s.enabled?' class="on"':''}>On</button></div>`;
+  er.querySelectorAll('button').forEach(b=>b.onclick=()=>{ sceneState.enabled=b.dataset.v==='1'; csPersistScene(); renderRight(); });
+  c.appendChild(er);
+  if(s.enabled){
+    const cr=document.createElement('div'); cr.className='row';
+    cr.innerHTML=`<label>Chroma</label><div class="seg"><button data-v="green"${s.chroma==='green'?' class="on"':''}>Greenscreen</button><button data-v="blue"${s.chroma==='blue'?' class="on"':''}>Bluescreen</button></div>`;
+    cr.querySelectorAll('button').forEach(b=>b.onclick=()=>{ sceneState.chroma=b.dataset.v; csPersistScene(); renderRight(); });
+    c.appendChild(cr);
+    csCheck(c,'Tracking points',s.markers,v=>{ sceneState.markers=v; csPersistScene(); });
+    csSlider(c,'Marker density',2,20,1,s.markerTiles,v=>String(v),v=>{ sceneState.markerTiles=v; csPersistScene(); });
+    csSlider(c,'Marker strength',0,1,0.05,s.markerStrength,v=>v.toFixed(2),v=>{ sceneState.markerStrength=v; csPersistScene(); });
+    csSlider(c,'Room size',1.05,4,0.05,s.sizeMul,v=>v.toFixed(2)+'×',v=>{ sceneState.sizeMul=v; csPersistScene(); });
+    csCheck(c,'Contact shadow on floor',s.shadow,v=>{ sceneState.shadow=v; csPersistScene(); });
+    const skyRow=document.createElement('div'); skyRow.className='row';
+    skyRow.innerHTML=`<label>Skymap</label><input type="checkbox"${s.sky.enabled?' checked':''}><input type="file" accept="image/*" style="flex:1"><button data-x>✕</button><span class="hint">${s.sky.name||'equirect image'}</span>`;
+    skyRow.querySelector('input[type=checkbox]').onchange=e=>{ sceneState.sky.enabled=e.target.checked; csPersistScene(); };
+    skyRow.querySelector('input[type=file]').onchange=async e=>{
+      const f=e.target.files&&e.target.files[0]; if(!f) return;
+      try{ const r=await csLoadImageTex(f); if(skyTex) gl.deleteTexture(skyTex); skyTex=r.tex; skyAspect=r.aspect; sceneState.sky.name=f.name; sceneState.sky.enabled=true; csPersistScene(); setStatus('Skymap: '+f.name+' — hide walls (“Open”) to see it'); renderRight(); }
+      catch(err){ setStatus('Skymap failed: '+err.message); }
+    };
+    skyRow.querySelector('[data-x]').onclick=()=>{ if(skyTex) gl.deleteTexture(skyTex); skyTex=null; sceneState.sky={enabled:false,name:null}; csPersistScene(); renderRight(); };
+    c.appendChild(skyRow);
+    const ft=document.createElement('div'); ft.className='hint'; ft.style.padding='4px 6px 0'; ft.textContent='Surfaces — chroma, image, video, or open (shows skymap/backdrop)'; c.appendChild(ft);
+    for(const key of CS_FACE_KEYS){
+      const f=s.faces[key]; const m=sceneMedia[key];
+      const row=document.createElement('div'); row.className='row cs-facerow';
+      row.innerHTML=`<label>${CS_FACE_LABELS[key]}</label>`+
+        `<select data-face="${key}"><option value="chroma"${f.media==='chroma'?' selected':''}>Chroma</option><option value="image"${f.media==='image'?' selected':''}>Image</option><option value="video"${f.media==='video'?' selected':''}>Video</option><option value="off"${f.media==='off'?' selected':''}>Open</option></select>`+
+        `<input type="file" style="flex:1;display:${f.media==='image'||f.media==='video'?'':'none'}" accept="${f.media==='video'?'video/*':'image/*'}">`+
+        `<span class="hint">${m?(m.name||''):(f.media==='image'||f.media==='video')&&f.name?f.name+' (reload file)':''}</span>`;
+      row.querySelector('select').onchange=e=>{
+        sceneState.faces[key].media=e.target.value;
+        if(e.target.value==='chroma'||e.target.value==='off'){ csDisposeFaceMedia(key); sceneState.faces[key].name=null; }
+        csPersistScene(); renderRight();
+      };
+      row.querySelector('input[type=file]').onchange=async e=>{
+        const file=e.target.files&&e.target.files[0]; if(!file) return;
+        try{
+          csDisposeFaceMedia(key);
+          if(sceneState.faces[key].media==='video'){
+            const v=await csLoadVideo(file);
+            sceneMedia[key]={kind:'video',tex:v.tex,video:v.video,name:file.name,aspect:v.aspect};
+          } else {
+            const r=await csLoadImageTex(file);
+            sceneMedia[key]={kind:'image',tex:r.tex,name:file.name,aspect:r.aspect};
+          }
+          sceneState.faces[key].name=file.name; csPersistScene();
+          setStatus(CS_FACE_LABELS[key]+' ← '+file.name); renderRight();
+        }catch(err){ setStatus('Media failed: '+err.message); }
+      };
+      c.appendChild(row);
+    }
+    const rr=document.createElement('div'); rr.className='row cs-btnrow';
+    rr.innerHTML=`<button id="csSceneSave">Save scene to library</button><button id="csSceneReset">Reset scene</button>`;
+    rr.querySelector('#csSceneSave').onclick=async()=>{
+      const name=prompt('Scene name','Scene '+new Date().toLocaleDateString())||'Scene';
+      await libSave('scene',name,JSON.stringify(csNormalizeScene(sceneState),null,2),{chroma:sceneState.chroma});
+      setStatus(`Scene “${name}” saved to Asset Library`);
+    };
+    rr.querySelector('#csSceneReset').onclick=()=>{ for(const k of CS_FACE_KEYS) csDisposeFaceMedia(k); if(skyTex){gl.deleteTexture(skyTex);skyTex=null;} sceneState=csDefaultScene(); sceneState.enabled=true; csPersistScene(); renderRight(); };
+    c.appendChild(rr);
+    const hint=document.createElement('div'); hint.className='hint'; hint.style.padding='2px 6px';
+    hint.textContent='Image/video files are session-only (browser cannot persist local files) — the scene layout, chroma and marker setup are saved and restored; media names are remembered so you can re-assign quickly.';
+    c.appendChild(hint);
+  }
+}
+
+/* ── UI: Asset Library (right panel) ── */
+function appendLibrarySection(){
+  const host=document.getElementById('rightBody'); if(!host) return;
+  const c=section(host,'Asset Library',false); if(!c) return;
+  const tr=document.createElement('div'); tr.className='row cs-btnrow';
+  tr.innerHTML=`<button id="csLibSaveApp">Save appearance</button><button id="csLibSaveGear">Save gearsets</button><button id="csLibExportAll">Export all (ZIP)</button>`;
+  tr.querySelector('#csLibSaveApp').onclick=async()=>{
+    const name=prompt('Appearance name',(model?.fileName||'Appearance')+' '+new Date().toLocaleDateString())||'Appearance';
+    await libSave('appearance',name,JSON.stringify(getAppearance(),null,2),{model:model?.fileName||null});
+    setStatus(`Appearance “${name}” saved to Asset Library`);
+  };
+  tr.querySelector('#csLibSaveGear').onclick=async()=>{
+    if(!gearsets.length){ setStatus('No gearsets to save'); return; }
+    await libSave('gearset','Gearsets '+new Date().toLocaleDateString(),JSON.stringify({version:1,engine:'character-studio_v3.3.0',gearsets},null,2),{count:gearsets.length});
+    setStatus(`${gearsets.length} gearset(s) saved to Asset Library`);
+  };
+  tr.querySelector('#csLibExportAll').onclick=()=>libExportAll().catch(e=>setStatus('Export failed: '+e.message));
+  c.appendChild(tr);
+  csCheck(c,'Auto-save captures to library',!!settings.libAutoSave,v=>{ settings.libAutoSave=v; persistSettings(); });
+  if(csBridgeAvailable()){
+    const b=document.createElement('div'); b.className='hint'; b.style.padding='2px 6px';
+    b.textContent='Workspace bridge active — library items are also mirrored to .character-studio-workspace/library on disk.';
+    c.appendChild(b);
+  }
+  const list=document.createElement('div'); list.className='cs-liblist'; list.innerHTML='<div class="hint" style="padding:4px 6px">Loading…</div>';
+  c.appendChild(list);
+  libList().then(items=>{
+    if(!items.length){ list.innerHTML='<div class="hint" style="padding:4px 6px">Library is empty. Saved appearances, gearsets, scenes and captures land here — exportable any time.</div>'; return; }
+    list.innerHTML='';
+    for(const it of items.slice(0,50)){
+      const row=document.createElement('div'); row.className='cs-librow';
+      const kb=it.size>0?` · ${(it.size/1024).toFixed(it.size>1048576?0:1)} KB`:'';
+      row.innerHTML=`<span class="cs-libtype">${it.type}</span><span class="cs-libname" title="${it.name}">${it.name}</span><span class="hint">${String(it.createdAt).slice(0,10)}${kb}</span>`+
+        `<button data-a="apply" title="Apply"${['appearance','scene','gearset'].includes(it.type)?'':' disabled'}>↩</button><button data-a="export" title="Export">⬇</button><button data-a="del" title="Delete">✕</button>`;
+      row.querySelector('[data-a=export]').onclick=()=>libExportOne(it.id).then(f=>setStatus('Exported '+f)).catch(e=>setStatus('Export failed: '+e.message));
+      row.querySelector('[data-a=del]').onclick=()=>{ if(confirm(`Delete “${it.name}” from the library?`)) libDelete(it.id); };
+      row.querySelector('[data-a=apply]').onclick=async()=>{
+        const rec=await libGet(it.id); if(!rec||rec.json==null) return;
+        try{
+          if(it.type==='appearance'){ window.StudioAPI.applyAppearance(rec.json); setStatus(`Applied appearance “${it.name}”`); }
+          else if(it.type==='scene'){ sceneState=csNormalizeScene(JSON.parse(rec.json)); csPersistScene(); renderRight(); setStatus(`Applied scene “${it.name}”`); }
+          else if(it.type==='gearset'){ const g=JSON.parse(rec.json); if(Array.isArray(g.gearsets)){ for(const gs of g.gearsets) if(!gearsets.some(x=>x.name===gs.name)) gearsets.push(gs); persistGearsets(); renderRight(); setStatus(`Imported ${g.gearsets.length} gearset(s) from library`); } }
+        }catch(e){ setStatus('Apply failed: '+e.message); }
+      };
+      list.appendChild(row);
+    }
+    if(items.length>50){ const m=document.createElement('div'); m.className='hint'; m.style.padding='2px 6px'; m.textContent=`…and ${items.length-50} more (Export all to get everything)`; list.appendChild(m); }
+  }).catch(e=>{ list.innerHTML=`<div class="hint" style="padding:4px 6px">Library unavailable: ${e&&e.message||e}</div>`; });
+}
+
+/* ── wire panels + turntable auto-library + StudioAPI ── */
+const _rl33=renderLeft, _rr33=renderRight;
+renderLeft=function(){ _rl33(); appendBackdropSection(); };
+renderRight=function(){ _rr33(); appendCaptureSection(); appendSceneSection(); appendLibrarySection(); };
+const _rtt33=renderTurntable;
+renderTurntable=async function(...args){
+  const r=await _rtt33(...args);
+  try{ if(settings.libAutoSave&&window.__turntable) await libSave('turntable','Turntable '+csTimestamp(),{blob:window.__turntable},{seconds:args[0]||null}); }catch(e){ console.warn('turntable library save failed',e); }
+  return r;
+};
+Object.assign(window.StudioAPI,{
+  setBackground:(mode,color,color2)=>{ if(typeof mode==='string') settings.bgMode=mode; if(typeof color==='string') settings.bgColor=color; if(typeof color2==='string') settings.bgColor2=color2; persistSettings(); renderLeft(); return {mode:settings.bgMode,color:settings.bgColor,color2:settings.bgColor2}; },
+  getBackground:()=>({mode:settings.bgMode,color:settings.bgColor,color2:settings.bgColor2,brightness:settings.bg??1}),
+  setFx:(fx)=>{ fx=fx||{}; if(fx.pixelate!==undefined) settings.fxPixelate=fx.pixelate; if(fx.posterize!==undefined) settings.fxPosterize=fx.posterize; if(fx.dither!==undefined) settings.fxDither=!!fx.dither; if(fx.outline!==undefined) settings.fxOutline=!!fx.outline; if(fx.outlineColor!==undefined) settings.fxOutlineColor=fx.outlineColor; persistSettings(); renderLeft(); return csNormalizeFx(settings); },
+  getFx:()=>csNormalizeFx(settings),
+  setProjection:(o)=>{ settings.ortho=!!(o&&o.ortho); if(o&&Number.isFinite(+o.fov)) settings.fov=+o.fov; persistSettings(); renderLeft(); return {ortho:settings.ortho,fov:settings.fov}; },
+  captureScreenshot:(opts)=>csCapturePng(opts||{}),
+  renderSpriteSheet:(opts)=>csRenderSpriteSheet(opts||{}),
+  scene:{
+    state:()=>cloneJson(csNormalizeScene(sceneState)),
+    set:(s)=>{ sceneState=csNormalizeScene({...csNormalizeScene(sceneState),...(s||{})}); csPersistScene(); renderRight(); return cloneJson(sceneState); },
+    enable:(on=true)=>{ sceneState.enabled=!!on; csPersistScene(); renderRight(); return sceneState.enabled; },
+    setChroma:(c)=>{ sceneState.chroma=c==='blue'?'blue':'green'; csPersistScene(); renderRight(); return sceneState.chroma; },
+    setMarkers:(on)=>{ sceneState.markers=!!on; csPersistScene(); renderRight(); return sceneState.markers; },
+    setFaceMedia:(face,media)=>{ if(!CS_FACE_KEYS.includes(face)) throw new Error('Unknown face: '+face+' (use '+CS_FACE_KEYS.join('/')+')'); sceneState.faces[face].media=['chroma','image','video','off'].includes(media)?media:'chroma'; csPersistScene(); renderRight(); return cloneJson(sceneState.faces[face]); },
+  },
+  library:{ list:libList, get:libGet, save:libSave, remove:libDelete, exportOne:libExportOne, exportAll:libExportAll },
+});
+renderLeft(); renderRight();
 
 </script>
 </body>

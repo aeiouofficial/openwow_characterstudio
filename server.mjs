@@ -11,6 +11,7 @@ const HOST = process.env.HOST || '127.0.0.1';
 const PORT = Number(process.env.PORT || 4173);
 const WORKSPACE = path.join(ROOT, '.character-studio-workspace');
 const PRESETS_FILE = path.join(WORKSPACE, 'source-presets.json');
+const LIBDIR = path.join(WORKSPACE, 'library');
 const MAX_JSON = 2 * 1024 * 1024;
 const MIME = {
   '.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8',
@@ -221,6 +222,42 @@ const server=http.createServer(async(req,res)=>{
       const rel=String(url.searchParams.get('path')||'').replace(/\\/g,'/'); const target=path.resolve(root,...rel.split('/'));
       if(!isSubPath(root,target)||!fs.existsSync(target)||!fs.statSync(target).isFile()) return json(res,404,{error:'asset not found'});
       return serveFile(res,target);
+    }
+
+    if(url.pathname==='/api/library'&&req.method==='GET'){
+      await fsp.mkdir(LIBDIR,{recursive:true});
+      const items=[];
+      const walk=async dir=>{
+        let list; try{list=await fsp.readdir(dir,{withFileTypes:true});}catch{return;}
+        for(const ent of list){
+          const p=path.join(dir,ent.name);
+          if(ent.isDirectory()) await walk(p);
+          else{ const st=await fsp.stat(p); items.push({path:path.relative(LIBDIR,p).split(path.sep).join('/'),bytes:st.size,mtime:st.mtime.toISOString()}); }
+        }
+      };
+      await walk(LIBDIR);
+      return json(res,200,{ok:true,root:LIBDIR,items});
+    }
+    if(url.pathname==='/api/library'&&req.method==='POST'){
+      const rel=String(url.searchParams.get('name')||'').split('/').map(s=>safeName(s)).filter(s=>s&&s!=='Default'||s==='Default').join('/');
+      if(!rel) return json(res,400,{ok:false,error:'name query param required'});
+      const target=path.resolve(LIBDIR,...rel.split('/'));
+      if(!isSubPath(LIBDIR,target)) return json(res,400,{ok:false,error:'invalid path'});
+      const bytes=await streamUpload(req,target);
+      return json(res,200,{ok:true,path:rel,bytes});
+    }
+    if(url.pathname==='/api/library/file'&&req.method==='GET'){
+      const rel=String(url.searchParams.get('path')||'').replace(/\\/g,'/');
+      const target=path.resolve(LIBDIR,...rel.split('/').filter(Boolean));
+      if(!isSubPath(LIBDIR,target)||!fs.existsSync(target)||!fs.statSync(target).isFile()) return json(res,404,{error:'library file not found'});
+      return serveFile(res,target);
+    }
+    if(url.pathname==='/api/library'&&req.method==='DELETE'){
+      const rel=String(url.searchParams.get('path')||'').replace(/\\/g,'/');
+      const target=path.resolve(LIBDIR,...rel.split('/').filter(Boolean));
+      if(!isSubPath(LIBDIR,target)) return json(res,400,{ok:false,error:'invalid path'});
+      await fsp.rm(target,{force:true});
+      return json(res,200,{ok:true,removed:rel});
     }
 
     let pathname=decodeURIComponent(url.pathname);

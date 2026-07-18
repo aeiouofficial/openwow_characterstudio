@@ -204,3 +204,122 @@ test('Firefox range styling and per-subset controls ship in the UI',()=>{
   assert.match(html,/class=\"grp-actions\"/);
   assert.match(html,/Shift-drag moves the mask pair/);
 });
+
+/* ───────── v3.3.0 — backdrop & chroma, capture, scene studio, asset library ───────── */
+ctx.Date=Date;
+for(const name of ['csChromaPresetColor','csResolveBackground','csCoverScale','orthographic','spriteSheetYaws','csNormalizeFx','csDefaultScene','csNormalizeScene','validateLibraryRecord'])
+  vm.runInContext(extract(name),ctx);
+
+test('chroma preset palette matches the approved keying colors',()=>{
+  assert.equal(call('csChromaPresetColor("chromaGreen")'),'#00B140');
+  assert.equal(call('csChromaPresetColor("chromaGreenPure")'),'#00FF00');
+  assert.equal(call('csChromaPresetColor("chromaBlue")'),'#0047BB');
+  assert.equal(call('csChromaPresetColor("chromaBluePure")'),'#0000FF');
+  assert.equal(call('csChromaPresetColor("chromaMagenta")'),'#FF00FF');
+  assert.equal(call('csChromaPresetColor("nonsense")'),null);
+});
+
+test('csResolveBackground maps every mode to the right clear behavior',()=>{
+  assert.equal(call('csResolveBackground("transparent").type'),'transparent');
+  assert.deepEqual(Array.from(call('csResolveBackground("studio",null,null,0).rgba')),[0,0,0,1]);
+  assert.deepEqual(Array.from(call('csResolveBackground("chromaGreenPure").rgba')),[0,1,0,1]);
+  assert.deepEqual(Array.from(call('csResolveBackground("chromaBluePure").rgba')),[0,0,1,1]);
+  const grad=call('csResolveBackground("gradient","#ffffff","#000000")');
+  assert.equal(grad.type,'gradient');
+  assert.deepEqual(Array.from(grad.rgba).slice(0,3),[1,1,1]);
+  assert.deepEqual(Array.from(grad.rgba2).slice(0,3),[0,0,0]);
+  const custom=call('csResolveBackground("custom","#ff0000")');
+  assert.deepEqual(Array.from(custom.rgba).slice(0,3),[1,0,0]);
+  assert.equal(call('csResolveBackground("image").type'),'image');
+  const g18=call('csResolveBackground("gray18").rgba[0]'), g50=call('csResolveBackground("gray50").rgba[0]');
+  assert.ok(g18>0.4&&g18<0.5); assert.ok(Math.abs(g50-128/255)<1e-9);
+});
+
+test('orthographic projection maps the view box to NDC corners',()=>{
+  ctx.__m=new Float32Array(16);
+  call('orthographic(__m,2,1,0.05,50)');
+  const m=ctx.__m;
+  // x=halfW -> ndc 1, y=halfH -> ndc 1
+  assert.ok(Math.abs(m[0]*2-1)<1e-6);
+  assert.ok(Math.abs(m[5]*1-1)<1e-6);
+  // z=-near -> -1, z=-far -> +1 (column-major: ndcZ = m[10]*z + m[14])
+  assert.ok(Math.abs((m[10]*-0.05+m[14])+1)<1e-6);
+  assert.ok(Math.abs((m[10]*-50+m[14])-1)<1e-6);
+  assert.equal(m[11],0); // no perspective divide term
+});
+
+test('spriteSheetYaws produces an even clockwise turnaround from the base yaw',()=>{
+  const y=Array.from(call('spriteSheetYaws(8,0.5)'));
+  assert.equal(y.length,8);
+  assert.ok(Math.abs(y[0]-0.5)<1e-9);
+  for(let i=1;i<8;i++) assert.ok(Math.abs((y[i]-y[i-1])-Math.PI/4)<1e-9);
+  assert.ok(Math.abs((y[7]+Math.PI/4)-(0.5+Math.PI*2))<1e-9);
+  assert.equal(call('spriteSheetYaws(0).length'),1);
+});
+
+test('csNormalizeFx clamps rasterize and posterize into safe ranges',()=>{
+  const fx=call('csNormalizeFx({fxPixelate:99,fxPosterize:1,fxDither:1,fxOutline:0,fxOutlineThreshold:9})');
+  assert.equal(fx.pixelate,16);
+  assert.equal(fx.posterize,0); // 1 level is meaningless -> off
+  assert.equal(fx.dither,true);
+  assert.equal(fx.outline,false);
+  assert.ok(fx.outlineThreshold<=0.05);
+  const lo=call('csNormalizeFx({fxPixelate:0,fxPosterize:4.4})');
+  assert.equal(lo.pixelate,1);
+  assert.equal(lo.posterize,4);
+  assert.equal(call('csNormalizeFx().pixelate'),1);
+});
+
+test('scene state defaults to a keyable greenscreen room and survives garbage input',()=>{
+  const d=call('csDefaultScene()');
+  assert.deepEqual(Object.keys(d.faces).sort(),['ceiling','east','floor','north','south','west']);
+  assert.equal(d.chroma,'green');
+  assert.equal(d.markers,true);
+  for(const k of Object.keys(d.faces)) assert.equal(d.faces[k].media,'chroma');
+  const s=call('csNormalizeScene({enabled:1,chroma:"purple",markerTiles:999,sizeMul:-3,faces:{floor:{media:"hologram"},north:{media:"video",name:"clip.mp4"}},sky:{enabled:"yes",name:42}})');
+  assert.equal(s.enabled,true);
+  assert.equal(s.chroma,'green');
+  assert.equal(s.markerTiles,20);
+  assert.ok(s.sizeMul>=1.05);
+  assert.equal(s.faces.floor.media,'chroma');
+  assert.equal(s.faces.north.media,'video');
+  assert.equal(s.faces.north.name,'clip.mp4');
+  assert.equal(s.sky.enabled,true);
+  assert.equal(s.sky.name,null);
+  assert.equal(call('csNormalizeScene(null).chroma'),'green');
+});
+
+test('validateLibraryRecord accepts real records and rejects malformed ones',()=>{
+  const ok=call('validateLibraryRecord({id:"abcd-1234",type:"appearance",name:"Orc hero",createdAt:"2026-07-18T20:00:00.000Z",json:"{}"})');
+  assert.equal(ok.ok,true);
+  assert.equal(ok.errors.length,0);
+  const bad=call('validateLibraryRecord({id:"x",type:"malware",name:"",createdAt:"not a date"})');
+  assert.equal(bad.ok,false);
+  assert.ok(bad.errors.length>=4);
+  assert.equal(call('validateLibraryRecord(null).ok'),false);
+});
+
+test('csCoverScale crops (never letterboxes) for cover-fit backdrops',()=>{
+  const wide=call('csCoverScale(2,1)');  // wide image, square view
+  assert.equal(wide[1],1); assert.ok(Math.abs(wide[0]-0.5)<1e-9);
+  const tall=call('csCoverScale(0.5,1)');
+  assert.equal(tall[0],1); assert.ok(Math.abs(tall[1]-0.5)<1e-9);
+  assert.deepEqual(Array.from(call('csCoverScale(NaN,-1)')),[1,1]);
+});
+
+test('v3.3.0 features ship in the HTML (context alpha, panels, shaders, state)',()=>{
+  assert.match(html,/alpha:true,premultipliedAlpha:false,preserveDrawingBuffer:true/);
+  assert.match(html,/Scene Studio \(Chroma Room\)/);
+  assert.match(html,/'Asset Library'/);
+  assert.match(html,/'Capture & Export'/);
+  assert.match(html,/'Backdrop & Post FX'/);
+  assert.match(html,/data-bgmode/);
+  assert.match(html,/uMarkerColor/);      // tracking-point shader
+  assert.match(html,/uPosterize/);        // post FX shader
+  assert.match(html,/csShotAlpha/);       // transparent PNG button
+  assert.match(html,/#gl\.cs-alpha/);     // transparency checkerboard CSS
+  assert.match(html,/character-studio_v3\.3\.0/);
+  assert.match(html,/a\.background=/);    // appearance JSON carries backdrop state
+  assert.match(html,/a\.scene=/);         // appearance JSON carries scene state
+  assert.doesNotMatch(html,/version='3\.2\.1'/);
+});

@@ -1,6 +1,6 @@
 {
   "name": "@aeiou/character-studio",
-  "version": "3.2.1",
+  "version": "3.3.0",
   "description": "CHARACTER STUDIO - made by AEiOU \u2014 offline WebGL2 character customization studio with per-geoset texture alignment/warp, eye-region correction, GLB/texture bundle auto-wiring, reusable asset-source presets, content packs, GLB export, MCP, and headless mode",
   "type": "module",
   "main": "./src/engine/index.ts",
