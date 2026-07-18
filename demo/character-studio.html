@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CHARACTER STUDIO - made by AEiOU</title>
+<style>
+:root{--bg:#222428;--panel:#1e2024;--panel2:#26282d;--btn:#2c2f35;--btnh:#363a41;--border:#0c0d0f;--line:#3a3e45;--text:#d6d9de;--muted:#8d919a;--sel:#3f7fd4;--good:#7dbb63;--danger:#d66a5f;--gear:#c99a5a;--body:#7dbb63;--headc:#6fa8dc;--mono:ui-monospace,Consolas,monospace;
+--noise:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.035 0'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+--metal:linear-gradient(180deg,#3d4149,#2e3138 45%,#282b31);
+--metalh:linear-gradient(180deg,#474c55,#363a41 45%,#2e3138);
+--well:linear-gradient(180deg,#141519,#1a1c20);
+--bluesel:linear-gradient(180deg,#5b96e6,#3c7bd4 55%,#2f66b6)}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Segoe UI,system-ui,sans-serif;overflow:hidden}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:#17181b;box-shadow:inset 0 0 4px #0008}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#3d4149,#2b2e34);border:1px solid var(--border);border-radius:5px;box-shadow:inset 0 1px 0 #ffffff18}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#474c55,#33363d)}
+#app{display:grid;grid-template-columns:330px 1fr 350px;grid-template-rows:46px 1fr;height:100%}
+header{grid-column:1/-1;display:flex;align-items:center;gap:8px;padding:0 12px;background:linear-gradient(180deg,#383c43,#2a2d32 60%,#232529),var(--noise);border-bottom:1px solid #0a0b0c;box-shadow:inset 0 1px 0 #ffffff17,0 2px 6px #00000070;position:relative;z-index:10}
+h1{font-size:12px;margin:0;color:#eceef2;letter-spacing:.1em;font-weight:700;text-shadow:0 1px 1px #000c}
+.ver{font-size:10px;color:var(--muted);text-shadow:0 1px 0 #000a}
+.spacer{flex:1}
+header button,header select{font-size:11px;background:var(--metal);color:var(--text);border:1px solid var(--border);border-radius:3px;padding:6px 11px;cursor:pointer;box-shadow:inset 0 1px 0 #ffffff22,inset 0 -1px 0 #00000055,0 1px 2px #00000070;text-shadow:0 1px 1px #0009}
+header button:hover,header select:hover{background:var(--metalh)}
+header button:active{box-shadow:inset 0 2px 4px #000a;background:linear-gradient(180deg,#26292e,#2c2f35)}
+header button.primary{background:var(--bluesel);border-color:#1e4477;color:#fff;box-shadow:inset 0 1px 0 #ffffff45,inset 0 -1px 0 #00336655,0 1px 3px #00000080}
+header button.primary:hover{filter:brightness(1.08)}
+.side{overflow:auto;background:linear-gradient(180deg,#25272c,#1c1e22 30%,#1b1d21),var(--noise);border-right:1px solid #0a0b0c;box-shadow:inset -1px 0 0 #ffffff08,4px 0 10px -6px #000a}
+.side.r{border-right:0;border-left:1px solid #0a0b0c;box-shadow:inset 1px 0 0 #ffffff08,-4px 0 10px -6px #000a}
+.pad{padding:8px 10px 48px}
+.sec{display:flex;align-items:center;gap:6px;margin:12px 0 4px;font-size:10.5px;text-transform:uppercase;letter-spacing:.11em;color:#c9ccd2;font-weight:700;cursor:pointer;user-select:none;text-shadow:0 1px 1px #000c}
+.sec .chev{color:var(--muted);font-size:11px;width:10px}
+.sec:hover{color:#fff}
+.secbody{margin:2px 0 8px;padding:7px 8px;background:linear-gradient(180deg,#232529,#1f2125);border:1px solid #131417;border-radius:4px;box-shadow:inset 0 1px 0 #ffffff0c,0 1px 3px #00000050}
+.grp{margin:8px 0 2px;font-size:9.5px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;text-shadow:0 1px 0 #000a}
+.hint{font-size:11px;color:var(--muted);line-height:1.45;margin:5px 0}
+.row{margin:6px 0}.row label{display:block;font-size:11px;color:var(--muted);text-shadow:0 1px 0 #0008}
+.row input[type=range]{width:100%}
+input[type=range]{-webkit-appearance:none;appearance:none;height:18px;background:transparent;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:var(--well);border:1px solid #0a0b0c;box-shadow:inset 0 1px 3px #000b,0 1px 0 #ffffff10}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;margin-top:-5px;background:radial-gradient(circle at 35% 28%,#8fb4e4,#3f7fd4 55%,#2a5CA5);border:1px solid #0a0b0c;box-shadow:0 1px 3px #000b,inset 0 1px 0 #ffffff50;cursor:pointer}
+input[type=range]::-webkit-slider-thumb:hover{filter:brightness(1.12)}
+#vp{position:relative;background:radial-gradient(ellipse at 50% 28%,#383c44,#1b1d21 55%,#0e0f11 100%)}
+#vp::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 120%,transparent 55%,#00000066),var(--noise)}
+#gl{width:100%;height:100%;display:block}
+.drop{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(15,20,30,.72);border:1px dashed var(--sel);z-index:5;font-size:15px;color:#fff;pointer-events:none}
+.drop.on{display:flex}
+.hud{position:absolute;left:8px;bottom:8px;right:8px;display:flex;flex-wrap:wrap;gap:4px;pointer-events:none;z-index:2}
+.hud span{background:linear-gradient(180deg,#1b1d21ee,#121316ee);border:1px solid #0a0b0c;border-radius:3px;padding:3px 8px;font-size:10px;color:var(--muted);box-shadow:inset 0 1px 0 #ffffff12,0 1px 3px #0008;text-shadow:0 1px 0 #000a}
+#viewbar{position:absolute;top:10px;left:10px;z-index:3;width:205px}
+.legend{margin-top:6px;background:linear-gradient(180deg,#1b1d21f2,#141518f2);border:1px solid #0a0b0c;border-radius:4px;padding:7px 9px;max-height:56vh;overflow:auto;box-shadow:inset 0 1px 0 #ffffff10,0 3px 10px #000b}
+.lg{display:flex;align-items:center;gap:7px;font-size:10.5px;color:#b9bdc4;padding:2px 0;text-shadow:0 1px 0 #000a}
+.lg .sw{width:10px;height:10px;border:1px solid #000c;flex:none;border-radius:2px;box-shadow:inset 0 1px 0 #ffffff30,0 1px 2px #0008}
+.geo{display:flex;align-items:center;gap:6px;padding:3px 4px;font-size:11px;border-bottom:1px solid #ffffff06}.geo:hover{background:#ffffff08}
+.geo input{accent-color:var(--sel)}
+.geo .tag{font-size:9px;font-weight:700;letter-spacing:.04em;color:var(--muted);text-shadow:0 1px 0 #000a}
+.geo .tag.body{color:var(--body)}.geo .tag.gear{color:var(--gear)}.geo .tag.head{color:var(--headc)}
+.geo .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btnrow{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}
+.btnrow button{font-size:10.5px;background:var(--metal);color:var(--text);border:1px solid var(--border);border-radius:3px;padding:6px 10px;cursor:pointer;box-shadow:inset 0 1px 0 #ffffff20,inset 0 -1px 0 #00000050,0 1px 2px #00000070;text-shadow:0 1px 1px #0009}
+.btnrow button:hover{background:var(--metalh)}
+.btnrow button:active{box-shadow:inset 0 2px 4px #000a;background:linear-gradient(180deg,#26292e,#2c2f35)}
+.btnrow button.wide{flex:1;text-align:center;font-weight:700;letter-spacing:.06em;padding:9px}
+.json{width:100%;height:130px;background:var(--well);color:#9fc98a;border:1px solid #0a0b0c;border-radius:3px;font:10px/1.4 var(--mono);padding:8px;box-shadow:inset 0 2px 5px #000b,0 1px 0 #ffffff0c}
+#status{font-size:11px;color:var(--muted);max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 1px 0 #000a}
+.empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--muted);z-index:1;pointer-events:none}
+.empty b{color:#eceef2;font-size:17px;text-shadow:0 2px 4px #000c}
+.empty kbd{background:var(--metal);border:1px solid var(--line);padding:2px 6px;border-radius:2px;font-size:11px;box-shadow:inset 0 1px 0 #ffffff20,0 1px 2px #0009}
+.wrow{display:grid;grid-template-columns:minmax(80px,1fr) 24px minmax(92px,auto) 24px;align-items:stretch;gap:0;background:var(--metal);border:1px solid var(--border);border-radius:3px;margin:4px 0;font-size:11px;box-shadow:inset 0 1px 0 #ffffff1c,inset 0 -1px 0 #00000045,0 1px 3px #00000060;overflow:hidden}
+.wrow .wl{color:#c9ccd2;font-weight:600;padding:6px 8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 1px 1px #0009}
+.wrow .wv{text-align:center;color:#9fc3ec;padding:6px 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--well);box-shadow:inset 0 1px 3px #0009,inset 0 -1px 0 #ffffff08;border-left:1px solid #0a0b0c;border-right:1px solid #0a0b0c;text-shadow:0 1px 0 #000a}
+.wrow .arrow{background:transparent;border:0;color:#a6abb4;cursor:pointer;font-size:13px;line-height:1;padding:0;text-shadow:0 1px 1px #000a}
+.wrow .arrow:hover{background:#ffffff14;color:#fff}
+.wrow .arrow:active{box-shadow:inset 0 2px 4px #000a}
+.chip{display:inline-block;width:11px;height:11px;vertical-align:-1px;margin-right:6px;border:1px solid #000c;border-radius:2px;box-shadow:inset 0 1px 0 #ffffff35,0 1px 2px #0008}
+.slot{border:1px solid #131417;border-radius:4px;background:linear-gradient(180deg,#292c31,#232529);padding:7px 9px;margin:5px 0;font-size:11px;box-shadow:inset 0 1px 0 #ffffff0e,0 1px 3px #00000055}
+.slot .sl{color:var(--gear);font-weight:700;text-transform:uppercase;font-size:9.5px;letter-spacing:.08em;margin-bottom:3px;text-shadow:0 1px 1px #000b}
+select,input[type=text]{background:var(--well);color:#c9cdd4;border:1px solid #0a0b0c;border-radius:3px;padding:6px 8px;font-size:11px;font-family:inherit;box-shadow:inset 0 1px 3px #000a,0 1px 0 #ffffff0c}
+select:hover{filter:brightness(1.1)}
+.slot select{width:100%;margin-top:3px}
+.slot .wrow{margin:4px 0}
+.sculptsel{width:100%;margin:4px 0}
+.seg{display:flex;border:1px solid var(--border);border-radius:3px;overflow:hidden;margin:4px 0;background:var(--metal);box-shadow:inset 0 1px 0 #ffffff1c,0 1px 3px #00000070}
+.seg button{flex:1;background:transparent;border:0;border-right:1px solid #0e0f12;color:#a6abb4;font-size:10.5px;font-weight:700;padding:8px 4px;cursor:pointer;text-shadow:0 1px 1px #0009}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--bluesel);color:#fff;box-shadow:inset 0 1px 0 #ffffff40,inset 0 -2px 4px #00336633;text-shadow:0 1px 2px #003366aa}
+.seg button:hover:not(.on){background:#ffffff10;color:#e6e9ee}
+.pathrow{display:flex;margin:5px 0}
+.pathrow input{flex:1;border-radius:3px 0 0 3px;border-right:0;min-width:0}
+.pathrow button{background:var(--metal);border:1px solid var(--border);border-radius:0 3px 3px 0;color:var(--text);cursor:pointer;padding:0 11px;font-size:11px;box-shadow:inset 0 1px 0 #ffffff20,0 1px 2px #00000070}
+.pathrow button:hover{background:var(--metalh)}
+.pathrow button:active{box-shadow:inset 0 2px 4px #000a}
+.gset{display:flex;align-items:center;gap:6px;background:linear-gradient(180deg,#292c31,#232529);border:1px solid #131417;border-radius:3px;padding:6px 9px;margin:4px 0;font-size:11px;box-shadow:inset 0 1px 0 #ffffff0e,0 1px 2px #00000050}
+.gset .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#c9cdd4;text-shadow:0 1px 0 #000a}
+.gset button{background:var(--metal);border:1px solid var(--border);border-radius:3px;color:var(--text);font-size:10px;padding:4px 9px;cursor:pointer;box-shadow:inset 0 1px 0 #ffffff20,0 1px 2px #00000060;text-shadow:0 1px 1px #0009}
+.gset button:hover{background:var(--metalh)}
+.gset button.x{color:var(--danger)}
+.filelist{max-height:170px;overflow:auto;background:var(--well);border:1px solid #0a0b0c;border-radius:3px;margin:5px 0;box-shadow:inset 0 2px 5px #000a}
+.flrow{display:flex;justify-content:space-between;gap:8px;font:10px/1.5 var(--mono);color:#b9bdc4;padding:2px 7px;border-bottom:1px solid #ffffff06}
+.flrow .fn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.flrow .sz{color:var(--muted);flex:none}
+body.headless header,body.headless .side,body.headless #viewbar,body.headless .hud,body.headless .empty{display:none!important}
+body.headless #app{grid-template-columns:1fr;grid-template-rows:1fr}
+body.headless #vp{grid-column:1;grid-row:1}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>CHARACTER STUDIO</h1><span class="ver">- made by AEiOU</span>
+    <button type="button" class="primary" id="btnOpen">Open GLB / GLTF / BJ</button>
+    <input type="file" id="fileModel" accept=".glb,.gltf,.bj,.zip,model/gltf-binary,model/gltf+json" hidden/>
+    <input type="file" id="fileTex" accept="image/*" hidden/>
+    <input type="file" id="folderTex" webkitdirectory multiple hidden/>
+    <select id="animSel" title="Animation"><option value="">— animations —</option></select>
+    <button type="button" id="btnPlay">Play</button>
+    <div class="spacer"></div>
+    <span id="status">Drop a .glb / .gltf to begin</span>
+    <button type="button" id="btnRandom">Randomize</button>
+    <button type="button" id="btnReset">Reset Morphs</button>
+    <button type="button" class="primary" id="btnExport">Export JSON</button>
+  </header>
+  <aside class="side" id="left">
+    <div class="pad" id="leftBody"></div>
+  </aside>
+  <main id="vp">
+    <canvas id="gl"></canvas>
+    <div class="drop" id="drop">Drop GLB / GLTF / BJ here</div>
+    <div class="empty" id="empty"><b>Load a character model</b><div>Open or drop <kbd>.glb</kbd> <kbd>.gltf</kbd> <kbd>.bj</kbd> (glTF-compatible)</div><div>Geosets auto-wire · head+body sculpt · external gear textures</div></div>
+    <div class="hud">
+      <span id="hudInfo">no model</span>
+      <span id="hudGeo">geosets: 0</span>
+      <span id="hudAnim">anim: —</span>
+      <span>LMB orbit · scroll zoom · RMB pan</span>
+      <span id="hudFps">— fps</span>
+    </div>
+  </main>
+  <aside class="side r" id="right">
+    <div class="pad" id="rightBody"></div>
+  </aside>
+</div>
+<script type="module">
+/**
+ * Character Studio v1.4 — pure WebGL2
+ * - Load GLB/GLTF (+ .bj if glTF magic)
+ * - Geoset visibility toggles (all mesh nodes)
+ * - Head sculpt + gear-safe body sculpt
+ * - Animation playback (skinned)
+ * - External image → material/gear texture override
+ */
+
+// ═══════════ Morph catalogs (inline) ═══════════
+const headAxes = (() => {
+  const A = (id,label,cat,str=0.012)=>({id,label,category:cat,min:-1,max:1,default:0,strength:str});
+  return [
+    A('skull_width','Skull Width','skull',0.02),A('skull_height','Skull Height','skull',0.018),A('skull_depth','Skull Depth','skull',0.016),
+    A('forehead_height','Forehead Height','skull',0.014),A('brow_ridge','Brow Ridge','brow',0.014),A('brow_height','Brow Height','brow',0.01),
+    A('eye_size','Eye Size','eyes',0.01),A('eye_spacing','Eye Spacing','eyes',0.014),A('eye_depth','Eye Depth','eyes',0.012),
+    A('nose_length','Nose Length','nose',0.014),A('nose_width','Nose Width','nose',0.012),A('nose_tip_up','Nose Tip','nose',0.01),A('nose_hook','Nose Hook','nose',0.01),
+    A('cheekbone_width','Cheekbone Width','cheeks',0.014),A('cheek_hollow','Cheek Hollow','cheeks',0.01),
+    A('mouth_width','Mouth Width','mouth',0.01),A('lip_fullness','Lip Fullness','mouth',0.006),
+    A('jaw_width','Jaw Width','jaw',0.018),A('jaw_forward','Jaw Forward','jaw',0.014),A('jaw_angle','Jaw Angle','jaw',0.012),
+    A('chin_height','Chin Length','chin',0.012),A('chin_depth','Chin Forward','chin',0.01),
+    A('ear_size','Ear Size','ears',0.016),A('ear_angle','Ear Angle','ears',0.012),A('ear_tip','Ear Tip','ears',0.01),
+    A('neck_width','Neck Width','neck',0.014),A('asym_jaw','Asym Jaw','asymmetry',0.008),A('age_jowls','Jowls','age',0.008),
+    A('expr_smile','Rest Smile','expression',0.006),A('expr_frown','Rest Frown','expression',0.006),A('expr_snarl','Rest Snarl','expression',0.008),
+  ];
+})();
+const headCats = ['skull','brow','eyes','nose','cheeks','mouth','jaw','chin','ears','neck','asymmetry','age','expression'];
+const bodyAxes = (() => {
+  const A = (id,label,cat,regions,str=0.02)=>({id,label,category:cat,regions,min:-1,max:1,default:0,strength:str});
+  return [
+    A('body_scale','Body Scale','proportions',['torso','chest','hips'],0.04),
+    A('height_bias','Height Bias','proportions',['torso','thigh_l','thigh_r'],0.03),
+    A('muscle_bulk','Muscle Bulk','bulk',['chest','shoulder_l','shoulder_r','upper_arm_l','upper_arm_r','thigh_l','thigh_r'],0.025),
+    A('body_fat','Body Fat','bulk',['belly','hips','chest'],0.022),
+    A('bone_frame','Bone Frame','proportions',['shoulder_l','shoulder_r','hips'],0.02),
+    A('torso_width','Torso Width','torso',['torso','chest'],0.025),
+    A('torso_depth','Torso Depth','torso',['torso','chest'],0.02),
+    A('chest_size','Chest Size','chest',['chest'],0.03),
+    A('belly_size','Belly Size','torso',['belly'],0.028),
+    A('back_width','Back Width','torso',['back'],0.02),
+    A('lats','Lats / V-Taper','torso',['back','torso'],0.018),
+    A('shoulder_width','Shoulder Width','shoulders',['shoulder_l','shoulder_r'],0.03),
+    A('shoulder_bulk','Shoulder Bulk','shoulders',['shoulder_l','shoulder_r'],0.02),
+    A('upper_arm_size','Upper Arm','arms',['upper_arm_l','upper_arm_r'],0.022),
+    A('forearm_size','Forearm','arms',['forearm_l','forearm_r'],0.018),
+    A('hand_size','Hand Size','hands',['hand_l','hand_r'],0.015),
+    A('waist_size','Waist Size','waist',['belly','hips'],0.025),
+    A('hip_width','Hip Width','hips',['hips'],0.028),
+    A('glute_size','Glute Size','hips',['hips'],0.022),
+    A('leg_length','Leg Length','legs',['thigh_l','thigh_r','calf_l','calf_r'],0.025),
+    A('thigh_size','Thigh Size','legs',['thigh_l','thigh_r'],0.025),
+    A('calf_size','Calf Size','legs',['calf_l','calf_r'],0.02),
+    A('stance_width','Stance Width','legs',['thigh_l','thigh_r','foot_l','foot_r'],0.02),
+    A('foot_size','Foot Size','feet',['foot_l','foot_r'],0.015),
+    A('posture_chest_up','Chest Up','posture',['chest','torso'],0.012),
+    A('posture_slouch','Slouch','posture',['torso','back'],0.012),
+  ];
+})();
+const bodyCats = ['proportions','bulk','torso','chest','shoulders','arms','hands','waist','hips','legs','feet','posture'];
+const GEAR_RE = /glove|boot|cloak|tabard|belt|wrist|kneepad|chest(?!_size)|pants|trouser|shoulder|helm|weapon|shield|cape|armor|mail|plate|leather|jewelry|piercing|eyeglow/i;
+const HEAD_RE = /head|ear|eye|hair|facial|headswap|headpreset/i;
+const BODY_SAFE_RE = /geoset0|torso|body|skin|feet\d|hand/i;
+
+const headVals = Object.fromEntries(headAxes.map(a=>[a.id,0]));
+const bodyVals = Object.fromEntries(bodyAxes.map(a=>[a.id,0]));
+let colors = { skin:'#5a8f3a', hair:'#1a1420', eyes:'#e8a020' };
+let leftTab = 'head:skull', rightTab = 'geosets';
+let dirtyMorph = true;
+
+// ═══════════ GLB loader ═══════════
+const CT = {5120:Int8Array,5121:Uint8Array,5122:Int16Array,5123:Uint16Array,5125:Uint32Array,5126:Float32Array};
+const CS = {5120:1,5121:1,5122:2,5123:2,5125:4,5126:4};
+const NC = {SCALAR:1,VEC2:2,VEC3:3,VEC4:4,MAT4:16};
+
+function parseGlb(buf) {
+  const dv = new DataView(buf);
+  if (dv.getUint32(0,true) !== 0x46546c67) throw new Error('Not GLB (need glTF magic). For .bj: only works if file is actually GLB/glTF.');
+  if (dv.getUint32(4,true) !== 2) throw new Error('GLB version must be 2');
+  let off=12, json=null, bin=null;
+  while (off < buf.byteLength) {
+    const len=dv.getUint32(off,true), type=dv.getUint32(off+4,true);
+    const chunk=buf.slice(off+8, off+8+len);
+    if (type===0x4e4f534a) json=JSON.parse(new TextDecoder().decode(new Uint8Array(chunk)));
+    else if (type===0x004e4942) bin=chunk;
+    off += 8+len;
+  }
+  if (!json) throw new Error('Missing JSON chunk');
+  return {json, bin: bin||new ArrayBuffer(0)};
+}
+
+function accInfo(json, bin, ai) {
+  const a=json.accessors[ai], bv=json.bufferViews[a.bufferView];
+  const o=(bv.byteOffset||0)+(a.byteOffset||0);
+  const n=a.count*NC[a.type], bs=CS[a.componentType];
+  const slice=bin.slice(o, o+n*bs);
+  return {arr:new CT[a.componentType](slice), count:a.count, type:a.type, componentType:a.componentType, a};
+}
+function asF32(info) {
+  if (info.componentType===5126) return info.arr;
+  const o=new Float32Array(info.arr.length); for(let i=0;i<info.arr.length;i++) o[i]=info.arr[i]; return o;
+}
+function asU32(info) {
+  if (info.componentType===5125) return info.arr;
+  const o=new Uint32Array(info.count); for(let i=0;i<info.count;i++) o[i]=info.arr[i]; return o;
+}
+
+function parseGeosetMeta(name, extras={}) {
+  const bare = name.replace(/^orcmale_hd_/,'').replace(/^.*_hd_/,'');
+  const m = bare.match(/^([A-Za-z]+?)(\d*)$/);
+  const group = extras.geosetGroup || (m?m[1]:bare) || 'Mesh';
+  const variant = extras.geosetVariant ?? (m && m[2] ? parseInt(m[2],10) : 0);
+  const defaultVisible = extras.defaultVisible !== undefined ? !!extras.defaultVisible : null;
+  return {group, variant, defaultVisible};
+}
+function morphMode(name, group) {
+  if (GEAR_RE.test(name) || GEAR_RE.test(group)) {
+    if (HEAD_RE.test(name) || HEAD_RE.test(group)) return 'head';
+    return 'none';
+  }
+  if (HEAD_RE.test(name) || HEAD_RE.test(group)) return 'head';
+  if (BODY_SAFE_RE.test(name) || BODY_SAFE_RE.test(group) || group==='Geoset' || group==='Torso') return 'body';
+  if (/Hair|Facial/i.test(group)||/Hair|Facial/i.test(name)) return 'head';
+  return 'none';
+}
+
+async function decodeImage(json, bin, imageIndex) {
+  const img=json.images[imageIndex];
+  if (!img) return null;
+  let bytes;
+  if (img.bufferView!=null) {
+    const bv=json.bufferViews[img.bufferView];
+    bytes=new Uint8Array(bin, bv.byteOffset||0, bv.byteLength).slice();
+  } else return null;
+  const blob=new Blob([bytes],{type:img.mimeType||'image/png'});
+  const bmp = await createImageBitmap(blob);
+  return {bmp, name: img.name||`image_${imageIndex}`, mime: img.mimeType||'image/png'};
+}
+
+// ═══════════ WebGL renderer ═══════════
+const canvas=document.getElementById('gl');
+const gl=canvas.getContext('webgl2',{antialias:true,alpha:false,preserveDrawingBuffer:true});
+if(!gl) alert('WebGL2 required');
+
+const VS=`#version 300 es
+uniform mat4 uMVP; uniform mat4 uNmat; uniform mat4 uModel; uniform mat4 uBones[80]; uniform int uSkinned;
+in vec3 aPos; in vec3 aNrm; in vec2 aUv; in vec4 aJoints; in vec4 aWeights;
+out vec3 vN; out vec2 vUv; out vec3 vW;
+void main(){
+  vec4 pos=vec4(aPos,1.0); vec3 nrm=aNrm;
+  if(uSkinned==1){
+    mat4 skin=aWeights.x*uBones[int(aJoints.x)] + aWeights.y*uBones[int(aJoints.y)]
+            + aWeights.z*uBones[int(aJoints.z)] + aWeights.w*uBones[int(aJoints.w)];
+    pos=skin*pos; nrm=mat3(skin)*nrm;
+  }
+  vec4 worldPos = uModel * pos;
+  vW=worldPos.xyz; vN=mat3(uNmat * uModel)*nrm; vUv=aUv;
+  gl_Position=uMVP*worldPos;
+}`;
+const FS=`#version 300 es
+precision mediump float;
+uniform sampler2D uTex; uniform vec3 uTint; uniform float uUseTex; uniform vec3 uLight;
+in vec3 vN; in vec2 vUv; in vec3 vW; out vec4 o;
+void main(){
+  vec3 N=normalize(vN);
+  float ndl=clamp(dot(N,normalize(uLight)),0.0,1.0)*0.7+0.3;
+  vec3 base=uTint;
+  if(uUseTex>0.5){
+    vec4 t=texture(uTex,vUv);
+    if(t.a<0.08) discard;
+    base*=t.rgb;
+  }
+  float rim=pow(1.0-clamp(dot(N,vec3(0.2,0.5,0.3)),0.,1.),3.0)*0.12;
+  o=vec4(base*ndl+vec3(rim),1.0);
+}`;
+function sh(t,s){const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);if(!gl.getShaderParameter(x,gl.COMPILE_STATUS))console.error(gl.getShaderInfoLog(x));return x;}
+const prog=gl.createProgram();
+gl.attachShader(prog,sh(gl.VERTEX_SHADER,VS));gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,FS));gl.linkProgram(prog);
+const U={
+  mvp:gl.getUniformLocation(prog,'uMVP'), nmat:gl.getUniformLocation(prog,'uNmat'), model:gl.getUniformLocation(prog,'uModel'),
+  bones:gl.getUniformLocation(prog,'uBones'), skinned:gl.getUniformLocation(prog,'uSkinned'),
+  tex:gl.getUniformLocation(prog,'uTex'), tint:gl.getUniformLocation(prog,'uTint'),
+  useTex:gl.getUniformLocation(prog,'uUseTex'), light:gl.getUniformLocation(prog,'uLight'),
+};
+
+let model=null; // runtime model
+let texOverrideMat = {}; // matIndex -> WebGLTexture
+let playing=true, animTime=0, animIndex=-1;
+
+function createGLTex(bmp) {
+  const t=gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D,t);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.REPEAT);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.REPEAT);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,0);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,bmp);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  return t;
+}
+
+function smoothstep(v,a,b){const t=Math.min(1,Math.max(0,(v-a)/(b-a||1e-9)));return t*t*(3-2*t);}
+function gauss3(x,y,z,cx,cy,cz,sx,sy,sz){const dx=(x-cx)/sx,dy=(y-cy)/sy,dz=(z-cz)/sz;return Math.exp(-0.5*(dx*dx+dy*dy+dz*dz));}
+
+function applyHeadMorphs(base, out, yMin, yMax) {
+  const n=base.length/3, h=Math.max(1e-6,yMax-yMin);
+  const active=headAxes.filter(a=>Math.abs(headVals[a.id])>1e-5);
+  for(let i=0;i<n;i++){
+    const i3=i*3; let x=base[i3],y=base[i3+1],z=base[i3+2];
+    const gate=smoothstep(y,yMin-0.02,yMin+0.08)*(y<=yMax+0.05?1:0.2);
+    if(gate<0.02){out[i3]=x;out[i3+1]=y;out[i3+2]=z;continue;}
+    let dx=0,dy=0,dz=0; const signZ=z>=0?1:-1;
+    const g=(fy,sx,sy,sz,cx=0.32,cz=0)=>gauss3(x,y,z,cx,yMin+fy*h,cz,sx,sy*h,sz);
+    for(const a of active){
+      const s=headVals[a.id]*a.strength*gate;
+      switch(a.id){
+        case 'skull_width': dz+=s*signZ; break;
+        case 'skull_height': dy+=s*smoothstep((y-yMin)/h,0.55,1); break;
+        case 'skull_depth': dx+=s*0.5; break;
+        case 'forehead_height': dy+=s*g(0.9,0.05,0.1,0.08); break;
+        case 'brow_ridge': dx+=s*g(0.72,0.04,0.05,0.09); break;
+        case 'brow_height': dy+=s*g(0.72,0.04,0.05,0.09); break;
+        case 'eye_size': {const w=g(0.68,0.03,0.03,0.03,0.34,0.05*signZ); dx+=s*w*0.2; dy+=s*w*0.2; dz+=s*w*signZ*0.3; break;}
+        case 'eye_spacing': dz+=s*g(0.68,0.03,0.03,0.03,0.34,0.05*signZ)*signZ; break;
+        case 'eye_depth': dx+=s*g(0.68,0.03,0.03,0.03,0.34,0.05*signZ); break;
+        case 'nose_length': dx+=s*g(0.55,0.03,0.08,0.03,0.38); break;
+        case 'nose_width': dz+=s*g(0.52,0.03,0.06,0.035,0.36)*signZ; break;
+        case 'nose_tip_up': dy+=s*g(0.48,0.025,0.03,0.025,0.4); break;
+        case 'nose_hook': {const w=g(0.52,0.03,0.05,0.03,0.38); dx+=s*w; dy-=s*w*0.4; break;}
+        case 'cheekbone_width': dz+=s*g(0.55,0.04,0.05,0.04,0.3,0.08*signZ)*signZ; break;
+        case 'cheek_hollow': dz-=s*g(0.5,0.04,0.06,0.04,0.28,0.07*signZ)*signZ; break;
+        case 'mouth_width': dz+=s*g(0.4,0.03,0.03,0.04,0.35)*signZ; break;
+        case 'lip_fullness': dx+=s*g(0.4,0.03,0.03,0.04,0.36)*0.5; break;
+        case 'jaw_width': dz+=s*g(0.28,0.06,0.08,0.06)*signZ; break;
+        case 'jaw_forward': dx+=s*g(0.28,0.05,0.08,0.06); break;
+        case 'jaw_angle': dz+=s*g(0.3,0.04,0.06,0.04,0.28,0.09*signZ)*signZ; break;
+        case 'chin_height': dy+=s*g(0.15,0.03,0.05,0.04,0.32); break;
+        case 'chin_depth': dx+=s*g(0.15,0.03,0.05,0.04,0.34); break;
+        case 'ear_size': {const w=g(0.65,0.04,0.1,0.03,0.22,0.12*signZ); dz+=s*w*signZ; dy+=s*w*0.3; break;}
+        case 'ear_angle': dz+=s*g(0.65,0.03,0.08,0.03,0.22,0.12*signZ)*signZ; break;
+        case 'ear_tip': dy+=s*g(0.78,0.025,0.04,0.025,0.22,0.12*signZ); break;
+        case 'neck_width': dz+=s*smoothstep(y,yMin-0.05,yMin+0.1)*signZ; break;
+        case 'asym_jaw': dy+=s*g(0.28,0.05,0.07,0.05)*(z/0.12); break;
+        case 'age_jowls': dy-=s*g(0.32,0.04,0.05,0.04,0.28,0.07*signZ); break;
+        case 'expr_smile': {const w=g(0.4,0.04,0.03,0.05,0.34); dy+=s*w*0.3; dz+=s*w*signZ*0.4; break;}
+        case 'expr_frown': dy-=s*g(0.42,0.04,0.03,0.05,0.34); break;
+        case 'expr_snarl': dx+=s*g(0.42,0.03,0.03,0.03,0.35,0.03*signZ)*0.3; break;
+      }
+    }
+    out[i3]=x+dx; out[i3+1]=y+dy; out[i3+2]=z+dz;
+  }
+}
+
+function applyBodyMorphs(base, out, bodyW) {
+  const n=base.length/3;
+  // estimate y range from data
+  let yMin=Infinity,yMax=-Infinity;
+  for(let i=0;i<n;i++){const y=base[i*3+1]; if(y<yMin)yMin=y; if(y>yMax)yMax=y;}
+  const h=Math.max(1e-6,yMax-yMin);
+  const active=bodyAxes.filter(a=>Math.abs(bodyVals[a.id])>1e-5);
+  for(let i=0;i<n;i++){
+    const i3=i*3; const bx=base[i3],by=base[i3+1],bz=base[i3+2];
+    const bw=bodyW?bodyW[i]:1;
+    if(bw<0.02){out[i3]=bx;out[i3+1]=by;out[i3+2]=bz;continue;}
+    const t=(by-yMin)/h, lat=Math.max(-1,Math.min(1,bz/0.35)), signZ=bz>=0?1:-1;
+    const front=smoothstep(bx,-0.05,0.15);
+    const reg={
+      foot: Math.exp(-0.5*((t-0.04)/0.04)**2),
+      calf: Math.exp(-0.5*((t-0.18)/0.08)**2),
+      thigh: Math.exp(-0.5*((t-0.38)/0.1)**2),
+      hips: Math.exp(-0.5*((t-0.48)/0.07)**2),
+      belly: Math.exp(-0.5*((t-0.55)/0.07)**2)*front,
+      torso: Math.exp(-0.5*((t-0.58)/0.1)**2),
+      chest: Math.exp(-0.5*((t-0.68)/0.08)**2),
+      back: Math.exp(-0.5*((t-0.65)/0.1)**2)*(1-front*0.5),
+      shoulder: Math.exp(-0.5*((t-0.75)/0.06)**2),
+      uarm: Math.exp(-0.5*((t-0.62)/0.1)**2)*Math.abs(lat),
+      farm: Math.exp(-0.5*((t-0.48)/0.08)**2)*Math.abs(lat),
+      hand: Math.exp(-0.5*((t-0.35)/0.05)**2)*Math.abs(lat),
+    };
+    let dx=0,dy=0,dz=0;
+    for(const a of active){
+      const val=bodyVals[a.id];
+      // region mask from axis regions keywords
+      let mask=0.3;
+      const rs=a.regions.join(' ');
+      if(/chest/.test(rs)) mask=Math.max(mask,reg.chest);
+      if(/torso|back|belly/.test(rs)) mask=Math.max(mask,reg.torso,reg.back,reg.belly);
+      if(/shoulder/.test(rs)) mask=Math.max(mask,reg.shoulder);
+      if(/upper_arm|arm/.test(rs)) mask=Math.max(mask,reg.uarm);
+      if(/forearm/.test(rs)) mask=Math.max(mask,reg.farm);
+      if(/hand/.test(rs)) mask=Math.max(mask,reg.hand);
+      if(/hip|glute/.test(rs)) mask=Math.max(mask,reg.hips);
+      if(/thigh/.test(rs)) mask=Math.max(mask,reg.thigh);
+      if(/calf|leg/.test(rs)) mask=Math.max(mask,reg.calf,reg.thigh);
+      if(/foot/.test(rs)) mask=Math.max(mask,reg.foot);
+      if(/proportion|bulk/.test(a.category)) mask=Math.max(mask,0.5);
+      mask*=bw;
+      const s=val*a.strength*mask;
+      switch(a.id){
+        case 'body_scale': dx+=s*bx*0.3; dy+=s*(by-yMin)*0.1; dz+=s*bz*0.3; break;
+        case 'height_bias': dy+=s*t; break;
+        case 'muscle_bulk': dx+=s*0.4; dz+=s*signZ*0.8; break;
+        case 'body_fat': dx+=s*0.5; dz+=s*signZ*0.9; break;
+        case 'bone_frame': dz+=s*signZ; break;
+        case 'torso_width': dz+=s*signZ; break;
+        case 'torso_depth': dx+=s; break;
+        case 'chest_size': dx+=s*0.9; dz+=s*signZ*0.5; break;
+        case 'belly_size': dx+=s; dz+=s*signZ*0.4; break;
+        case 'back_width': dz+=s*signZ; break;
+        case 'lats': dz+=s*signZ*1.1; break;
+        case 'shoulder_width': dz+=s*signZ*1.2; break;
+        case 'shoulder_bulk': dz+=s*signZ; dx+=s*0.3; break;
+        case 'upper_arm_size': dz+=s*signZ; break;
+        case 'forearm_size': dz+=s*signZ*0.8; break;
+        case 'hand_size': dz+=s*signZ*0.5; dx+=s*0.3; break;
+        case 'waist_size': dz+=s*signZ; dx+=s*0.5; break;
+        case 'hip_width': dz+=s*signZ; break;
+        case 'glute_size': dx-=s*0.8; dz+=s*signZ*0.4; break;
+        case 'leg_length': dy+=s*t*0.8; break;
+        case 'thigh_size': dz+=s*signZ; break;
+        case 'calf_size': dz+=s*signZ*0.8; break;
+        case 'stance_width': dz+=s*signZ; break;
+        case 'foot_size': dx+=s*0.4; dz+=s*signZ*0.5; break;
+        case 'posture_chest_up': dx+=s*0.5; dy+=s*0.3; break;
+        case 'posture_slouch': dx-=s*0.5; break;
+      }
+    }
+    out[i3]=bx+dx; out[i3+1]=by+dy; out[i3+2]=bz+dz;
+  }
+}
+
+async function loadModelFromFile(file) {
+  const buf=await file.arrayBuffer();
+  const u8=new Uint8Array(buf);
+  let json, bin;
+  if (u8[0]===0x67&&u8[1]===0x6c&&u8[2]===0x54&&u8[3]===0x46) {
+    ({json,bin}=parseGlb(buf));
+  } else {
+    const text=new TextDecoder().decode(u8);
+    if (text.trim().startsWith('{') && text.includes('"asset"')) {
+      json=JSON.parse(text); bin=new ArrayBuffer(0);
+    } else if (file.name.toLowerCase().endsWith('.bj')) {
+      throw new Error('.bj is not glTF/GLB. Convert/export to .glb (or rename if it already has glTF magic).');
+    } else throw new Error('Unsupported file — use .glb or .gltf');
+  }
+
+  // images
+  const images=[];
+  for (let i=0;i<(json.images||[]).length;i++) {
+    try { images[i]=await decodeImage(json, bin, i); } catch { images[i]=null; }
+  }
+  const glTex=[];
+  for (let i=0;i<images.length;i++) glTex[i]=images[i]?createGLTex(images[i].bmp):null;
+
+  // materials
+  const materials=(json.materials||[]).map((m,i)=>({
+    index:i, name:m.name||`mat_${i}`,
+    texIndex: m.pbrMetallicRoughness?.baseColorTexture?.index,
+    baseColor: m.pbrMetallicRoughness?.baseColorFactor || [1,1,1,1],
+  }));
+
+  // geosets / drawables
+  const geosets=[];
+  const drawables=[];
+  const nodes=json.nodes||[];
+  let yMin=Infinity,yMax=-Infinity, globalMaxIndex=0;
+
+  // shared pool detection: many wow.export models share POSITION accessor 0
+  nodes.forEach((nd, ni) => {
+    if (nd.mesh==null) return;
+    const mesh=json.meshes[nd.mesh];
+    const name=nd.name||`node_${ni}`;
+    const extras=nd.extras||{};
+    const meta=parseGeosetMeta(name, extras);
+    const mode=morphMode(name, meta.group);
+    const prim=mesh.primitives[0];
+    const mat=prim.material??0;
+    let defVis = meta.defaultVisible;
+    if (defVis==null) {
+      defVis = mode!=='none' || /Geoset0|HeadSwap2|Eyes1|Ears2|Hair1|FacialA2|FacialB1|Torso1|Trousers1|Feet1|Boots1|Gloves1/i.test(name);
+      if (/Cloak|Tabard|Eyeglow|Piercing|Jewelry|MiscFeature|Kneepad|Wrist|Chest|Pants|Belt/i.test(name)) defVis=false;
+    }
+    const posAcc=prim.attributes.POSITION;
+    const pos=asF32(accInfo(json,bin,posAcc));
+    for(let i=1;i<pos.length;i+=3){if(pos[i]<yMin)yMin=pos[i];if(pos[i]>yMax)yMax=pos[i];}
+
+    const nrm=prim.attributes.NORMAL!=null?asF32(accInfo(json,bin,prim.attributes.NORMAL)):null;
+    const uv=prim.attributes.TEXCOORD_0!=null?asF32(accInfo(json,bin,prim.attributes.TEXCOORD_0)):new Float32Array(pos.length/3*2);
+    const joints=prim.attributes.JOINTS_0!=null?accInfo(json,bin,prim.attributes.JOINTS_0):null;
+    const weights=prim.attributes.WEIGHTS_0!=null?asF32(accInfo(json,bin,prim.attributes.WEIGHTS_0)):null;
+    const indices=prim.indices!=null?asU32(accInfo(json,bin,prim.indices)):null;
+
+    // For shared vertex pool wow models, indices reference global verts — store window via indices min/max
+    let vCount=pos.length/3;
+    let basePos=pos, baseNrm=nrm;
+    // If indices max is within pos count, standard
+    // Build local arrays from unique indices when shared pool huge
+    let localPos, localNrm, localUv, localJoints, localWeights, localIdx;
+    if (indices) {
+      let lo=Infinity,hi=0;
+      for(let i=0;i<indices.length;i++){const v=indices[i]; if(v<lo)lo=v; if(v>hi)hi=v;}
+      // if using full shared pool (hi >> used), extract window
+      const used=hi-lo+1;
+      if (used < vCount * 0.5 || vCount > 100000) {
+        localPos=new Float32Array(used*3);
+        localNrm=new Float32Array(used*3);
+        localUv=new Float32Array(used*2);
+        localJoints=new Float32Array(used*4);
+        localWeights=new Float32Array(used*4);
+        for(let v=0;v<used;v++){
+          const src=lo+v;
+          localPos[v*3]=pos[src*3]; localPos[v*3+1]=pos[src*3+1]; localPos[v*3+2]=pos[src*3+2];
+          if(nrm){localNrm[v*3]=nrm[src*3];localNrm[v*3+1]=nrm[src*3+1];localNrm[v*3+2]=nrm[src*3+2];}
+          else {localNrm[v*3]=0;localNrm[v*3+1]=1;localNrm[v*3+2]=0;}
+          localUv[v*2]=uv[src*2]||0; localUv[v*2+1]=uv[src*2+1]||0;
+          if(joints){
+            // joints may be u8 or u16
+            const ja=joints.arr; const jc=joints.componentType===5121?1:joints.componentType===5123?1:1;
+            for(let k=0;k<4;k++){
+              localJoints[v*4+k]=ja[src*4+k];
+              localWeights[v*4+k]=weights?weights[src*4+k]:(k===0?1:0);
+            }
+          } else {
+            localWeights[v*4]=1;
+          }
+        }
+        localIdx=new Uint32Array(indices.length);
+        for(let i=0;i<indices.length;i++) localIdx[i]=indices[i]-lo;
+        basePos=localPos; baseNrm=localNrm; vCount=used;
+      } else {
+        localIdx=indices;
+        localPos=pos; localNrm=nrm||new Float32Array(vCount*3); localUv=uv;
+        localJoints=new Float32Array(vCount*4); localWeights=weights||new Float32Array(vCount*4);
+        if(joints){const ja=joints.arr; for(let v=0;v<vCount;v++) for(let k=0;k<4;k++) localJoints[v*4+k]=ja[v*4+k];}
+        if(!weights) for(let v=0;v<vCount;v++) localWeights[v*4]=1;
+        basePos=localPos.slice?localPos.slice():new Float32Array(localPos);
+      }
+    } else {
+      localIdx=new Uint32Array(vCount); for(let i=0;i<vCount;i++) localIdx[i]=i;
+      localPos=pos; localNrm=nrm||new Float32Array(vCount*3); localUv=uv;
+      localJoints=new Float32Array(vCount*4); localWeights=new Float32Array(vCount*4);
+      for(let v=0;v<vCount;v++) localWeights[v*4]=1;
+      basePos=new Float32Array(localPos);
+    }
+
+    const workPos=new Float32Array(basePos);
+    const bodyW=new Float32Array(vCount);
+    // head bone-ish weights by height for head morph gate on body meshes
+    const headY0 = yMin + (yMax-yMin)*0.72;
+    for(let v=0;v<vCount;v++){
+      const y=basePos[v*3+1];
+      if(mode==='body') bodyW[v]= y < headY0 ? 1 : smoothstep(y, headY0+0.15, headY0);
+      else if(mode==='head') bodyW[v]=0;
+      else bodyW[v]=0;
+    }
+
+    // GL buffers
+    const vao=gl.createVertexArray(); gl.bindVertexArray(vao);
+    const vbo=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,vbo);
+    gl.bufferData(gl.ARRAY_BUFFER, workPos, gl.DYNAMIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0,3,gl.FLOAT,false,0,0);
+    const nbo=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,nbo);
+    gl.bufferData(gl.ARRAY_BUFFER, localNrm, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1,3,gl.FLOAT,false,0,0);
+    const ubo=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,ubo);
+    gl.bufferData(gl.ARRAY_BUFFER, localUv, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(2); gl.vertexAttribPointer(2,2,gl.FLOAT,false,0,0);
+    const jbo=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,jbo);
+    gl.bufferData(gl.ARRAY_BUFFER, localJoints, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(3); gl.vertexAttribPointer(3,4,gl.FLOAT,false,0,0);
+    const wbo=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,wbo);
+    gl.bufferData(gl.ARRAY_BUFFER, localWeights, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(4); gl.vertexAttribPointer(4,4,gl.FLOAT,false,0,0);
+    const ibo=gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, localIdx, gl.STATIC_DRAW);
+    gl.bindVertexArray(null);
+
+    const geo={
+      nodeIndex:ni, name, meshIndex:nd.mesh, material:mat,
+      group:meta.group, variant:meta.variant,
+      defaultVisible:!!defVis, visible:!!defVis,
+      mode, isGear: mode==='none' && GEAR_RE.test(name),
+    };
+    geosets.push(geo);
+    drawables.push({
+      geo, vao, vbo, ibo, indexCount:localIdx.length,
+      basePos, workPos, bodyW, localNrm, localUv, localJoints, localWeights,
+      skinned: !!(joints && weights), matIndex: mat, nodeIndex: ni,
+    });
+  });
+
+  // skin / bones
+  let skin=null;
+  if (json.skins && json.skins[0]) {
+    const s=json.skins[0];
+    const joints=s.joints||[];
+    const ibm=s.inverseBindMatrices!=null?asF32(accInfo(json,bin,s.inverseBindMatrices)):null;
+    skin={joints, ibm, boneMats:new Float32Array(80*16)};
+    // identity bones default
+    for(let i=0;i<80;i++){skin.boneMats[i*16]=skin.boneMats[i*16+5]=skin.boneMats[i*16+10]=skin.boneMats[i*16+15]=1;}
+  }
+
+  // animations summary
+  const animations=(json.animations||[]).map((a,i)=>{
+    let dur=0;
+    for(const s of a.samplers||[]){const acc=json.accessors[s.input]; if(acc?.max) dur=Math.max(dur,acc.max[0]);}
+    return {index:i, name:a.name||`Anim_${i}`, duration:dur, raw:a};
+  });
+
+  // world matrices rest pose
+  const nodeWorld = computeRestPose(json);
+
+  model={
+    json, bin, geosets, drawables, materials, images, glTex,
+    animations, skin, nodeWorld,
+    yMin, yMax, fileName:file.name,
+    generator: json.asset?.generator,
+  };
+  texOverrideMat={};
+  dirtyMorph=true;
+  document.getElementById('empty').style.display='none';
+  populateAnims();
+  renderRight(); renderLeft();
+  setStatus(`Loaded ${file.name} · ${geosets.length} geosets · ${animations.length} anims · ${materials.length} mats`);
+  document.getElementById('hudInfo').textContent = file.name;
+  document.getElementById('hudGeo').textContent = `geosets: ${geosets.filter(g=>g.visible).length}/${geosets.length}`;
+}
+
+function computeRestPose(json) {
+  const nodes=json.nodes||[];
+  const world=nodes.map(()=>mat4I());
+  const local=nodes.map(nd=>nodeLocal(nd));
+  const children=nodes.map(()=>[]);
+  nodes.forEach((nd,i)=>(nd.children||[]).forEach(c=>children[i].push(c)));
+  const roots=new Set(nodes.map((_,i)=>i));
+  nodes.forEach(nd=>(nd.children||[]).forEach(c=>roots.delete(c)));
+  function walk(i, parent) {
+    mul4(world[i], parent, local[i]);
+    for(const c of children[i]) walk(c, world[i]);
+  }
+  const I=mat4I();
+  for(const r of roots) walk(r, I);
+  return world;
+}
+function nodeLocal(nd) {
+  if (nd.matrix) return new Float32Array(nd.matrix);
+  const t=nd.translation||[0,0,0], r=nd.rotation||[0,0,0,1], s=nd.scale||[1,1,1];
+  return composeTRS(t,r,s);
+}
+function mat4I(){const m=new Float32Array(16); m[0]=m[5]=m[10]=m[15]=1; return m;}
+function composeTRS(t,q,s){
+  const m=mat4I();
+  const x=q[0],y=q[1],z=q[2],w=q[3];
+  const x2=x+x,y2=y+y,z2=z+z;
+  const xx=x*x2,xy=x*y2,xz=x*z2,yy=y*y2,yz=y*z2,zz=z*z2,wx=w*x2,wy=w*y2,wz=w*z2;
+  m[0]=(1-(yy+zz))*s[0]; m[1]=(xy+wz)*s[0]; m[2]=(xz-wy)*s[0];
+  m[4]=(xy-wz)*s[1]; m[5]=(1-(xx+zz))*s[1]; m[6]=(yz+wx)*s[1];
+  m[8]=(xz+wy)*s[2]; m[9]=(yz-wx)*s[2]; m[10]=(1-(xx+yy))*s[2];
+  m[12]=t[0]; m[13]=t[1]; m[14]=t[2];
+  return m;
+}
+function mul4(out,a,b){
+  const o=new Float32Array(16);
+  for(let c=0;c<4;c++) for(let r=0;r<4;r++)
+    o[c*4+r]=a[r]*b[c*4]+a[4+r]*b[c*4+1]+a[8+r]*b[c*4+2]+a[12+r]*b[c*4+3];
+  out.set(o); return out;
+}
+
+// Very simplified animation: sample translation/rotation channels onto nodes, rebuild bone matrices
+function updateAnimation(dt) {
+  if (!model || animIndex<0 || !playing) return;
+  const anim=model.animations[animIndex];
+  if (!anim || !anim.duration) return;
+  animTime=(animTime+dt)%Math.max(anim.duration,0.001);
+  // For performance on huge wow models, only update if skin exists
+  if (!model.skin) return;
+  // rest pose bones from node world * ibm — without full TRS animation sampling (heavy),
+  // use rest pose. Full clip sampling added for channels when sampler count reasonable.
+  const json=model.json, bin=model.bin;
+  const raw=anim.raw;
+  if ((raw.channels||[]).length > 2000) {
+    // too heavy — rest pose only
+    fillBonesRest();
+    return;
+  }
+  // sample node locals
+  const nodes=json.nodes||[];
+  const locals=nodes.map(nd=>nodeLocal(nd));
+  for (const ch of raw.channels||[]) {
+    const node=ch.target.node; const path=ch.target.path;
+    const samp=raw.samplers[ch.sampler];
+    const input=asF32(accInfo(json,bin,samp.input));
+    const output=asF32(accInfo(json,bin,samp.output));
+    const t=animTime;
+    let i=0; while(i<input.length-1 && input[i+1]<t) i++;
+    const i0=i, i1=Math.min(i+1,input.length-1);
+    const u=input[i1]===input[i0]?0:(t-input[i0])/(input[i1]-input[i0]);
+    if (path==='translation') {
+      const o=i0*3, p=i1*3;
+      const t0=[output[o]+(output[p]-output[o])*u, output[o+1]+(output[p+1]-output[o+1])*u, output[o+2]+(output[p+2]-output[o+2])*u];
+      const nd=nodes[node]; const r=nd.rotation||[0,0,0,1], s=nd.scale||[1,1,1];
+      locals[node]=composeTRS(t0,r,s);
+    } else if (path==='rotation') {
+      const o=i0*4, p=i1*4;
+      // nlerp
+      let q=[0,0,0,0]; let dot=0;
+      for(let k=0;k<4;k++) dot+=output[o+k]*output[p+k];
+      const s=dot>=0?1:-1;
+      for(let k=0;k<4;k++) q[k]=output[o+k]*(1-u)+output[p+k]*s*u;
+      const l=Math.hypot(q[0],q[1],q[2],q[3])||1; for(let k=0;k<4;k++) q[k]/=l;
+      const nd=nodes[node]; const t0=nd.translation||[0,0,0], sc=nd.scale||[1,1,1];
+      locals[node]=composeTRS(t0,q,sc);
+    }
+  }
+  const world=nodes.map(()=>mat4I());
+  const children=nodes.map(()=>[]); nodes.forEach((nd,i)=>(nd.children||[]).forEach(c=>children[i].push(c)));
+  const roots=new Set(nodes.map((_,i)=>i)); nodes.forEach(nd=>(nd.children||[]).forEach(c=>roots.delete(c)));
+  function walk(i,p){mul4(world[i],p,locals[i]); for(const c of children[i]) walk(c,world[i]);}
+  const I=mat4I(); for(const r of roots) walk(r,I);
+  model.nodeWorld=world;
+  fillBonesFromWorld();
+}
+function fillBonesRest() {
+  if (!model?.skin) return;
+  model.nodeWorld = computeRestPose(model.json);
+  fillBonesFromWorld();
+}
+function fillBonesFromWorld() {
+  const skin=model.skin; if(!skin) return;
+  const joints=skin.joints; const ibm=skin.ibm; const out=skin.boneMats;
+  const n=Math.min(joints.length,80);
+  for(let j=0;j<n;j++){
+    const nodeIndex=joints[j];
+    const wm=model.nodeWorld[nodeIndex]||mat4I();
+    const o=j*16;
+    if (ibm) {
+      // bone = world * ibm
+      const ib=ibm.subarray(j*16,j*16+16);
+      const tmp=mat4I(); mul4(tmp, wm, ib);
+      out.set(tmp, o);
+    } else out.set(wm, o);
+  }
+}
+
+function applyMorphsToDrawables() {
+  if (!model) return;
+  const {yMin,yMax}=model;
+  // head region: upper portion
+  const headY0 = yMin + (yMax-yMin)*0.72;
+  for (const d of model.drawables) {
+    if (!d.geo.visible) continue;
+    if (d.geo.mode==='head') {
+      applyHeadMorphs(d.basePos, d.workPos, headY0-0.05, yMax+0.02);
+    } else if (d.geo.mode==='body') {
+      // body morph first from base
+      const tmp=new Float32Array(d.basePos.length);
+      applyBodyMorphs(d.basePos, tmp, d.bodyW);
+      // then slight head morph on neck/upper if needed
+      applyHeadMorphs(tmp, d.workPos, headY0-0.02, yMax);
+      // blend: below head use body result
+      for(let i=0;i<d.basePos.length/3;i++){
+        const y=d.basePos[i*3+1];
+        if(y < headY0) {
+          d.workPos[i*3]=tmp[i*3]; d.workPos[i*3+1]=tmp[i*3+1]; d.workPos[i*3+2]=tmp[i*3+2];
+        }
+      }
+    } else {
+      d.workPos.set(d.basePos); // gear untouched
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, d.vbo);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, d.workPos);
+  }
+}
+
+// camera
+// Source models are authored +X-front, +Y-up. Start in strict front character-create view.
+let yaw=0,pitch=0,dist=2.2,panY=0,targetY=1.2;
+let dragging=false,btn=0,lx=0,ly=0;
+canvas.addEventListener('pointerdown',e=>{dragging=true;btn=e.button;lx=e.clientX;ly=e.clientY;canvas.setPointerCapture(e.pointerId);});
+canvas.addEventListener('pointerup',()=>dragging=false);
+canvas.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-lx,dy=e.clientY-ly;lx=e.clientX;ly=e.clientY;if(btn===2||e.shiftKey)panY+=dy*0.005;else{yaw+=dx*0.005;pitch=Math.max(-1.4,Math.min(1.4,pitch+dy*0.005));}});
+canvas.addEventListener('wheel',e=>{dist=Math.max(0.4,Math.min(8,dist+e.deltaY*0.002));e.preventDefault();},{passive:false});
+canvas.addEventListener('contextmenu',e=>e.preventDefault());
+
+function perspective(out,fovy,aspect,near,far){const f=1/Math.tan(fovy/2),nf=1/(near-far);out.fill(0);out[0]=f/aspect;out[5]=f;out[10]=(far+near)*nf;out[11]=-1;out[14]=2*far*near*nf;}
+function lookAt(out,ex,ey,ez,cx,cy,cz){
+  // Right-handed lookAt with world up = +Y. Keep this explicit: the previous
+  // cross-product typo rotated every Y-up GLB 90° in the preview.
+  let zx=ex-cx,zy=ey-cy,zz=ez-cz;
+  let l=Math.hypot(zx,zy,zz)||1;zx/=l;zy/=l;zz/=l;
+  const ux=0,uy=1,uz=0;
+  let xx=uy*zz-uz*zy,xy=uz*zx-ux*zz,xz=ux*zy-uy*zx;
+  l=Math.hypot(xx,xy,xz)||1;xx/=l;xy/=l;xz/=l;
+  const yx=zy*xz-zz*xy,yy=zz*xx-zx*xz,yz=zx*xy-zy*xx;
+  out[0]=xx;out[1]=yx;out[2]=zx;out[3]=0;
+  out[4]=xy;out[5]=yy;out[6]=zy;out[7]=0;
+  out[8]=xz;out[9]=yz;out[10]=zz;out[11]=0;
+  out[12]=-(xx*ex+xy*ey+xz*ez);out[13]=-(yx*ex+yy*ey+yz*ez);out[14]=-(zx*ex+zy*ey+zz*ez);out[15]=1;
+}
+function mul(out,a,b){const o=new Float32Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++)o[c*4+r]=a[r]*b[c*4]+a[4+r]*b[c*4+1]+a[8+r]*b[c*4+2]+a[12+r]*b[c*4+3];out.set(o);}
+function invertUpper(out,m){out.fill(0);out[0]=m[0];out[1]=m[4];out[2]=m[8];out[4]=m[1];out[5]=m[5];out[6]=m[9];out[8]=m[2];out[9]=m[6];out[10]=m[10];out[15]=1;}
+function hexRgb(h){h=h.replace('#','');const n=parseInt(h.length===3?h.split('').map(c=>c+c).join(''):h,16);return[((n>>16)&255)/255,((n>>8)&255)/255,(n&255)/255];}
+
+function resize(){const dpr=Math.min(devicePixelRatio||1,2);const r=canvas.parentElement.getBoundingClientRect();canvas.width=r.width*dpr;canvas.height=r.height*dpr;gl.viewport(0,0,canvas.width,canvas.height);}
+window.addEventListener('resize',resize); resize();
+
+const proj=new Float32Array(16), view=new Float32Array(16), mvp=new Float32Array(16), nmat=new Float32Array(16);
+let last=performance.now(), frames=0, lastFps=last;
+
+function frame(now){
+  const dt=Math.min(0.05,(now-last)/1000); last=now;
+  if (dirtyMorph && model) { applyMorphsToDrawables(); dirtyMorph=false; }
+  updateAnimation(dt);
+
+  gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE);
+  {const b=(settings.bg??1); gl.clearColor(0.04*b,0.055*b,0.08*b,1);} gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+
+  if (model) {
+    targetY = (model.yMin+model.yMax)*0.5 + panY;
+    if (settings.autoRotate) yaw += dt*(settings.rotateSpeed||0.5);
+    const aspect=canvas.width/Math.max(1,canvas.height);
+    perspective(proj,(settings.fov||40)*Math.PI/180,aspect,0.05,50);
+    const cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
+    const ex=dist*cy*cp, ey=targetY+dist*sp, ez=dist*sy*cp;
+    lookAt(view,ex,ey,ez,0,targetY,0);
+    mul(mvp,proj,view); invertUpper(nmat,view);
+
+    gl.useProgram(prog);
+    gl.uniformMatrix4fv(U.mvp,false,mvp);
+    gl.uniformMatrix4fv(U.nmat,false,nmat);
+    gl.uniform3fv(U.light,[0.55,0.75,0.35]);
+    if (model.skin) {
+      gl.uniform1i(U.skinned,1);
+      gl.uniformMatrix4fv(U.bones,false,model.skin.boneMats);
+    } else gl.uniform1i(U.skinned,0);
+
+    for (const d of model.drawables) {
+      if (!d.geo.visible) continue;
+      const mat=model.materials[d.matIndex]||{};
+      let tex = texOverrideMat[d.matIndex];
+      if (!tex && mat.texIndex!=null) tex=model.glTex[mat.texIndex];
+      let tint=[1,1,1];
+      if (viewMode==='matid'){ tex=null; tint=idColor(d.matIndex); }
+      else if (viewMode==='groups'){ tex=null; tint=idColor(groupIdxOf(d.geo.group)); }
+      else {
+        if (d.geo.mode==='body' || d.geo.mode==='head') tint=hexRgb(colors.skin);
+        if (/hair|facial/i.test(d.geo.name)) tint=hexRgb(colors.hair);
+        if (/eyes/i.test(d.geo.name) && !/glow/i.test(d.geo.name)) tint=hexRgb(colors.eyes);
+      }
+
+      // GLTF node transform is mandatory: each geoset node can have its own bind transform.
+      gl.uniformMatrix4fv(U.model,false,model.nodeWorld[d.nodeIndex]||mat4I());
+      gl.uniform3fv(U.tint,tint);
+      gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tex||null);
+      gl.uniform1i(U.tex,0);
+      gl.uniform1f(U.useTex, tex?1:0);
+      gl.uniform1i(U.skinned, d.skinned && model.skin ? 1 : 0);
+
+      gl.bindVertexArray(d.vao);
+      gl.drawElements(gl.TRIANGLES, d.indexCount, gl.UNSIGNED_INT, 0);
+    }
+    gl.bindVertexArray(null);
+  }
+
+  frames++; if(now-lastFps>500){document.getElementById('hudFps').textContent=Math.round(frames*1000/(now-lastFps))+' fps';frames=0;lastFps=now;}
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+// ═══════════ UI ═══════════
+function setStatus(t){document.getElementById('status').textContent=t;}
+function populateAnims(){
+  const sel=document.getElementById('animSel'); sel.innerHTML='<option value="">— animations —</option>';
+  if(!model) return;
+  model.animations.forEach(a=>{
+    const o=document.createElement('option'); o.value=a.index; o.textContent=`${a.name} (${a.duration.toFixed(2)}s)`; sel.appendChild(o);
+  });
+  // Ship safe: import in bind/rest pose. Animation is explicit opt-in from the dropdown.
+  // This avoids a malformed/very dense legacy clip distorting the preview on load.
+  animIndex=-1; animTime=0; playing=false;
+  document.getElementById('btnPlay').textContent='Play';
+  fillBonesRest();
+  document.getElementById('hudAnim').textContent='anim: rest pose';
+}
+
+function renderLeft_legacy(){
+  const tabs=document.getElementById('leftTabs'), body=document.getElementById('leftBody');
+  tabs.innerHTML='';
+  const groups=[
+    ...headCats.map(c=>({id:'head:'+c, label:'H:'+c})),
+    ...bodyCats.map(c=>({id:'body:'+c, label:'B:'+c})),
+  ];
+  groups.forEach(g=>{
+    const b=document.createElement('button'); b.type='button'; b.textContent=g.label;
+    b.className=leftTab===g.id?'active':''; b.onclick=()=>{leftTab=g.id;renderLeft();}; tabs.appendChild(b);
+  });
+  const [kind,cat]=leftTab.split(':');
+  const axes = kind==='head' ? headAxes.filter(a=>a.category===cat) : bodyAxes.filter(a=>a.category===cat);
+  const vals = kind==='head' ? headVals : bodyVals;
+  body.innerHTML=`<div class="hint">${kind==='head'
+    ? 'Head sculpt — applies to Head/Ears/Eyes/Hair/Facial geosets only.'
+    : 'Body sculpt — <b>gear-safe</b>: only Geoset0/Torso/body skin. Armor geosets never move so item textures stay correct.'}</div>`;
+  axes.forEach(a=>{
+    const row=document.createElement('div'); row.className='row';
+    row.innerHTML=`<label>${a.label}</label><div class="meta"><span></span><span class="v">${(vals[a.id]||0).toFixed(2)}</span></div>
+      <input type="range" min="-1" max="1" step="0.01" value="${vals[a.id]||0}"/>`;
+    const inp=row.querySelector('input'), v=row.querySelector('.v');
+    inp.oninput=()=>{vals[a.id]=parseFloat(inp.value); v.textContent=vals[a.id].toFixed(2); dirtyMorph=true;};
+    body.appendChild(row);
+  });
+}
+
+function renderRight_legacy(){
+  document.querySelectorAll('[data-rt]').forEach(b=>b.classList.toggle('active',b.dataset.rt===rightTab));
+  const body=document.getElementById('rightBody');
+  if (rightTab==='geosets') {
+    if (!model) { body.innerHTML='<div class="hint">Load a model to list geosets.</div>'; return; }
+    body.innerHTML=`<div class="hint">Toggle any geoset to beta-test combinations. Tags: <span style="color:var(--body)">body</span> / <span style="color:#7ec8ff">head</span> / <span style="color:var(--gear)">gear</span> (gear never body-morphed).</div>
+      <div class="btnrow">
+        <button type="button" id="gAll">All On</button>
+        <button type="button" id="gNone">All Off</button>
+        <button type="button" id="gDef">Defaults</button>
+        <button type="button" id="gBody">Body Only</button>
+        <button type="button" id="gGear">Gear Only</button>
+      </div>
+      <div id="geoList"></div>`;
+    const list=body.querySelector('#geoList');
+    // group by group name
+    const by={};
+    model.geosets.forEach(g=>{ (by[g.group]=by[g.group]||[]).push(g); });
+    Object.keys(by).sort().forEach(group=>{
+      const cat=document.createElement('div'); cat.className='cat'; cat.textContent=group; list.appendChild(cat);
+      by[group].sort((a,b)=>String(a.variant).localeCompare(String(b.variant),'en',{numeric:true})).forEach(g=>{
+        const row=document.createElement('label'); row.className='geo';
+        const tag = g.mode==='body'?'body':g.mode==='head'?'head':'gear';
+        row.innerHTML=`<input type="checkbox" ${g.visible?'checked':''}/><span class="nm" title="${g.name}">${g.name}</span><span class="tag ${tag}">${tag}</span>`;
+        row.querySelector('input').onchange=e=>{ g.visible=e.target.checked; syncGeoHud(); };
+        list.appendChild(row);
+      });
+    });
+    body.querySelector('#gAll').onclick=()=>{model.geosets.forEach(g=>g.visible=true);renderRight();syncGeoHud();};
+    body.querySelector('#gNone').onclick=()=>{model.geosets.forEach(g=>g.visible=false);renderRight();syncGeoHud();};
+    body.querySelector('#gDef').onclick=()=>{model.geosets.forEach(g=>g.visible=g.defaultVisible);renderRight();syncGeoHud();};
+    body.querySelector('#gBody').onclick=()=>{model.geosets.forEach(g=>g.visible=g.mode==='body'||g.mode==='head');renderRight();syncGeoHud();};
+    body.querySelector('#gGear').onclick=()=>{model.geosets.forEach(g=>g.visible=g.mode==='none');renderRight();syncGeoHud();};
+  } else if (rightTab==='materials') {
+    if (!model) { body.innerHTML='<div class="hint">Load a model first.</div>'; return; }
+    body.innerHTML=`<div class="hint">Assign <b>external images</b> as textures for gear/item materials. Body skin can also be overridden. Click a material → choose image.</div>
+      <div class="btnrow"><button type="button" id="btnPickTex">Pick Image File…</button></div>
+      <div id="matList"></div>`;
+    let selectedMat=0;
+    const list=body.querySelector('#matList');
+    model.materials.forEach(m=>{
+      const usedBy=model.geosets.filter(g=>g.material===m.index).slice(0,4).map(g=>g.name).join(', ');
+      const card=document.createElement('div'); card.className='matcard';
+      const img = model.images[m.texIndex];
+      const thumb = img ? `<img src="${URL.createObjectURL(new Blob())}" data-i="${m.texIndex}"/>` : '';
+      card.innerHTML=`<div><b>mat ${m.index}</b> ${m.name||''}</div>
+        <div class="hint">tex# ${m.texIndex??'—'} · ${usedBy||'unused'}</div>
+        <div class="btnrow">
+          <button type="button" data-assign="${m.index}">Assign External Image</button>
+          <button type="button" data-clear="${m.index}">Clear Override</button>
+        </div>`;
+      // show embedded preview
+      if (img?.bmp) {
+        const c=document.createElement('canvas'); c.width=64; c.height=64; c.getContext('2d').drawImage(img.bmp,0,0,64,64);
+        c.style.cssText='border-radius:4px;border:1px solid var(--border);margin:4px 0';
+        card.insertBefore(c, card.children[1]);
+      }
+      if (texOverrideMat[m.index]) {
+        const t=document.createElement('div'); t.className='hint'; t.style.color='var(--good)'; t.textContent='✓ external override active'; card.appendChild(t);
+      }
+      card.querySelector('[data-assign]').onclick=()=>{
+        selectedMat=m.index;
+        document.getElementById('fileTex').onchange=async ev=>{
+          const f=ev.target.files?.[0]; if(!f) return;
+          const bmp=await createImageBitmap(f);
+          texOverrideMat[selectedMat]=createGLTex(bmp);
+          setStatus(`Texture override → mat ${selectedMat} (${f.name})`);
+          renderRight(); ev.target.value='';
+        };
+        document.getElementById('fileTex').click();
+      };
+      card.querySelector('[data-clear]').onclick=()=>{ delete texOverrideMat[m.index]; renderRight(); };
+      list.appendChild(card);
+    });
+    body.querySelector('#btnPickTex').onclick=()=>body.querySelector('[data-assign]')?.click();
+  } else if (rightTab==='colors') {
+    body.innerHTML='';
+    [['skin','Skin (body/head tint)'],['hair','Hair / Facial tint'],['eyes','Eyes tint']].forEach(([id,label])=>{
+      const cat=document.createElement('div'); cat.className='cat'; cat.textContent=label; body.appendChild(cat);
+      const pal = id==='skin' ? ['#5a8f3a','#6b8f3a','#8a5a32','#8a8a8a','#a04030','#9aaa55','#f0d0b0','#4a2e1c']
+        : id==='hair' ? ['#1a1420','#5a3a22','#d4a85a','#a04028','#e8e8f0','#3050a0','#2a9a9a','#e070b0']
+        : ['#e8a020','#3080e0','#40c040','#a040e0','#e02020','#c0e8ff','#80ff40','#f0d040'];
+      const sw=document.createElement('div'); sw.className='swatches';
+      pal.forEach(hex=>{ const s=document.createElement('div'); s.className='swatch'+(colors[id]===hex?' on':''); s.style.background=hex;
+        s.onclick=()=>{colors[id]=hex;renderRight();}; sw.appendChild(s); });
+      body.appendChild(sw);
+      const pick=document.createElement('input'); pick.type='color'; pick.value=colors[id].slice(0,7);
+      pick.oninput=()=>{colors[id]=pick.value;}; body.appendChild(pick);
+    });
+  } else {
+    const appearance=getAppearance();
+    body.innerHTML=`<div class="cat">StudioAppearance v2 JSON</div>
+      <div class="hint">Save with character create. Geoset visibility + head/body morphs + texture override labels.</div>
+      <textarea class="json" id="jsonOut"></textarea>
+      <div class="btnrow">
+        <button type="button" id="btnRef">Refresh</button>
+        <button type="button" id="btnApply">Apply JSON</button>
+        <button type="button" id="btnDl">Download</button>
+      </div>
+      <div class="hint">Engine modules: <code>src/engine/*</code> + <code>src/io/GltfRuntime.ts</code> for Vite integration with ThreeAppearanceBinding.</div>`;
+    const ta=body.querySelector('#jsonOut'); ta.value=JSON.stringify(appearance,null,2);
+    body.querySelector('#btnRef').onclick=()=>{ta.value=JSON.stringify(getAppearance(),null,2);};
+    body.querySelector('#btnApply').onclick=()=>{try{loadAppearance(JSON.parse(ta.value));}catch(e){alert(e.message);}};
+    body.querySelector('#btnDl').onclick=()=>{
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(new Blob([JSON.stringify(getAppearance(),null,2)],{type:'application/json'}));
+      a.download='studio_appearance_v2.json'; a.click();
+    };
+  }
+}
+function syncGeoHud(){ if(!model)return; document.getElementById('hudGeo').textContent=`geosets: ${model.geosets.filter(g=>g.visible).length}/${model.geosets.length}`; }
+
+function getAppearance_legacy(){
+  const geosetVisibility={}; if(model) model.geosets.forEach(g=>geosetVisibility[g.name]=g.visible);
+  return {
+    version:2, engine:'character-studio_v1.4',
+    model: model?.fileName||null,
+    headMorphs:{...headVals}, bodyMorphs:{...bodyVals},
+    geosetVisibility, colors:{...colors},
+    materialTextureOverrides: Object.keys(texOverrideMat).reduce((o,k)=>{o[k]='external';return o;},{}),
+    animationIndex: animIndex>=0?animIndex:null,
+  };
+}
+function loadAppearance(a){
+  if(a.headMorphs) Object.assign(headVals,a.headMorphs);
+  if(a.bodyMorphs) Object.assign(bodyVals,a.bodyMorphs);
+  if(a.colors) Object.assign(colors,a.colors);
+  if(a.geosetVisibility && model) model.geosets.forEach(g=>{ if(a.geosetVisibility[g.name]!=null) g.visible=a.geosetVisibility[g.name]; });
+  if(a.animationIndex!=null){ animIndex=a.animationIndex; document.getElementById('animSel').value=String(animIndex); }
+  dirtyMorph=true; renderLeft(); renderRight(); syncGeoHud();
+}
+
+// events
+document.querySelectorAll('[data-rt]').forEach(b=>b.onclick=()=>{rightTab=b.dataset.rt;renderRight();});
+document.getElementById('btnOpen').onclick=()=>document.getElementById('fileModel').click();
+document.getElementById('fileModel').onchange=async e=>{ const f=e.target.files?.[0]; if(!f)return; try{ await loadModelFromFile(f);}catch(err){alert(err.message||err); setStatus(String(err.message||err));} e.target.value='';};
+document.getElementById('animSel').onchange=e=>{ animIndex=e.target.value===''?-1:parseInt(e.target.value,10); animTime=0; if(animIndex>=0&&model){ document.getElementById('hudAnim').textContent='anim: '+model.animations[animIndex].name; fillBonesRest(); }};
+document.getElementById('btnPlay').onclick=()=>{ playing=!playing; document.getElementById('btnPlay').textContent=playing?'Pause':'Play';};
+document.getElementById('btnReset').onclick=()=>{ headAxes.forEach(a=>headVals[a.id]=0); bodyAxes.forEach(a=>bodyVals[a.id]=0); dirtyMorph=true; renderLeft();};
+document.getElementById('btnRandom').onclick=()=>{ headAxes.forEach(a=>{if(a.category!=='expression')headVals[a.id]=(Math.random()*2-1)*0.65;}); bodyAxes.forEach(a=>bodyVals[a.id]=(Math.random()*2-1)*0.5); dirtyMorph=true; renderLeft();};
+document.getElementById('btnExport').onclick=()=>{ navigator.clipboard?.writeText(JSON.stringify(getAppearance(),null,2)); alert('Appearance JSON copied');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(getAppearance(),null,2)],{type:'application/json'})); a.download='studio_appearance_v2.json'; a.click(); };
+
+// drag drop
+const vp=document.getElementById('vp'), drop=document.getElementById('drop');
+['dragenter','dragover'].forEach(ev=>vp.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('on');}));
+['dragleave','drop'].forEach(ev=>vp.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('on');}));
+vp.addEventListener('drop',async e=>{ const f=e.dataTransfer?.files?.[0]; if(!f)return; try{await loadModelFromFile(f);}catch(err){alert(err.message||err);} });
+
+// ═══════════ v1.5 — pro customization suite (flat UI · view modes · gearset creator) ═══════════
+const texLib=new Map(); let texFolderName='';
+const slotTexChoice={};
+let sculptSel='head:skull';
+let viewMode='tex';
+const secState={};
+let gearsets=[]; try{ gearsets=JSON.parse(localStorage.getItem('cs_gearsets')||'[]'); }catch{}
+function persistGearsets(){ try{ localStorage.setItem('cs_gearsets',JSON.stringify(gearsets)); }catch{} }
+
+const CUSTOM_ROWS=[
+  {label:'Face', groups:['HeadSwap','HeadPreset']},
+  {label:'Hair Style', groups:['Hair']},
+  {label:'Facial Hair', groups:['FacialA']},
+  {label:'Sideburns', groups:['FacialB']},
+  {label:'Ears', groups:['Ears']},
+  {label:'Eyes', groups:['Eyes']},
+];
+const COLOR_ROWS=[
+  {id:'skin',label:'Skin Color',pal:['#5a8f3a','#6b8f3a','#8a5a32','#8a8a8a','#a04030','#9aaa55','#f0d0b0','#4a2e1c']},
+  {id:'hair',label:'Hair Color',pal:['#1a1420','#5a3a22','#d4a85a','#a04028','#e8e8f0','#3050a0','#2a9a9a','#e070b0']},
+  {id:'eyes',label:'Eye Color',pal:['#e8a020','#3080e0','#40c040','#a040e0','#e02020','#c0e8ff','#80ff40','#f0d040']},
+];
+const SLOT_LABELS={Helm:'Head',Shoulder:'Shoulders',Cloak:'Back',Cape:'Back (Cape)',Chest:'Chest',Wrists:'Wrist',Gloves:'Hands',Belt:'Waist',Pants:'Legs',Trousers:'Legs / Robe',Kneepads:'Knees',Boots:'Feet',Tabard:'Tabard'};
+
+// Distinct, stable ID colors (golden-angle hue walk) for material/group separation views.
+function idColor(i){
+  const h=(((i*137.508)%360)/360), s=0.65, l=0.56;
+  const q=l<0.5?l*(1+s):l+s-l*s, p=2*l-q;
+  const f=t=>{t=((t%1)+1)%1; if(t<1/6)return p+(q-p)*6*t; if(t<1/2)return q; if(t<2/3)return p+(q-p)*(2/3-t)*6; return p;};
+  return [f(h+1/3),f(h),f(h-1/3)];
+}
+function idColorCss(i){const c=idColor(i);return `rgb(${c.map(v=>Math.round(v*255)).join(',')})`;}
+function groupIdxOf(group){
+  if(!model) return 0;
+  if(!model._gidx){ model._gidx={}; let i=0; for(const g of model.geosets) if(!(g.group in model._gidx)) model._gidx[g.group]=i++; }
+  return model._gidx[group]||0;
+}
+
+function bareName(g){return g.name.replace(/^.*_hd_/,'');}
+function cyclerRow(label,valueHtml,onPrev,onNext){
+  const r=document.createElement('div'); r.className='wrow';
+  r.innerHTML=`<span class="wl">${label}</span><button type="button" class="arrow">‹</button><span class="wv">${valueHtml}</span><button type="button" class="arrow">›</button>`;
+  const btns=r.querySelectorAll('.arrow'); btns[0].onclick=onPrev; btns[1].onclick=onNext;
+  return r;
+}
+function groupList(groups){ return model?model.geosets.filter(g=>groups.includes(g.group)).sort((a,b)=>a.variant-b.variant||a.name.localeCompare(b.name)):[]; }
+function cycleGroup(list,dir){
+  const len=list.length+1; // extra slot = None/Off
+  let idx=list.findIndex(g=>g.visible)+1;
+  idx=(idx+dir+len)%len;
+  list.forEach((g,i)=>g.visible=(i===idx-1));
+  dirtyMorph=true; syncGeoHud(); renderLeft();
+}
+function section(host,title,defaultOpen=true){
+  if(!(title in secState)) secState[title]=defaultOpen;
+  const open=secState[title];
+  const h=document.createElement('div'); h.className='sec';
+  h.innerHTML=`<span class="chev">${open?'⌄':'›'}</span><span>${title}</span>`;
+  const c=document.createElement('div'); c.className='secbody';
+  if(!open) c.style.display='none';
+  h.onclick=()=>{secState[title]=!secState[title]; renderLeft(); renderRight();};
+  host.appendChild(h); host.appendChild(c); return c;
+}
+
+function renderLeft(){
+  const body=document.getElementById('leftBody'); if(!body) return; body.innerHTML='';
+  let c=section(body,'Character Customization');
+  if(!model){ c.innerHTML='<div class="hint">Open a .glb to unlock the cyclers, sculpt sliders and geoset tick boxes.</div>'; }
+  else for(const row of CUSTOM_ROWS){
+    const list=groupList(row.groups); if(!list.length) continue;
+    const cur=list.findIndex(g=>g.visible);
+    c.appendChild(cyclerRow(row.label,cur<0?'None':bareName(list[cur]),()=>cycleGroup(list,-1),()=>cycleGroup(list,1)));
+  }
+  for(const cr of COLOR_ROWS){
+    const val=`<span class="chip" style="background:${colors[cr.id]}"></span>${colors[cr.id]}`;
+    const cyc=d=>{let i=Math.max(0,cr.pal.indexOf(colors[cr.id]));i=(i+d+cr.pal.length)%cr.pal.length;colors[cr.id]=cr.pal[i];renderLeft();};
+    c.appendChild(cyclerRow(cr.label,val,()=>cyc(-1),()=>cyc(1)));
+  }
+  c=section(body,'Sculpt');
+  const sel=document.createElement('select'); sel.className='sculptsel';
+  const og1=document.createElement('optgroup'); og1.label='Head';
+  headCats.forEach(cc=>{const o=document.createElement('option');o.value='head:'+cc;o.textContent='Head · '+cc;og1.appendChild(o);});
+  const og2=document.createElement('optgroup'); og2.label='Body (gear-safe)';
+  bodyCats.forEach(cc=>{const o=document.createElement('option');o.value='body:'+cc;o.textContent='Body · '+cc;og2.appendChild(o);});
+  sel.appendChild(og1); sel.appendChild(og2); sel.value=sculptSel;
+  sel.onchange=()=>{sculptSel=sel.value;renderLeft();};
+  c.appendChild(sel);
+  const [kind,catId]=sculptSel.split(':');
+  const axes=kind==='head'?headAxes.filter(a=>a.category===catId):bodyAxes.filter(a=>a.category===catId);
+  const vals=kind==='head'?headVals:bodyVals;
+  axes.forEach(a=>{
+    const row=document.createElement('div'); row.className='row';
+    row.innerHTML=`<label>${a.label} <span class="v" style="float:right">${(vals[a.id]||0).toFixed(2)}</span></label><input type="range" min="-1" max="1" step="0.01" value="${vals[a.id]||0}"/>`;
+    const inp=row.querySelector('input'), v=row.querySelector('.v');
+    inp.oninput=()=>{vals[a.id]=parseFloat(inp.value);v.textContent=vals[a.id].toFixed(2);dirtyMorph=true;};
+    c.appendChild(row);
+  });
+  c=section(body,'Geoset Visibility');
+  if(!model){ c.innerHTML='<div class="hint">Loads with the model.</div>'; return; }
+  const br=document.createElement('div'); br.className='btnrow';
+  br.innerHTML=`<button type="button" id="gAll">All On</button><button type="button" id="gNone">All Off</button><button type="button" id="gDef">Defaults</button>`;
+  c.appendChild(br);
+  br.querySelector('#gAll').onclick=()=>{model.geosets.forEach(g=>g.visible=true);dirtyMorph=true;renderLeft();renderRight();syncGeoHud();};
+  br.querySelector('#gNone').onclick=()=>{model.geosets.forEach(g=>g.visible=false);dirtyMorph=true;renderLeft();renderRight();syncGeoHud();};
+  br.querySelector('#gDef').onclick=()=>{model.geosets.forEach(g=>g.visible=g.defaultVisible);dirtyMorph=true;renderLeft();renderRight();syncGeoHud();};
+  const by={}; model.geosets.forEach(g=>{(by[g.group]=by[g.group]||[]).push(g);});
+  Object.keys(by).sort().forEach(group=>{
+    const h=document.createElement('div'); h.className='grp';
+    h.innerHTML=`<span class="chip" style="background:${idColorCss(groupIdxOf(group))}"></span>${group}`;
+    c.appendChild(h);
+    by[group].sort((a,b)=>a.variant-b.variant).forEach(g=>{
+      const tag=g.mode==='body'?'body':g.mode==='head'?'head':'gear';
+      const row=document.createElement('label'); row.className='geo';
+      row.innerHTML=`<input type="checkbox" ${g.visible?'checked':''}/><span class="nm" title="${g.name}">${bareName(g)}</span><span class="tag ${tag}">${tag}</span>`;
+      row.querySelector('input').onchange=e=>{g.visible=e.target.checked;dirtyMorph=true;syncGeoHud();};
+      c.appendChild(row);
+    });
+  });
+}
+
+function gearGroups(){
+  if(!model) return [];
+  const by={};
+  model.geosets.filter(g=>g.mode==='none').forEach(g=>{(by[g.group]=by[g.group]||[]).push(g);});
+  return Object.keys(by).sort().map(k=>({group:k,list:by[k].sort((a,b)=>a.variant-b.variant)}));
+}
+function applySlotTexture(group,name){
+  const mats=[...new Set(model.geosets.filter(g=>g.group===group).map(g=>g.material))];
+  if(!name){ mats.forEach(m=>delete texOverrideMat[m]); delete slotTexChoice[group]; }
+  else{
+    const entry=texLib.get(name); if(!entry) return;
+    if(!entry.tex) entry.tex=createGLTex(entry.bmp);
+    mats.forEach(m=>texOverrideMat[m]=entry.tex);
+    slotTexChoice[group]=name;
+    setStatus(`${group} ← ${name.split('/').pop()}`);
+  }
+  renderRight();
+}
+function snapshotGearset(name){
+  const gear={};
+  for(const s of gearGroups()){ const cur=s.list.findIndex(g=>g.visible); gear[s.group]=cur<0?null:s.list[cur].variant; }
+  return {name,created:new Date().toISOString(),model:model?.fileName||null,gear,textures:{...slotTexChoice}};
+}
+function applyGearset(gs){
+  for(const s of gearGroups()){
+    const v=gs.gear?gs.gear[s.group]:null;
+    s.list.forEach(g=>g.visible=(v!=null&&g.variant===v));
+  }
+  for(const s of gearGroups()){
+    const t=gs.textures?gs.textures[s.group]:null;
+    if(t&&texLib.has(t)) applySlotTexture(s.group,t); else applySlotTexture(s.group,null);
+  }
+  dirtyMorph=true; syncGeoHud(); renderLeft(); renderRight();
+  setStatus(`Gearset "${gs.name}" applied`);
+}
+const fileGearset=document.createElement('input'); fileGearset.type='file'; fileGearset.accept='.json,application/json';
+fileGearset.onchange=async e=>{
+  const f=e.target.files?.[0]; if(!f) return;
+  try{
+    const j=JSON.parse(await f.text());
+    const arr=Array.isArray(j)?j:(j.gearsets||[]);
+    for(const gs of arr){ if(gs&&gs.name){ gearsets=gearsets.filter(g=>g.name!==gs.name); gearsets.push(gs); } }
+    persistGearsets(); renderRight(); setStatus(`Imported ${arr.length} gearset(s)`);
+  }catch(err){ alert('Invalid gearset JSON: '+err.message); }
+  e.target.value='';
+};
+
+function renderViewBar(){
+  const vp=document.getElementById('vp'); if(!vp) return;
+  let vb=document.getElementById('viewbar');
+  if(!vb){ vb=document.createElement('div'); vb.id='viewbar'; vp.appendChild(vb); }
+  vb.innerHTML='';
+  const seg=document.createElement('div'); seg.className='seg';
+  [['tex','Textured'],['matid','Material ID'],['groups','Geosets']].forEach(([k,l])=>{
+    const b=document.createElement('button'); b.type='button'; b.textContent=l; b.dataset.vm=k;
+    if(viewMode===k) b.classList.add('on');
+    b.onclick=()=>{viewMode=k; renderViewBar();};
+    seg.appendChild(b);
+  });
+  vb.appendChild(seg);
+  if(model && viewMode!=='tex'){
+    const lg=document.createElement('div'); lg.className='legend';
+    if(viewMode==='matid'){
+      model.materials.forEach((m,i)=>{ lg.insertAdjacentHTML('beforeend',`<div class="lg"><span class="sw" style="background:${idColorCss(i)}"></span>${m.name||('Material '+i)}</div>`); });
+    } else {
+      groupIdxOf(model.geosets[0]?.group||'');
+      Object.entries(model._gidx||{}).sort((a,b)=>a[1]-b[1]).forEach(([g,i])=>{ lg.insertAdjacentHTML('beforeend',`<div class="lg"><span class="sw" style="background:${idColorCss(i)}"></span>${g}</div>`); });
+    }
+    vb.appendChild(lg);
+  }
+}
+
+function renderRight(){
+  const body=document.getElementById('rightBody'); if(!body) return; body.innerHTML='';
+  let c=section(body,'Texture Library');
+  c.insertAdjacentHTML('beforeend',`<div class="pathrow"><input type="text" id="folderInfo" readonly value="${texFolderName?texFolderName+'/ · '+texLib.size+' textures':'no texture folder loaded'}"/><button type="button" id="btnFolder" title="Load texture folder">📁</button></div><div class="hint">Folder images (png / jpg / webp / bmp / gif) become assignable to equipment slots and gearsets.</div>`);
+  c.querySelector('#btnFolder').onclick=()=>document.getElementById('folderTex').click();
+
+  c=section(body,'Character Equipper');
+  if(!model){ c.innerHTML='<div class="hint">Load a model to list equipment slots.</div>'; }
+  else{
+    const slots=gearGroups();
+    if(!slots.length) c.insertAdjacentHTML('beforeend','<div class="hint">No gear geosets in this model.</div>');
+    for(const s of slots){
+      const cur=s.list.findIndex(g=>g.visible);
+      const card=document.createElement('div'); card.className='slot';
+      card.innerHTML=`<div class="sl"><span class="chip" style="background:${idColorCss(groupIdxOf(s.group))}"></span>${SLOT_LABELS[s.group]||s.group}</div>`;
+      card.appendChild(cyclerRow('Model',cur<0?'Off':bareName(s.list[cur]),
+        ()=>{cycleGroup(s.list,-1);renderRight();},()=>{cycleGroup(s.list,1);renderRight();}));
+      const sel=document.createElement('select');
+      sel.innerHTML=`<option value="">— embedded texture —</option>`+[...texLib.keys()].map(k=>`<option value="${k}" ${slotTexChoice[s.group]===k?'selected':''}>${k}</option>`).join('');
+      sel.onchange=()=>applySlotTexture(s.group,sel.value||null);
+      card.appendChild(sel);
+      const br=document.createElement('div'); br.className='btnrow';
+      br.innerHTML=`<button type="button" data-file>File…</button>${slotTexChoice[s.group]?'<button type="button" data-clear>Clear</button>':''}`;
+      br.querySelector('[data-file]').onclick=()=>{
+        const ft=document.getElementById('fileTex');
+        ft.onchange=async ev=>{const f=ev.target.files?.[0]; if(!f) return;
+          texLib.set(f.name,{bmp:await createImageBitmap(f),tex:null});
+          applySlotTexture(s.group,f.name); ev.target.value='';};
+        ft.click();
+      };
+      const clr=br.querySelector('[data-clear]'); if(clr) clr.onclick=()=>applySlotTexture(s.group,null);
+      card.appendChild(br);
+      body_appendSlotStatus(card,s.group);
+      c.appendChild(card);
+    }
+    const ca=document.createElement('div'); ca.className='btnrow';
+    ca.innerHTML='<button type="button" class="wide" id="clearAll">CLEAR ALL EQUIPMENT</button>';
+    c.appendChild(ca);
+    ca.querySelector('#clearAll').onclick=()=>{
+      for(const s of gearGroups()){ s.list.forEach(g=>g.visible=false); applySlotTexture(s.group,null); }
+      dirtyMorph=true; syncGeoHud(); renderLeft(); renderRight();
+    };
+  }
+
+  c=section(body,'Gearset Creator');
+  if(!model){ c.innerHTML='<div class="hint">Load a model first — gearsets capture the current slot models + textures as a named, exportable set.</div>'; }
+  else{
+    c.insertAdjacentHTML('beforeend',`<div class="pathrow"><input type="text" id="gsName" placeholder="gearset name…"/><button type="button" id="gsSave">Save</button></div>`);
+    c.querySelector('#gsSave').onclick=()=>{
+      const nm=document.getElementById('gsName').value.trim()||('gearset_'+(gearsets.length+1));
+      gearsets=gearsets.filter(g=>g.name!==nm);
+      gearsets.push(snapshotGearset(nm)); persistGearsets(); renderRight();
+      setStatus(`Gearset "${nm}" saved`);
+    };
+    for(const gs of gearsets){
+      const row=document.createElement('div'); row.className='gset';
+      row.innerHTML=`<span class="nm" title="${gs.name}">${gs.name}</span><button type="button" data-a>Apply</button><button type="button" data-x class="x">✕</button>`;
+      row.querySelector('[data-a]').onclick=()=>applyGearset(gs);
+      row.querySelector('[data-x]').onclick=()=>{gearsets=gearsets.filter(g=>g!==gs);persistGearsets();renderRight();};
+      c.appendChild(row);
+    }
+    const br=document.createElement('div'); br.className='btnrow';
+    br.innerHTML=`<button type="button" id="gsExp">Export JSON</button><button type="button" id="gsImp">Import JSON</button>`;
+    c.appendChild(br);
+    br.querySelector('#gsExp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({version:1,engine:'character-studio_v2.0',gearsets},null,2)],{type:'application/json'}));a.download='gearsets.json';a.click();};
+    br.querySelector('#gsImp').onclick=()=>fileGearset.click();
+    c.insertAdjacentHTML('beforeend','<div class="hint">Gearsets store slot variants + texture names. Textures resolve from the loaded texture library. Saved locally and exportable as JSON for game wiring.</div>');
+  }
+
+  c=section(body,'Appearance JSON');
+  c.insertAdjacentHTML('beforeend',`<div class="hint">Slots sharing one atlas material (e.g. body skin atlas) affect each other — expected for wow-style models.</div><textarea class="json" id="jsonOut"></textarea>
+    <div class="btnrow"><button type="button" id="btnRef">Refresh</button><button type="button" id="btnApply">Apply</button><button type="button" id="btnDl">Download</button></div>`);
+  const ta=c.querySelector('#jsonOut'); ta.value=JSON.stringify(getAppearance(),null,2);
+  c.querySelector('#btnRef').onclick=()=>{ta.value=JSON.stringify(getAppearance(),null,2);};
+  c.querySelector('#btnApply').onclick=()=>{try{loadAppearance(JSON.parse(ta.value));}catch(e){alert(e.message);}};
+  c.querySelector('#btnDl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ta.value],{type:'application/json'}));a.download='studio_appearance_v2.json';a.click();};
+  renderViewBar();
+}
+function body_appendSlotStatus(card,group){
+  if(slotTexChoice[group]) card.insertAdjacentHTML('beforeend',`<div class="hint" style="color:var(--good)">✓ ${slotTexChoice[group]}</div>`);
+}
+function getAppearance(){
+  const geosetVisibility={}; if(model) model.geosets.forEach(g=>geosetVisibility[g.name]=g.visible);
+  return {version:2,engine:'character-studio_v2.0',model:model?.fileName||null,
+    headMorphs:{...headVals},bodyMorphs:{...bodyVals},geosetVisibility,colors:{...colors},
+    equippedTextures:{...slotTexChoice},textureFolder:texFolderName||null,viewMode,
+    materialTextureOverrides:Object.keys(texOverrideMat).reduce((o,k)=>{o[k]='external';return o;},{}),
+    animationIndex:animIndex>=0?animIndex:null};
+}
+document.getElementById('folderTex').onchange=async e=>{
+  const files=[...(e.target.files||[])].filter(f=>/\.(png|jpe?g|webp|bmp|gif)$/i.test(f.name));
+  if(!files.length){setStatus('Folder contains no image files');return;}
+  texFolderName=(files[0].webkitRelativePath||files[0].name).split('/')[0];
+  texLib.clear();
+  for(const k of Object.keys(slotTexChoice)) delete slotTexChoice[k];
+  for(const f of files){ try{ texLib.set(f.webkitRelativePath||f.name,{bmp:await createImageBitmap(f),tex:null}); }catch{} }
+  setStatus(`Texture folder "${texFolderName}" — ${texLib.size} textures ready`);
+  renderRight();
+};
+
+// ═══════════ v2.0 — CHARACTER STUDIO - made by AEiOU: content packs, StudioAPI, headless, settings ═══════════
+
+const settings=Object.assign({fov:40,autoRotate:false,rotateSpeed:0.5,bg:1},(()=>{try{return JSON.parse(localStorage.getItem('cs_settings')||'{}');}catch{return{};}})());
+function persistSettings(){try{localStorage.setItem('cs_settings',JSON.stringify(settings));}catch{}}
+
+let pack=null;
+
+// ── minimal ZIP reader (stored + deflate via DecompressionStream) ──
+async function inflateRaw(blobPart){const ds=new DecompressionStream('deflate-raw');return new Response(new Blob([blobPart]).stream().pipeThrough(ds)).arrayBuffer();}
+async function readZipEntries(file){
+  const size=file.size;
+  const tail=new DataView(await file.slice(Math.max(0,size-65558),size).arrayBuffer());
+  let eocd=-1;
+  for(let i=tail.byteLength-22;i>=0;i--){ if(tail.getUint32(i,true)===0x06054b50){eocd=i;break;} }
+  if(eocd<0) throw new Error('Not a valid ZIP archive (no end-of-central-directory record)');
+  const count=tail.getUint16(eocd+10,true);
+  const cdSize=tail.getUint32(eocd+12,true);
+  const cdOfs=tail.getUint32(eocd+16,true);
+  if(cdOfs===0xFFFFFFFF) throw new Error('ZIP64 archives are not supported yet — keep packs under 4 GB');
+  const cd=new DataView(await file.slice(cdOfs,cdOfs+cdSize).arrayBuffer());
+  const td=new TextDecoder();
+  const entries=[]; let p=0;
+  for(let i=0;i<count;i++){
+    if(cd.getUint32(p,true)!==0x02014b50) break;
+    const method=cd.getUint16(p+10,true);
+    const csize=cd.getUint32(p+20,true), usize=cd.getUint32(p+24,true);
+    const nlen=cd.getUint16(p+28,true), elen=cd.getUint16(p+30,true), clen=cd.getUint16(p+32,true);
+    const lho=cd.getUint32(p+42,true);
+    const name=td.decode(new Uint8Array(cd.buffer,p+46,nlen));
+    entries.push({name,method,csize,usize,lho,dir:name.endsWith('/')});
+    p+=46+nlen+elen+clen;
+  }
+  return entries;
+}
+async function readZipEntryData(file,ent){
+  const lh=new DataView(await file.slice(ent.lho,ent.lho+30).arrayBuffer());
+  if(lh.getUint32(0,true)!==0x04034b50) throw new Error('Bad local header for '+ent.name);
+  const nlen=lh.getUint16(26,true), elen=lh.getUint16(28,true);
+  const start=ent.lho+30+nlen+elen;
+  const blob=file.slice(start,start+ent.csize);
+  if(ent.method===0) return blob.arrayBuffer();
+  if(ent.method===8) return inflateRaw(blob);
+  throw new Error('Unsupported ZIP compression method '+ent.method+' for '+ent.name);
+}
+
+async function loadPackFromZip(file){
+  setStatus('Reading content pack \u201c'+file.name+'\u201d \u2026');
+  const entries=(await readZipEntries(file)).filter(e=>!e.dir);
+  const glbs=entries.filter(e=>/\.(glb|gltf)$/i.test(e.name)).sort((a,b)=>b.usize-a.usize);
+  const imgs=entries.filter(e=>/\.(png|jpe?g|webp|bmp|gif)$/i.test(e.name));
+  const texts=entries.filter(e=>/\.(txt|json|md|csv)$/i.test(e.name)&&e.usize<512*1024);
+  pack={name:file.name.replace(/\.zip$/i,''),files:entries.map(e=>({name:e.name,size:e.usize})),texts:{},manifest:null};
+  const td=new TextDecoder();
+  for(const t of texts){ try{ pack.texts[t.name]=td.decode(await readZipEntryData(file,t)); }catch{} }
+  const mkey=Object.keys(pack.texts).find(n=>/customization_manifest\.json$/i.test(n))||Object.keys(pack.texts).find(n=>/manifest\.json$/i.test(n));
+  if(mkey){ try{ pack.manifest=JSON.parse(pack.texts[mkey]); }catch{} }
+  texLib.clear(); for(const k of Object.keys(slotTexChoice)) delete slotTexChoice[k];
+  texFolderName=pack.name;
+  for(const im of imgs){ try{ const buf=await readZipEntryData(file,im); texLib.set(im.name,{bmp:await createImageBitmap(new Blob([buf])),tex:null}); }catch{} }
+  if(glbs.length){ const g=glbs[0]; const buf=await readZipEntryData(file,g); await loadModelFromFile(new File([buf],g.name.split('/').pop())); }
+  renderRight();
+  setStatus(`Pack \u201c${pack.name}\u201d \u2014 ${entries.length} files \u00b7 ${glbs.length} model(s) \u00b7 ${imgs.length} texture(s) wired`);
+  document.dispatchEvent(new CustomEvent('studio:packloaded',{detail:{name:pack.name,files:pack.files.length,models:glbs.length,images:imgs.length}}));
+}
+
+// ── route .zip through the pack loader; emit model event ──
+const _loadModelCore=loadModelFromFile;
+loadModelFromFile=async function(file){
+  if(/\.zip$/i.test(file.name)) return loadPackFromZip(file);
+  const r=await _loadModelCore(file);
+  document.dispatchEvent(new CustomEvent('studio:modelloaded',{detail:{name:file.name}}));
+  return r;
+};
+
+// ── extra panel sections (wrap existing renderers; v1.5 UI untouched) ──
+function appendSettingsSection(){
+  const host=document.getElementById('leftBody'); if(!host) return;
+  const c=section(host,'Viewport Settings',false);
+  c.insertAdjacentHTML('beforeend',`
+    <div class="row"><label>Field of View \u2014 <b id="fovVal">${settings.fov}\u00b0</b></label><input type="range" id="setFov" min="20" max="90" step="1" value="${settings.fov}"/></div>
+    <div class="row"><label>Turntable Speed \u2014 <b id="rsVal">${settings.rotateSpeed.toFixed(2)}</b></label><input type="range" id="setRs" min="0.05" max="2" step="0.05" value="${settings.rotateSpeed}"/></div>
+    <div class="row"><label>Background \u2014 <b id="bgVal">${Math.round(settings.bg*100)}%</b></label><input type="range" id="setBg" min="0" max="3" step="0.05" value="${settings.bg}"/></div>
+    <div class="seg" id="rotSeg"><button type="button" data-rot="0" class="${settings.autoRotate?'':'on'}">Static</button><button type="button" data-rot="1" class="${settings.autoRotate?'on':''}">Turntable</button></div>`);
+  c.querySelector('#setFov').oninput=e=>{settings.fov=+e.target.value;const el=document.getElementById('fovVal');if(el)el.textContent=settings.fov+'\u00b0';persistSettings();};
+  c.querySelector('#setRs').oninput=e=>{settings.rotateSpeed=+e.target.value;const el=document.getElementById('rsVal');if(el)el.textContent=settings.rotateSpeed.toFixed(2);persistSettings();};
+  c.querySelector('#setBg').oninput=e=>{settings.bg=+e.target.value;const el=document.getElementById('bgVal');if(el)el.textContent=Math.round(settings.bg*100)+'%';persistSettings();};
+  c.querySelectorAll('#rotSeg button').forEach(b=>b.onclick=()=>{settings.autoRotate=b.dataset.rot==='1';persistSettings();c.querySelectorAll('#rotSeg button').forEach(x=>x.classList.toggle('on',x===b));});
+}
+
+function fmtSize(n){return n>1048576?(n/1048576).toFixed(1)+' MB':n>1024?(n/1024).toFixed(1)+' KB':n+' B';}
+function appendPackSection(){
+  const host=document.getElementById('rightBody'); if(!host) return;
+  const c=section(host,'Content Pack',true);
+  if(!pack){ c.insertAdjacentHTML('beforeend','<div class="hint">Open or drop a content-pack <b>.zip</b> (models/, textures/, manifest + docs). Model, textures and metadata auto-wire into the studio.</div>'); return; }
+  c.insertAdjacentHTML('beforeend',`<div class="hint"><b style="color:#e8eaee">${pack.name}</b> \u2014 ${pack.files.length} files${pack.manifest?' \u00b7 manifest \u2713':''}</div>`);
+  c.insertAdjacentHTML('beforeend',`<div class="filelist">${pack.files.map(f=>`<div class="flrow"><span class="fn">${f.name}</span><span class="sz">${fmtSize(f.size)}</span></div>`).join('')}</div>`);
+  const docs=Object.keys(pack.texts);
+  if(docs.length){
+    c.insertAdjacentHTML('beforeend',`<div class="pathrow"><select id="packDoc" style="flex:1;border-radius:3px 0 0 3px">${docs.map(d=>`<option value="${d}">${d.split('/').pop()}</option>`).join('')}</select><button type="button" id="packDocOpen">View</button></div><textarea id="packDocView" class="json" readonly style="display:none;height:150px;color:#c9cdd4"></textarea>`);
+    c.querySelector('#packDocOpen').onclick=()=>{const sel=document.getElementById('packDoc'),ta=document.getElementById('packDocView');ta.style.display='block';ta.value=pack.texts[sel.value]||'';};
+  }
+}
+const _renderLeftV15=renderLeft, _renderRightV15=renderRight;
+renderLeft=function(){ _renderLeftV15(); appendSettingsSection(); };
+renderRight=function(){ _renderRightV15(); appendPackSection(); };
+
+// ── StudioAPI: scriptable surface for agents / automation / headless ──
+const StudioAPI={
+  version:'2.0.0',
+  brand:'CHARACTER STUDIO - made by AEiOU',
+  loadFile:f=>loadModelFromFile(f),
+  loadPack:f=>loadPackFromZip(f),
+  getStatus:()=>document.getElementById('status')?.textContent||'',
+  appearance:()=>getAppearance(),
+  applyAppearance:a=>{const ta=document.getElementById('jsonOut'); if(!ta) return false; ta.value=typeof a==='string'?a:JSON.stringify(a); document.getElementById('btnApply')?.click(); return true;},
+  setViewMode:m=>{ if(!['tex','matid','groups'].includes(m)) return false; viewMode=m; renderViewBar(); return true; },
+  getViewMode:()=>viewMode,
+  listGeosets:()=>[...document.querySelectorAll('#leftBody .geo')].map(g=>({name:g.querySelector('.nm')?.textContent||'',visible:!!g.querySelector('input')?.checked})),
+  setGeosetVisible:(name,on)=>{const g=[...document.querySelectorAll('#leftBody .geo')].find(x=>(x.querySelector('.nm')?.textContent||'')===name); if(!g) return false; const i=g.querySelector('input'); if(i&&i.checked!==!!on) i.click(); return true;},
+  cycle:(label,dir=1)=>{const r=[...document.querySelectorAll('#leftBody .wrow')].find(w=>(w.querySelector('.wl')?.textContent||'').trim()===label); if(!r) return null; const arrows=r.querySelectorAll('.arrow'); arrows[dir>0?arrows.length-1:0]?.click(); return (r.querySelector('.wv')?.textContent||'').trim();},
+  getCyclerValue:label=>{const r=[...document.querySelectorAll('#leftBody .wrow')].find(w=>(w.querySelector('.wl')?.textContent||'').trim()===label); return r?(r.querySelector('.wv')?.textContent||'').trim():null;},
+  setSlider:(label,value)=>{const r=[...document.querySelectorAll('#leftBody .row')].find(x=>(x.querySelector('label')?.textContent||'').trim().startsWith(label)); if(!r) return false; const inp=r.querySelector('input[type=range]'); if(!inp) return false; inp.value=value; inp.dispatchEvent(new Event('input',{bubbles:true})); return true;},
+  listTextures:()=>[...texLib.keys()],
+  equipTexture:(slotLabel,texName)=>{const s=[...document.querySelectorAll('#rightBody .slot')].find(x=>(x.querySelector('.sl')?.textContent||'').trim().toUpperCase()===slotLabel.toUpperCase()); if(!s) return false; const sel=[...s.querySelectorAll('select')].pop(); if(!sel) return false; sel.value=texName; sel.dispatchEvent(new Event('change',{bubbles:true})); return sel.value===texName;},
+  saveGearset:n=>{gearsets=gearsets.filter(g=>g.name!==n);gearsets.push(snapshotGearset(n));persistGearsets();renderRight();return true;},
+  applyGearsetByName:n=>{const g=gearsets.find(x=>x.name===n); if(!g) return false; applyGearset(g); return true;},
+  listGearsets:()=>gearsets.map(g=>g.name),
+  getPack:()=>pack?{name:pack.name,files:pack.files,manifest:pack.manifest,docs:Object.keys(pack.texts)}:null,
+  readPackDoc:n=>pack?.texts?.[n]??null,
+  settings,
+  setSetting:(k,v)=>{settings[k]=v;persistSettings();return settings;},
+  screenshot:()=>canvas.toDataURL('image/png'),
+};
+window.StudioAPI=StudioAPI;
+
+// ── headless mode: ?headless=1 hides all chrome, StudioAPI drives everything ──
+if(new URLSearchParams(location.search).get('headless')==='1') document.body.classList.add('headless');
+
+document.dispatchEvent(new CustomEvent('studio:ready',{detail:{version:'2.0.0',brand:StudioAPI.brand,headless:document.body.classList.contains('headless')}}));
+window.__studioReady=true;
+
+renderLeft(); renderRight();
+setStatus('Ready \u2014 open or drop a .glb / .gltf or a content-pack .zip');
+</script>
+</body>
+</html>

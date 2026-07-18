@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Head Sculpt Editor v1.0 — Classic Realm Customization Layer</title>
+<style>
+:root{
+  --bg:#0b0e13;--panel:#121820;--panel2:#1a222e;--border:#2a3544;
+  --text:#e7eef7;--muted:#8b9bb0;--accent:#c9a227;--accent2:#3d8bfd;
+  --good:#3fb950;--danger:#f85149;--slider:#2d3a4d;
+  font-family:"Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);overflow:hidden}
+#app{display:grid;grid-template-columns:320px 1fr 340px;height:100%}
+header.bar{grid-column:1/-1;display:flex;align-items:center;gap:12px;padding:8px 14px;
+  background:linear-gradient(180deg,#1a1520,#121018);border-bottom:1px solid var(--border);height:48px}
+header.bar h1{font-size:15px;margin:0;color:var(--accent);letter-spacing:.04em;font-weight:700}
+header.bar .ver{font-size:11px;background:#3d2a10;color:var(--accent);padding:2px 8px;border-radius:999px;border:1px solid #6a4a18}
+header.bar .spacer{flex:1}
+header.bar select,header.bar button,header.bar label{
+  font-size:12px;background:var(--panel2);color:var(--text);border:1px solid var(--border);
+  border-radius:6px;padding:5px 10px;cursor:pointer}
+header.bar button:hover{border-color:var(--accent);color:var(--accent)}
+header.bar button.primary{background:#2a4a20;border-color:#3a6a30;color:#9fef7a}
+.side{overflow:auto;background:var(--panel);border-right:1px solid var(--border);padding:0}
+.side.right{border-right:0;border-left:1px solid var(--border)}
+.tabs{display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid var(--border);background:var(--panel2);position:sticky;top:0;z-index:2}
+.tabs button{flex:1;min-width:70px;background:transparent;border:0;border-bottom:2px solid transparent;
+  color:var(--muted);padding:10px 6px;font-size:11px;font-weight:600;cursor:pointer;text-transform:uppercase;letter-spacing:.03em}
+.tabs button.active{color:var(--accent);border-bottom-color:var(--accent);background:#1c1810}
+.panel-body{padding:10px 12px 40px}
+.cat{margin:14px 0 6px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:700}
+.row{display:grid;grid-template-columns:1fr 48px;gap:6px;align-items:center;margin:6px 0}
+.row label{font-size:11px;color:var(--muted);grid-column:1/-1}
+.row input[type=range]{width:100%;accent-color:var(--accent)}
+.row .val{font-size:11px;color:var(--text);text-align:right;font-variant-numeric:tabular-nums}
+.swatches{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.swatch{width:28px;height:28px;border-radius:6px;border:2px solid transparent;cursor:pointer}
+.swatch.active{border-color:#fff;box-shadow:0 0 0 1px var(--accent)}
+.opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.opt{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:8px;font-size:11px;cursor:pointer;text-align:left;color:var(--text)}
+.opt:hover{border-color:var(--accent2)}
+.opt.active{border-color:var(--accent);background:#2a2410;color:var(--accent)}
+#viewport{position:relative;background:radial-gradient(ellipse at 50% 40%,#1a2433 0%,#0b0e13 70%);overflow:hidden}
+#gl{width:100%;height:100%;display:block}
+.hud{position:absolute;left:12px;bottom:12px;right:12px;display:flex;gap:8px;flex-wrap:wrap;pointer-events:none}
+.hud span{pointer-events:none;background:rgba(0,0,0,.55);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:11px;color:var(--muted)}
+.hint{font-size:11px;color:var(--muted);line-height:1.45;margin:8px 0}
+.json-box{width:100%;height:180px;background:#0a0d12;color:#9fef7a;border:1px solid var(--border);border-radius:8px;
+  font-family:ui-monospace,Consolas,monospace;font-size:10px;padding:8px;resize:vertical}
+.btn-row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.btn-row button{font-size:11px;background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 10px;cursor:pointer}
+.btn-row button:hover{border-color:var(--accent)}
+.stat{font-size:11px;color:var(--muted);margin:4px 0}
+.preset-card{border:1px solid var(--border);border-radius:8px;padding:8px;margin:6px 0;cursor:pointer;background:var(--panel2)}
+.preset-card:hover,.preset-card.active{border-color:var(--accent)}
+.preset-card b{color:var(--accent);font-size:12px}
+.preset-card p{margin:4px 0 0;font-size:11px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="bar">
+    <h1>HEAD SCULPT EDITOR</h1>
+    <span class="ver">v1.0 · customization layer</span>
+    <div class="spacer"></div>
+    <label>Race
+      <select id="raceSel"></select>
+    </label>
+    <label>Gender
+      <select id="genderSel"><option value="male">Male</option><option value="female">Female</option></select>
+    </label>
+    <button id="btnRandom" type="button">Randomize</button>
+    <button id="btnReset" type="button">Reset</button>
+    <button id="btnCopy" type="button" class="primary">Copy Appearance JSON</button>
+  </header>
+
+  <aside class="side" id="left">
+    <div class="tabs" id="leftTabs"></div>
+    <div class="panel-body" id="leftBody"></div>
+  </aside>
+
+  <main id="viewport">
+    <canvas id="gl"></canvas>
+    <div class="hud">
+      <span id="hudMorphs">morphs: 0</span>
+      <span id="hudRace">race: —</span>
+      <span>drag = orbit · scroll = zoom · RMB = pan</span>
+      <span id="hudFps">— fps</span>
+    </div>
+  </main>
+
+  <aside class="side right" id="right">
+    <div class="tabs">
+      <button type="button" class="active" data-rtab="geosets">Geosets</button>
+      <button type="button" data-rtab="colors">Colors</button>
+      <button type="button" data-rtab="presets">Presets</button>
+      <button type="button" data-rtab="io">I/O</button>
+    </div>
+    <div class="panel-body" id="rightBody"></div>
+  </aside>
+</div>
+
+<script type="module">
+/**
+ * Self-contained Head Sculpt Editor demo.
+ * Embeds the engine logic (morph catalog + sculpt + appearance state) + pure WebGL2
+ * parametric head so it runs fully offline without Three.js.
+ * Drop the same engine modules into Vite for GLB characters via ThreeAppearanceBinding.
+ */
+
+// ── Morph catalog (mirrors MorphCatalog.ts) ──────────────────────────────
+const axis = (id, label, category, strength = 0.012, min = -1, max = 1, def = 0) =>
+  ({ id, label, category, min, max, default: def, strength });
+
+const FULL_MORPH_CATALOG = [
+  axis('skull_width','Skull Width','skull',0.02), axis('skull_height','Skull Height','skull',0.018),
+  axis('skull_depth','Skull Depth','skull',0.016), axis('skull_roundness','Cranium Roundness','skull',0.01),
+  axis('forehead_height','Forehead Height','skull',0.014), axis('forehead_width','Forehead Width','skull',0.012),
+  axis('forehead_slope','Forehead Slope','skull',0.01), axis('temple_width','Temple Width','skull',0.012),
+  axis('occipital_bulk','Back of Head','skull',0.012),
+  axis('brow_ridge','Brow Ridge','brow',0.014), axis('brow_height','Brow Height','brow',0.01),
+  axis('brow_angle','Brow Angle','brow',0.008), axis('brow_inner','Inner Brow','brow',0.008),
+  axis('brow_outer','Outer Brow','brow',0.008), axis('glabella','Glabella','brow',0.006),
+  axis('eye_size','Eye Size','eyes',0.01), axis('eye_height','Eye Height','eyes',0.01),
+  axis('eye_depth','Eye Depth / Socket','eyes',0.012), axis('eye_spacing','Eye Spacing','eyes',0.014),
+  axis('eye_slant','Eye Slant','eyes',0.008), axis('eye_openness','Eyelid Openness','eyes',0.006),
+  axis('under_eye','Under-Eye Bag','eyes',0.006),
+  axis('nose_length','Nose Length','nose',0.014), axis('nose_width','Nose Width','nose',0.012),
+  axis('nose_height','Nose Bridge Height','nose',0.01), axis('nose_tip_up','Nose Tip Up/Down','nose',0.01),
+  axis('nose_tip_width','Nose Tip Width','nose',0.008), axis('nose_bridge_width','Bridge Width','nose',0.008),
+  axis('nostril_flare','Nostril Flare','nose',0.008), axis('nose_hook','Hook / Aquiline','nose',0.01),
+  axis('cheekbone_height','Cheekbone Height','cheeks',0.01), axis('cheekbone_width','Cheekbone Width','cheeks',0.014),
+  axis('cheekbone_depth','Cheekbone Depth','cheeks',0.01), axis('cheek_hollow','Cheek Hollow','cheeks',0.01),
+  axis('cheek_fullness','Cheek Fullness','cheeks',0.01),
+  axis('mouth_width','Mouth Width','mouth',0.01), axis('mouth_height','Mouth Height','mouth',0.008),
+  axis('lip_upper','Upper Lip','mouth',0.006), axis('lip_lower','Lower Lip','mouth',0.006),
+  axis('lip_fullness','Lip Fullness','mouth',0.006), axis('mouth_protrusion','Mouth Forward','mouth',0.008),
+  axis('philtrum','Philtrum Depth','mouth',0.004),
+  axis('jaw_width','Jaw Width','jaw',0.018), axis('jaw_height','Jaw Height','jaw',0.012),
+  axis('jaw_angle','Jaw Angle / Square','jaw',0.012), axis('jaw_forward','Jaw Forward','jaw',0.014),
+  axis('mandible_bulk','Mandible Bulk','jaw',0.01), axis('masseter','Masseter','jaw',0.01),
+  axis('chin_width','Chin Width','chin',0.01), axis('chin_height','Chin Length','chin',0.012),
+  axis('chin_depth','Chin Forward','chin',0.01), axis('chin_cleft','Chin Cleft','chin',0.005),
+  axis('chin_point','Chin Point','chin',0.008),
+  axis('ear_size','Ear Size','ears',0.016), axis('ear_height','Ear Height','ears',0.01),
+  axis('ear_angle','Ear Angle / Flare','ears',0.012), axis('ear_tip','Ear Point','ears',0.01),
+  axis('earlobe','Earlobe Length','ears',0.006),
+  axis('neck_width','Neck Width','neck',0.014), axis('neck_length','Neck Length','neck',0.01),
+  axis('adam_apple','Adam\'s Apple','neck',0.006), axis('nape','Nape Bulk','neck',0.008),
+  axis('asym_jaw','Asym Jaw L/R','asymmetry',0.008), axis('asym_eye','Asym Eye L/R','asymmetry',0.006),
+  axis('asym_brow','Asym Brow L/R','asymmetry',0.006), axis('asym_mouth','Asym Mouth L/R','asymmetry',0.005),
+  axis('asym_nose','Asym Nose L/R','asymmetry',0.005),
+  axis('age_wrinkles','Age Bias','age',0.004), axis('age_jowls','Jowls','age',0.008),
+  axis('age_sag','Skin Sag','age',0.006), axis('fleshiness','Fleshiness','age',0.01),
+  axis('expr_smile','Resting Smile','expression',0.006), axis('expr_frown','Resting Frown','expression',0.006),
+  axis('expr_snarl','Resting Snarl','expression',0.008), axis('expr_squint','Resting Squint','expression',0.005),
+  axis('expr_brows_raise','Raised Brows','expression',0.006),
+];
+
+const MORPH_CATEGORIES = [
+  ['skull','Skull'],['brow','Brow'],['eyes','Eyes'],['nose','Nose'],['cheeks','Cheeks'],
+  ['mouth','Mouth'],['jaw','Jaw'],['chin','Chin'],['ears','Ears'],['neck','Neck'],
+  ['asymmetry','Asymmetry'],['age','Age / Flesh'],['expression','Expression'],
+];
+
+const RACES = ['human','orc','dwarf','nightelf','undead','tauren','gnome','troll'];
+const HEAD_REGIONS = {
+  human_male:[1.55,1.92], human_female:[1.48,1.85],
+  orc_male:[1.90,2.32], orc_female:[1.75,2.15],
+  dwarf_male:[1.15,1.48], dwarf_female:[1.10,1.42],
+  nightelf_male:[1.85,2.25], nightelf_female:[1.75,2.15],
+  undead_male:[1.55,1.95], undead_female:[1.50,1.90],
+  tauren_male:[2.20,2.85], tauren_female:[2.05,2.65],
+  gnome_male:[0.85,1.15], gnome_female:[0.82,1.12],
+  troll_male:[1.95,2.45], troll_female:[1.85,2.30],
+};
+
+const SKIN = {
+  human:['#f0d0b0','#d0a070','#8a5a38','#4a2e1c'],
+  orc:['#5a8f3a','#6b8f3a','#8a5a32','#8a8a8a','#a04030','#9aaa55'],
+  dwarf:['#e0b898','#c09060','#8a5a38','#5a3a28'],
+  nightelf:['#6a5a9a','#4a6a9a','#9a6a8a','#4a8a8a'],
+  undead:['#c0c8b8','#8a9088','#7a9a6a','#7a8a9a'],
+  tauren:['#8a6a40','#6a4a28','#a08050','#4a3020'],
+  gnome:['#f0d0b0','#d0a070','#c090c0','#80b0d0'],
+  troll:['#3a8a6a','#2a6a8a','#5a8a3a','#4a6a9a'],
+};
+const HAIR = ['#1a1420','#5a3a22','#d4a85a','#a04028','#e8e8f0','#3050a0','#308050','#6a3a8a','#c86820','#e070b0'];
+const EYES = ['#3080e0','#6a4020','#40a040','#a08040','#a040e0','#e8a020','#e02020','#80ff40','#c0e8ff'];
+
+// Geoset options (generic + orc-aware labels)
+function geosetSlotsFor(race) {
+  const hairN = race === 'orc' ? 29 : 12;
+  const facialN = race === 'orc' ? 20 : 8;
+  return {
+    head: { label:'Head Preset', options: race==='orc'
+      ? ['Default HD','Young Warrior','Battle Veteran','Scarred Veteran','Shaman Elder','Warchief']
+      : ['Face 1','Face 2','Face 3','Face 4','Face 5','Face 6','Face 7','Face 8'] },
+    hair: { label:'Hair', options: Array.from({length: hairN === 29 ? 28 : hairN}, (_,i) => {
+      const v = hairN===29 ? (i < 12 ? i+1 : i+2) : i+1; // skip 13 for orc
+      const extra = {27:'High Mohawk',28:'Pompadour',29:'Big Bun'};
+      return extra[v] || `Hair ${v}`;
+    })},
+    facial: { label: race==='orc' ? 'Beard / Moustache' : 'Facial Hair', options: Array.from({length: facialN}, (_,i) => {
+      const v = race==='orc' ? i+2 : i+1;
+      const extra = {18:'Walrus Stache',19:'Handlebar',20:'Thin Droop'};
+      return extra[v] || `Style ${v}`;
+    })},
+    ears: { label:'Ears', options: ['Ears 1','Ears 2','Ears 3'] },
+    features: { label:'Features / Piercings', options: ['None','Piercing 1','Piercing 2','Piercing 3','Jewelry 1','Eyeglow'] },
+  };
+}
+
+// ── State ────────────────────────────────────────────────────────────────
+let race = 'orc', gender = 'male';
+const morphValues = Object.fromEntries(FULL_MORPH_CATALOG.map(a => [a.id, a.default]));
+let geosetSel = { head:0, hair:0, facial:0, ears:1, features:0 };
+let colors = { skin: SKIN.orc[0], hair: HAIR[0], eyes: EYES[5] };
+let leftTab = 'skull';
+let rightTab = 'geosets';
+let dirtyMorph = true;
+
+// ── Parametric head mesh (offline demo stand-in for GLB head) ─────────────
+function buildHeadMesh(segU = 48, segV = 40) {
+  // Unit head: y 0..1 chin→crown, x forward, z lateral — remapped to race headRegion later
+  const positions = [];
+  const normals = [];
+  const uvs = [];
+  const indices = [];
+  const region = []; // feature id weight baked later via y/lat
+
+  for (let v = 0; v <= segV; v++) {
+    const t = v / segV; // 0 chin .. 1 crown
+    for (let u = 0; u <= segU; u++) {
+      const a = (u / segU) * Math.PI * 2;
+      // base ellipsoid profile with jaw/brow/nose bias
+      let rx = 0.28 + 0.04 * Math.sin(t * Math.PI);
+      let ry = 0.5;
+      let rz = 0.32 + 0.02 * Math.sin(t * Math.PI);
+      // jaw square
+      if (t < 0.35) { rz *= 0.95 + 0.15 * (t / 0.35); rx *= 0.9 + 0.1 * (t / 0.35); }
+      // brow ridge
+      if (t > 0.65 && t < 0.8) rx += 0.03 * Math.sin((t - 0.65) / 0.15 * Math.PI);
+      // back flatter
+      const back = Math.max(0, -Math.cos(a));
+      rx *= 1 - 0.15 * back;
+
+      let x = Math.cos(a) * rx;
+      let z = Math.sin(a) * rz;
+      let y = t;
+
+      // nose bump front
+      const front = Math.max(0, Math.cos(a));
+      if (t > 0.42 && t < 0.68) {
+        const nn = Math.sin((t - 0.42) / 0.26 * Math.PI) * front * front;
+        x += 0.08 * nn;
+        z *= 1 - 0.15 * nn;
+      }
+      // eye sockets
+      if (t > 0.62 && t < 0.74) {
+        const ey = Math.sin((t - 0.62) / 0.12 * Math.PI);
+        const el = Math.exp(-Math.pow((Math.abs(Math.sin(a)) - 0.45) / 0.18, 2));
+        x -= 0.025 * ey * el * front;
+      }
+      // ears
+      if (t > 0.55 && t < 0.85) {
+        const et = Math.sin((t - 0.55) / 0.3 * Math.PI);
+        const side = Math.max(0, Math.abs(Math.sin(a)) - 0.85) / 0.15;
+        z += Math.sign(Math.sin(a) || 1) * 0.06 * et * Math.max(0, side);
+        x -= 0.02 * et * Math.max(0, side);
+      }
+
+      positions.push(x, y, z);
+      uvs.push(u / segU, 1 - t);
+      // placeholder normals
+      normals.push(x, y - 0.5, z);
+    }
+  }
+  const stride = segU + 1;
+  for (let v = 0; v < segV; v++) {
+    for (let u = 0; u < segU; u++) {
+      const i = v * stride + u;
+      indices.push(i, i + stride, i + 1, i + 1, i + stride, i + stride + 1);
+    }
+  }
+  // normalize normals roughly
+  for (let i = 0; i < normals.length; i += 3) {
+    const x = normals[i], y = normals[i+1], z = normals[i+2];
+    const l = Math.hypot(x, y, z) || 1;
+    normals[i] = x/l; normals[i+1] = y/l; normals[i+2] = z/l;
+  }
+  return {
+    base: new Float32Array(positions),
+    work: new Float32Array(positions),
+    normals: new Float32Array(normals),
+    uvs: new Float32Array(uvs),
+    indices: new Uint32Array(indices),
+    count: positions.length / 3,
+  };
+}
+
+function smoothstep(v, a, b) {
+  const t = Math.min(1, Math.max(0, (v - a) / (b - a || 1e-9)));
+  return t * t * (3 - 2 * t);
+}
+function gauss3(x,y,z,cx,cy,cz,sx,sy,sz) {
+  const dx=(x-cx)/sx, dy=(y-cy)/sy, dz=(z-cz)/sz;
+  return Math.exp(-0.5*(dx*dx+dy*dy+dz*dz));
+}
+
+/** Apply morph catalog onto unit head (y 0..1). Mirrors MorphSculptEngine. */
+function applyMorphs(mesh, values) {
+  const base = mesh.base, work = mesh.work, n = mesh.count;
+  const axes = FULL_MORPH_CATALOG;
+  for (let i = 0; i < n; i++) {
+    const i3 = i*3;
+    let x = base[i3], y = base[i3+1], z = base[i3+2];
+    const t = y;
+    const lat = Math.max(-1, Math.min(1, z / 0.32));
+    const signZ = z >= 0 ? 1 : -1;
+    let dx=0, dy=0, dz=0;
+    const g = (fy,sx,sy,sz,cx=0.05,cz=0) => gauss3(x,y,z,cx,fy,cz,sx,sy,sz);
+
+    for (const a of axes) {
+      const val = values[a.id] || 0;
+      if (Math.abs(val) < 1e-6) continue;
+      const s = val * a.strength * 8; // unit-head scale boost for visibility
+      switch (a.id) {
+        case 'skull_width': dz += s * t * signZ; break;
+        case 'skull_height': dy += s * smoothstep(t,0.55,1); break;
+        case 'skull_depth': dx += s * t * 0.5; break;
+        case 'skull_roundness': { const w=g(0.75,0.12,0.15,0.12); dx+=s*w*0.3; dz+=s*w*signZ*0.5; break; }
+        case 'forehead_height': dy += s * g(0.9,0.1,0.1,0.1); break;
+        case 'forehead_width': dz += s * g(0.88,0.1,0.08,0.12) * signZ; break;
+        case 'forehead_slope': dx += s * g(0.88,0.1,0.1,0.1); break;
+        case 'temple_width': dz += s * g(0.78,0.08,0.08,0.08,0.0,0.2*signZ) * signZ; break;
+        case 'occipital_bulk': dx -= s * g(0.7,0.1,0.12,0.12,-0.15); break;
+        case 'brow_ridge': dx += s * g(0.72,0.08,0.05,0.14); break;
+        case 'brow_height': dy += s * g(0.72,0.08,0.04,0.14); break;
+        case 'brow_angle': dy += s * g(0.72,0.06,0.04,0.06,0.05,0.15*signZ) * Math.abs(lat); break;
+        case 'brow_inner': dy += s * g(0.72,0.05,0.04,0.04,0.05,0.05*signZ); break;
+        case 'brow_outer': dy += s * g(0.72,0.05,0.04,0.04,0.05,0.2*signZ); break;
+        case 'glabella': dx += s * g(0.7,0.04,0.04,0.04,0.08); break;
+        case 'eye_size': { const w=g(0.68,0.05,0.04,0.05,0.08,0.12*signZ); dx+=s*w*0.2; dy+=s*w*0.2; dz+=s*w*signZ*0.3; break; }
+        case 'eye_height': dy += s * g(0.68,0.05,0.03,0.05,0.08,0.12*signZ); break;
+        case 'eye_depth': dx += s * g(0.68,0.05,0.03,0.05,0.08,0.12*signZ); break;
+        case 'eye_spacing': dz += s * g(0.68,0.05,0.03,0.05,0.08,0.12*signZ) * signZ; break;
+        case 'eye_slant': dy += s * g(0.68,0.05,0.03,0.04,0.08,0.16*signZ) * lat; break;
+        case 'eye_openness': dy += s * g(0.68,0.04,0.02,0.04,0.08,0.12*signZ)*0.5; break;
+        case 'under_eye': dy -= s * g(0.64,0.05,0.03,0.05,0.06,0.12*signZ); break;
+        case 'nose_length': dx += s * g(0.55,0.05,0.1,0.05,0.18); break;
+        case 'nose_width': dz += s * g(0.52,0.05,0.08,0.06,0.15) * signZ; break;
+        case 'nose_height': dy += s * g(0.58,0.05,0.08,0.05,0.14); break;
+        case 'nose_tip_up': dy += s * g(0.48,0.04,0.04,0.04,0.2); break;
+        case 'nose_tip_width': dz += s * g(0.48,0.04,0.04,0.05,0.2) * signZ; break;
+        case 'nose_bridge_width': dz += s * g(0.6,0.04,0.07,0.04,0.12) * signZ; break;
+        case 'nostril_flare': dz += s * g(0.47,0.03,0.03,0.04,0.18,0.04*signZ) * signZ; break;
+        case 'nose_hook': { const w=g(0.52,0.05,0.07,0.05,0.18); dx+=s*w; dy-=s*w*0.4; break; }
+        case 'cheekbone_height': dy += s * g(0.55,0.07,0.06,0.07,0.05,0.18*signZ); break;
+        case 'cheekbone_width': dz += s * g(0.55,0.07,0.06,0.07,0.05,0.18*signZ) * signZ; break;
+        case 'cheekbone_depth': dx += s * g(0.55,0.07,0.06,0.07,0.05,0.18*signZ); break;
+        case 'cheek_hollow': dz -= s * g(0.48,0.07,0.07,0.07,0.0,0.16*signZ) * signZ; break;
+        case 'cheek_fullness': dz += s * g(0.48,0.08,0.07,0.08,0.0,0.16*signZ) * signZ; break;
+        case 'mouth_width': dz += s * g(0.38,0.05,0.04,0.07,0.12) * signZ; break;
+        case 'mouth_height': dy += s * g(0.38,0.05,0.04,0.07,0.12); break;
+        case 'lip_upper': dy += s * g(0.4,0.05,0.03,0.06,0.13); break;
+        case 'lip_lower': dy -= s * g(0.35,0.05,0.03,0.06,0.13); break;
+        case 'lip_fullness': dx += s * g(0.38,0.05,0.04,0.06,0.13)*0.5; break;
+        case 'mouth_protrusion': dx += s * g(0.38,0.05,0.05,0.07,0.13); break;
+        case 'philtrum': dx -= s * g(0.43,0.025,0.04,0.025,0.13); break;
+        case 'jaw_width': dz += s * g(0.25,0.1,0.1,0.1) * signZ; break;
+        case 'jaw_height': dy += s * g(0.22,0.08,0.1,0.1); break;
+        case 'jaw_angle': dz += s * g(0.28,0.07,0.08,0.07,0.0,0.2*signZ) * signZ; break;
+        case 'jaw_forward': dx += s * g(0.25,0.08,0.1,0.1); break;
+        case 'mandible_bulk': { const w=g(0.25,0.08,0.09,0.08); dx+=s*w*0.3; dz+=s*w*signZ; break; }
+        case 'masseter': dz += s * g(0.3,0.07,0.08,0.07,0.0,0.18*signZ) * signZ; break;
+        case 'chin_width': dz += s * g(0.12,0.05,0.07,0.06,0.1) * signZ; break;
+        case 'chin_height': dy += s * g(0.1,0.05,0.07,0.06,0.1); break;
+        case 'chin_depth': dx += s * g(0.1,0.05,0.07,0.06,0.12); break;
+        case 'chin_cleft': dx -= s * g(0.1,0.03,0.06,0.02,0.12)*0.5; break;
+        case 'chin_point': { const w=g(0.08,0.04,0.06,0.04,0.12); dx+=s*w; dy-=s*w*0.3; break; }
+        case 'ear_size': { const w=g(0.65,0.06,0.12,0.05,-0.05,0.28*signZ); dx+=s*w*0.2; dy+=s*w*0.3; dz+=s*w*signZ; break; }
+        case 'ear_height': dy += s * g(0.65,0.05,0.1,0.05,-0.05,0.28*signZ); break;
+        case 'ear_angle': dz += s * g(0.65,0.05,0.1,0.05,-0.05,0.28*signZ) * signZ; break;
+        case 'ear_tip': dy += s * g(0.78,0.04,0.05,0.04,-0.05,0.28*signZ); break;
+        case 'earlobe': dy -= s * g(0.55,0.04,0.05,0.04,-0.05,0.28*signZ); break;
+        case 'neck_width': dz += s * smoothstep(t,0,0.15) * signZ; break;
+        case 'neck_length': dy += s * smoothstep(t,0,0.12)*0.5; break;
+        case 'adam_apple': dx += s * g(0.05,0.03,0.05,0.03,0.08); break;
+        case 'nape': dx -= s * g(0.1,0.05,0.08,0.06,-0.15); break;
+        case 'asym_jaw': dy += s * g(0.25,0.08,0.09,0.08) * lat; break;
+        case 'asym_eye': dy += s * g(0.68,0.05,0.03,0.05,0.08,0.12*signZ) * lat; break;
+        case 'asym_brow': dy += s * g(0.72,0.07,0.04,0.07) * lat; break;
+        case 'asym_mouth': dy += s * g(0.38,0.05,0.04,0.07,0.12) * lat; break;
+        case 'asym_nose': dz += s * g(0.52,0.05,0.08,0.05,0.15) * val; break;
+        case 'age_jowls': dy -= s * g(0.3,0.07,0.06,0.07,0.0,0.16*signZ); dz += s * g(0.3,0.07,0.06,0.07,0.0,0.16*signZ)*signZ*0.5; break;
+        case 'age_sag': dy -= s * t * 0.15; break;
+        case 'fleshiness': dz += s * t * signZ * 0.4; dx += s * t * 0.2; break;
+        case 'expr_smile': { const w=g(0.38,0.07,0.04,0.08,0.1); dy+=s*w*0.3; dz+=s*w*signZ*0.4; break; }
+        case 'expr_frown': dy -= s * g(0.4,0.07,0.04,0.08,0.1); break;
+        case 'expr_snarl': { const w=g(0.4,0.05,0.04,0.05,0.12,0.06*signZ); dy+=s*w*0.2; dx+=s*w*0.3; break; }
+        case 'expr_squint': dy -= s * g(0.68,0.05,0.02,0.05,0.08,0.12*signZ)*0.5; break;
+        case 'expr_brows_raise': dy += s * g(0.72,0.07,0.04,0.12); break;
+        default: break;
+      }
+    }
+    // map unit head into race head region for display scale feel
+    const [yMin, yMax] = HEAD_REGIONS[`${race}_${gender}`] || [1.55, 1.92];
+    const h = yMax - yMin;
+    work[i3]   = (x + dx) * h * 1.1;
+    work[i3+1] = yMin + (y + dy) * h;
+    work[i3+2] = (z + dz) * h * 1.1;
+  }
+  // recompute normals (face average)
+  const nrm = mesh.normals;
+  nrm.fill(0);
+  const idx = mesh.indices;
+  for (let t = 0; t < idx.length; t += 3) {
+    const a=idx[t]*3, b=idx[t+1]*3, c=idx[t+2]*3;
+    const ax=work[a], ay=work[a+1], az=work[a+2];
+    const bx=work[b], by=work[b+1], bz=work[b+2];
+    const cx=work[c], cy=work[c+1], cz=work[c+2];
+    const e1x=bx-ax, e1y=by-ay, e1z=bz-az;
+    const e2x=cx-ax, e2y=cy-ay, e2z=cz-az;
+    const nx=e1y*e2z-e1z*e2y, ny=e1z*e2x-e1x*e2z, nz=e1x*e2y-e1y*e2x;
+    nrm[a]+=nx; nrm[a+1]+=ny; nrm[a+2]+=nz;
+    nrm[b]+=nx; nrm[b+1]+=ny; nrm[b+2]+=nz;
+    nrm[c]+=nx; nrm[c+1]+=ny; nrm[c+2]+=nz;
+  }
+  for (let i=0;i<nrm.length;i+=3){
+    const l=Math.hypot(nrm[i],nrm[i+1],nrm[i+2])||1;
+    nrm[i]/=l; nrm[i+1]/=l; nrm[i+2]/=l;
+  }
+}
+
+// ── WebGL renderer ───────────────────────────────────────────────────────
+const canvas = document.getElementById('gl');
+const gl = canvas.getContext('webgl2', { antialias:true, alpha:false });
+if (!gl) alert('WebGL2 required');
+
+const vs = `#version 300 es
+uniform mat4 uMVP; uniform mat4 uN;
+in vec3 aPos; in vec3 aNrm;
+out vec3 vN; out vec3 vW;
+void main(){
+  vW = aPos;
+  vN = mat3(uN) * aNrm;
+  gl_Position = uMVP * vec4(aPos,1.0);
+}`;
+const fs = `#version 300 es
+precision mediump float;
+uniform vec3 uColor; uniform vec3 uEyeColor; uniform vec3 uHairColor;
+uniform vec3 uLight; uniform float uHairAmt; uniform float uEyeAmt;
+in vec3 vN; in vec3 vW;
+out vec4 o;
+void main(){
+  vec3 N = normalize(vN);
+  float ndl = clamp(dot(N, normalize(uLight)), 0.0, 1.0);
+  float wrap = ndl * 0.75 + 0.25;
+  // simple region tints by height / forward
+  float t = clamp((vW.y - 1.5) / 0.8, 0.0, 1.0);
+  vec3 col = uColor;
+  // hair cap
+  if (t > 0.72) col = mix(col, uHairColor, uHairAmt * smoothstep(0.72, 0.9, t));
+  // eye band
+  float eyeBand = smoothstep(0.62,0.66,t)*smoothstep(0.76,0.70,t);
+  float front = smoothstep(0.0, 0.08, vW.x);
+  col = mix(col, uEyeColor, eyeBand * front * uEyeAmt * 0.85);
+  // rim
+  float rim = pow(1.0 - clamp(dot(N, normalize(vec3(0.3,0.4,0.2))),0.0,1.0), 2.5) * 0.15;
+  vec3 lit = col * wrap + vec3(rim);
+  o = vec4(lit, 1.0);
+}`;
+
+function comp(type, src) {
+  const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s));
+  return s;
+}
+const prog = gl.createProgram();
+gl.attachShader(prog, comp(gl.VERTEX_SHADER, vs));
+gl.attachShader(prog, comp(gl.FRAGMENT_SHADER, fs));
+gl.linkProgram(prog);
+const uMVP = gl.getUniformLocation(prog, 'uMVP');
+const uN = gl.getUniformLocation(prog, 'uN');
+const uColor = gl.getUniformLocation(prog, 'uColor');
+const uEyeColor = gl.getUniformLocation(prog, 'uEyeColor');
+const uHairColor = gl.getUniformLocation(prog, 'uHairColor');
+const uLight = gl.getUniformLocation(prog, 'uLight');
+const uHairAmt = gl.getUniformLocation(prog, 'uHairAmt');
+const uEyeAmt = gl.getUniformLocation(prog, 'uEyeAmt');
+const aPos = 0, aNrm = 1;
+gl.bindAttribLocation(prog, aPos, 'aPos');
+gl.bindAttribLocation(prog, aNrm, 'aNrm');
+
+const mesh = buildHeadMesh(56, 48);
+const vbo = gl.createBuffer();
+const nbo = gl.createBuffer();
+const ibo = gl.createBuffer();
+gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
+gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, mesh.indices, gl.STATIC_DRAW);
+
+function uploadMesh() {
+  gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+  gl.bufferData(gl.ARRAY_BUFFER, mesh.work, gl.DYNAMIC_DRAW);
+  gl.bindBuffer(gl.ARRAY_BUFFER, nbo);
+  gl.bufferData(gl.ARRAY_BUFFER, mesh.normals, gl.DYNAMIC_DRAW);
+}
+
+// camera
+let yaw = 0.35, pitch = 0.15, dist = 0.85;
+let panY = 0;
+let targetY = 1.7;
+const keys = {};
+
+function mat4(){ return new Float32Array(16); }
+function perspective(out, fovy, aspect, near, far) {
+  const f = 1/Math.tan(fovy/2), nf = 1/(near-far);
+  out.fill(0);
+  out[0]=f/aspect; out[5]=f; out[10]=(far+near)*nf; out[11]=-1; out[14]=2*far*near*nf;
+}
+function lookAt(out, ex,ey,ez, cx,cy,cz, ux,uy,uz) {
+  let zx=ex-cx, zy=ey-cy, zz=ez-cz;
+  let l=Math.hypot(zx,zy,zz)||1; zx/=l; zy/=l; zz/=l;
+  let xx=uy*zz-uz*zy, xy=uz*zx-ux*zz, xz=ux*zy-uy*zx;
+  l=Math.hypot(xx,xy,xz)||1; xx/=l; xy/=l; xz/=l;
+  const yx=zy*xz-zz*xy, yy=zz*xx-zx*xz, yz=zx*xy-zy*xx;
+  out[0]=xx; out[1]=yx; out[2]=zx; out[3]=0;
+  out[4]=xy; out[5]=yy; out[6]=zy; out[7]=0;
+  out[8]=xz; out[9]=yz; out[10]=zz; out[11]=0;
+  out[12]=-(xx*ex+xy*ey+xz*ez);
+  out[13]=-(yx*ex+yy*ey+yz*ez);
+  out[14]=-(zx*ex+zy*ey+zz*ez);
+  out[15]=1;
+}
+function mul(out,a,b){
+  const o=new Float32Array(16);
+  for(let c=0;c<4;c++) for(let r=0;r<4;r++)
+    o[c*4+r]=a[r]*b[c*4]+a[4+r]*b[c*4+1]+a[8+r]*b[c*4+2]+a[12+r]*b[c*4+3];
+  out.set(o);
+}
+function invertRT(out, m){ // normal matrix from view (approx upper 3x3 transpose)
+  out.fill(0);
+  out[0]=m[0]; out[1]=m[4]; out[2]=m[8];
+  out[4]=m[1]; out[5]=m[5]; out[6]=m[9];
+  out[8]=m[2]; out[9]=m[6]; out[10]=m[10]; out[15]=1;
+}
+
+function hexToRgb(hex){
+  const h=hex.replace('#','');
+  const n=parseInt(h.length===3?h.split('').map(c=>c+c).join(''):h,16);
+  return [((n>>16)&255)/255, ((n>>8)&255)/255, (n&255)/255];
+}
+
+function resize(){
+  const dpr = Math.min(devicePixelRatio||1, 2);
+  const r = canvas.parentElement.getBoundingClientRect();
+  canvas.width = r.width * dpr; canvas.height = r.height * dpr;
+  gl.viewport(0,0,canvas.width,canvas.height);
+}
+window.addEventListener('resize', resize); resize();
+
+// pointer orbit
+let dragging=false, btn=0, lx=0, ly=0;
+canvas.addEventListener('pointerdown', e => { dragging=true; btn=e.button; lx=e.clientX; ly=e.clientY; canvas.setPointerCapture(e.pointerId); });
+canvas.addEventListener('pointerup', () => dragging=false);
+canvas.addEventListener('pointermove', e => {
+  if (!dragging) return;
+  const dx=e.clientX-lx, dy=e.clientY-ly; lx=e.clientX; ly=e.clientY;
+  if (btn===2 || e.shiftKey) { panY += dy * 0.002; }
+  else { yaw += dx*0.005; pitch = Math.max(-1.2, Math.min(1.2, pitch+dy*0.005)); }
+});
+canvas.addEventListener('wheel', e => { dist = Math.max(0.35, Math.min(2.5, dist + e.deltaY*0.001)); e.preventDefault(); }, {passive:false});
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+const proj=mat4(), view=mat4(), mvp=mat4(), nm=mat4();
+let frames=0, lastFps=performance.now();
+
+function frame(){
+  if (dirtyMorph) {
+    applyMorphs(mesh, morphValues);
+    uploadMesh();
+    dirtyMorph = false;
+    // update target Y to head center
+    const [yMin,yMax] = HEAD_REGIONS[`${race}_${gender}`] || [1.55,1.92];
+    targetY = (yMin+yMax)*0.5 + panY;
+  }
+  gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE);
+  gl.clearColor(0.04,0.055,0.08,1); gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+  const aspect = canvas.width/Math.max(1,canvas.height);
+  perspective(proj, 45*Math.PI/180, aspect, 0.05, 20);
+  const cy=Math.cos(yaw), sy=Math.sin(yaw), cp=Math.cos(pitch), sp=Math.sin(pitch);
+  const ex = targetY*0 + dist*cy*cp;
+  const ey = targetY + dist*sp;
+  const ez = dist*sy*cp;
+  lookAt(view, ex,ey,ez, 0, targetY, 0, 0,1,0);
+  mul(mvp, proj, view);
+  invertRT(nm, view);
+
+  gl.useProgram(prog);
+  gl.uniformMatrix4fv(uMVP, false, mvp);
+  gl.uniformMatrix4fv(uN, false, nm);
+  gl.uniform3fv(uColor, hexToRgb(colors.skin));
+  gl.uniform3fv(uEyeColor, hexToRgb(colors.eyes));
+  gl.uniform3fv(uHairColor, hexToRgb(colors.hair));
+  gl.uniform3fv(uLight, [0.6, 0.7, 0.35]);
+  gl.uniform1f(uHairAmt, 0.55 + geosetSel.hair * 0.01);
+  gl.uniform1f(uEyeAmt, 0.9);
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+  gl.enableVertexAttribArray(aPos); gl.vertexAttribPointer(aPos,3,gl.FLOAT,false,0,0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, nbo);
+  gl.enableVertexAttribArray(aNrm); gl.vertexAttribPointer(aNrm,3,gl.FLOAT,false,0,0);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
+  gl.drawElements(gl.TRIANGLES, mesh.indices.length, gl.UNSIGNED_INT, 0);
+
+  frames++;
+  const now=performance.now();
+  if (now-lastFps>500){
+    document.getElementById('hudFps').textContent = Math.round(frames*1000/(now-lastFps))+' fps';
+    frames=0; lastFps=now;
+  }
+  requestAnimationFrame(frame);
+}
+
+// ── UI ───────────────────────────────────────────────────────────────────
+const raceSel = document.getElementById('raceSel');
+RACES.forEach(r => { const o=document.createElement('option'); o.value=r; o.textContent=r; if(r==='orc')o.selected=true; raceSel.appendChild(o); });
+const genderSel = document.getElementById('genderSel');
+
+function appearanceJSON() {
+  return {
+    version: 1,
+    race, gender,
+    morphs: { ...morphValues },
+    geosets: { ...geosetSel },
+    colors: { ...colors },
+    headPreset: geosetSel.head,
+    engine: 'head-customization-engine_v1.0',
+  };
+}
+
+function updateHud() {
+  const active = FULL_MORPH_CATALOG.filter(a => Math.abs(morphValues[a.id])>0.02).length;
+  document.getElementById('hudMorphs').textContent = `morphs active: ${active}/${FULL_MORPH_CATALOG.length}`;
+  document.getElementById('hudRace').textContent = `race: ${race} ${gender}`;
+}
+
+function renderLeft() {
+  const tabs = document.getElementById('leftTabs');
+  const body = document.getElementById('leftBody');
+  tabs.innerHTML = '';
+  MORPH_CATEGORIES.forEach(([id,label]) => {
+    const b = document.createElement('button');
+    b.type='button'; b.textContent=label; b.className = leftTab===id?'active':'';
+    b.onclick = () => { leftTab=id; renderLeft(); };
+    tabs.appendChild(b);
+  });
+  body.innerHTML = `<div class="hint">Continuous sculpt axes for <b>${leftTab}</b>. Values serialize into AppearanceState.morphs for netcode / character DB.</div>`;
+  FULL_MORPH_CATALOG.filter(a => a.category===leftTab).forEach(a => {
+    const row = document.createElement('div'); row.className='row';
+    row.innerHTML = `<label>${a.label}</label>
+      <input type="range" min="${a.min}" max="${a.max}" step="0.01" value="${morphValues[a.id]}"/>
+      <div class="val">${morphValues[a.id].toFixed(2)}</div>`;
+    const input = row.querySelector('input');
+    const val = row.querySelector('.val');
+    input.addEventListener('input', () => {
+      morphValues[a.id] = parseFloat(input.value);
+      val.textContent = morphValues[a.id].toFixed(2);
+      dirtyMorph = true; updateHud();
+    });
+    body.appendChild(row);
+  });
+}
+
+function renderRight() {
+  const body = document.getElementById('rightBody');
+  document.querySelectorAll('[data-rtab]').forEach(b => b.classList.toggle('active', b.dataset.rtab===rightTab));
+  if (rightTab === 'geosets') {
+    const slots = geosetSlotsFor(race);
+    body.innerHTML = `<div class="hint">Discrete geoset / variant slots. On real GLBs these toggle mesh nodes (Hair*, FacialA*, HeadPreset*, …).</div>`;
+    for (const [id, slot] of Object.entries(slots)) {
+      const cat = document.createElement('div'); cat.className='cat'; cat.textContent = slot.label;
+      body.appendChild(cat);
+      const grid = document.createElement('div'); grid.className='opt-grid';
+      slot.options.forEach((label, i) => {
+        const b = document.createElement('button'); b.type='button'; b.className='opt'+(geosetSel[id]===i?' active':'');
+        b.textContent = label;
+        b.onclick = () => { geosetSel[id]=i; renderRight(); dirtyMorph=true; };
+        grid.appendChild(b);
+      });
+      body.appendChild(grid);
+    }
+  } else if (rightTab === 'colors') {
+    body.innerHTML = '';
+    const blocks = [
+      ['skin','Skin', SKIN[race]||SKIN.human],
+      ['hair','Hair / Facial', HAIR],
+      ['eyes','Eyes', EYES],
+    ];
+    for (const [id,label,pal] of blocks) {
+      const cat=document.createElement('div'); cat.className='cat'; cat.textContent=label; body.appendChild(cat);
+      const sw=document.createElement('div'); sw.className='swatches';
+      pal.forEach(hex => {
+        const s=document.createElement('div'); s.className='swatch'+(colors[id]===hex?' active':'');
+        s.style.background = hex.length>7 ? '#333' : hex;
+        s.title=hex;
+        s.onclick=()=>{ colors[id]=hex; renderRight(); };
+        sw.appendChild(s);
+      });
+      body.appendChild(sw);
+      const pick=document.createElement('input'); pick.type='color'; pick.value = colors[id].slice(0,7);
+      pick.oninput=()=>{ colors[id]=pick.value; renderRight(); };
+      body.appendChild(pick);
+    }
+  } else if (rightTab === 'presets') {
+    body.innerHTML = `<div class="hint">Quick character archetypes — sets morphs + colors. On orc GLB packs these also map to HeadPreset nodes.</div>`;
+    const presets = [
+      { name:'Young Warrior', race:'orc', morphs:{ jaw_width:0.4, cheekbone_width:0.35, brow_ridge:0.2, skull_width:0.25 }, skin:'#5a8f3a', eyes:'#e8a020' },
+      { name:'Battle Veteran', race:'orc', morphs:{ cheek_hollow:0.55, jaw_forward:0.2, skull_width:-0.25, chin_height:0.3, age_jowls:0.25 }, skin:'#5a8f3a', eyes:'#e8a020' },
+      { name:'Shaman Elder', race:'orc', morphs:{ skull_height:0.35, temple_width:-0.3, chin_height:0.4, nose_length:0.2, age_sag:0.2 }, skin:'#9aaa55', eyes:'#f0d040' },
+      { name:'Warchief', race:'orc', morphs:{ skull_width:0.7, jaw_width:0.65, brow_ridge:0.55, mandible_bulk:0.4, neck_width:0.35 }, skin:'#3a6a28', eyes:'#e02020' },
+      { name:'Noble Human', race:'human', morphs:{ jaw_angle:0.3, nose_height:0.15, cheekbone_height:0.2, chin_point:0.15 }, skin:'#f0d0b0', eyes:'#3080e0' },
+      { name:'Grizzled Dwarf', race:'dwarf', morphs:{ skull_width:0.35, nose_width:0.4, jaw_width:0.3, brow_ridge:0.35 }, skin:'#c09060', eyes:'#6a4020' },
+      { name:'Night Elf Sentinel', race:'nightelf', morphs:{ skull_height:0.25, eye_size:0.2, ear_size:0.5, ear_tip:0.6, chin_point:0.2 }, skin:'#6a5a9a', eyes:'#80ff40' },
+      { name:'Fresh Face', race:race, morphs:{}, skin:(SKIN[race]||SKIN.human)[0], eyes:EYES[0] },
+    ];
+    presets.forEach(p => {
+      const d=document.createElement('div'); d.className='preset-card';
+      d.innerHTML = `<b>${p.name}</b><p>${p.race} archetype · morph + color pack</p>`;
+      d.onclick = () => {
+        if (p.race !== race) { race=p.race; raceSel.value=race; }
+        FULL_MORPH_CATALOG.forEach(a => morphValues[a.id]=a.default);
+        Object.assign(morphValues, p.morphs||{});
+        colors.skin=p.skin; colors.eyes=p.eyes;
+        dirtyMorph=true; renderLeft(); renderRight(); updateHud();
+      };
+      body.appendChild(d);
+    });
+  } else {
+    body.innerHTML = `
+      <div class="cat">AppearanceState JSON</div>
+      <div class="hint">This is the blob you store on the character row / send in create-character packets. Same schema the Vite engine modules use.</div>
+      <textarea class="json-box" id="jsonOut"></textarea>
+      <div class="btn-row">
+        <button type="button" id="btnRefreshJson">Refresh</button>
+        <button type="button" id="btnLoadJson">Apply JSON</button>
+        <button type="button" id="btnDownloadJson">Download .json</button>
+      </div>
+      <div class="stat">Morph axes: ${FULL_MORPH_CATALOG.length} · Categories: ${MORPH_CATEGORIES.length}</div>
+      <div class="stat">Engine path: src/CharacterAppearanceEngine.ts + ThreeAppearanceBinding</div>
+      <div class="hint">Wire into Classic Realm: load race GLB → <code>new CharacterAppearanceEngine(orcMaleProfile)</code> → <code>new ThreeAppearanceBinding(engine, gltf.scene, THREE)</code> → feed UI sliders into <code>engine.setMorph / setGeoset / setColor</code>.</div>`;
+    const ta = body.querySelector('#jsonOut');
+    ta.value = JSON.stringify(appearanceJSON(), null, 2);
+    body.querySelector('#btnRefreshJson').onclick = () => { ta.value = JSON.stringify(appearanceJSON(), null, 2); };
+    body.querySelector('#btnLoadJson').onclick = () => {
+      try {
+        const o = JSON.parse(ta.value);
+        if (o.race) { race=o.race; raceSel.value=race; }
+        if (o.gender) { gender=o.gender; genderSel.value=gender; }
+        if (o.morphs) Object.assign(morphValues, o.morphs);
+        if (o.geosets) Object.assign(geosetSel, o.geosets);
+        if (o.colors) Object.assign(colors, o.colors);
+        dirtyMorph=true; renderLeft(); renderRight(); updateHud();
+      } catch (e) { alert('Invalid JSON: '+e.message); }
+    };
+    body.querySelector('#btnDownloadJson').onclick = () => {
+      const blob = new Blob([JSON.stringify(appearanceJSON(),null,2)], {type:'application/json'});
+      const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+      a.download=`appearance_${race}_${gender}.json`; a.click();
+    };
+  }
+}
+
+document.querySelectorAll('[data-rtab]').forEach(b => b.addEventListener('click', () => { rightTab=b.dataset.rtab; renderRight(); }));
+raceSel.onchange = () => { race=raceSel.value; colors.skin=(SKIN[race]||SKIN.human)[0]; dirtyMorph=true; renderRight(); updateHud(); };
+genderSel.onchange = () => { gender=genderSel.value; dirtyMorph=true; updateHud(); };
+document.getElementById('btnReset').onclick = () => {
+  FULL_MORPH_CATALOG.forEach(a => morphValues[a.id]=a.default);
+  geosetSel = { head:0, hair:0, facial:0, ears:1, features:0 };
+  colors = { skin:(SKIN[race]||SKIN.human)[0], hair:HAIR[0], eyes: race==='orc'?EYES[5]:EYES[0] };
+  dirtyMorph=true; renderLeft(); renderRight(); updateHud();
+};
+document.getElementById('btnRandom').onclick = () => {
+  FULL_MORPH_CATALOG.forEach(a => {
+    if (a.category==='expression') return;
+    morphValues[a.id] = (Math.random()*2-1) * 0.7;
+  });
+  const skins = SKIN[race]||SKIN.human;
+  colors.skin = skins[Math.floor(Math.random()*skins.length)];
+  colors.hair = HAIR[Math.floor(Math.random()*HAIR.length)];
+  colors.eyes = EYES[Math.floor(Math.random()*EYES.length)];
+  const slots = geosetSlotsFor(race);
+  for (const id of Object.keys(slots)) geosetSel[id] = Math.floor(Math.random()*slots[id].options.length);
+  dirtyMorph=true; renderLeft(); renderRight(); updateHud();
+};
+document.getElementById('btnCopy').onclick = async () => {
+  const t = JSON.stringify(appearanceJSON(), null, 2);
+  try { await navigator.clipboard.writeText(t); alert('Appearance JSON copied'); }
+  catch { prompt('Copy JSON:', t); }
+};
+
+renderLeft(); renderRight(); updateHud(); dirtyMorph = true;
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
