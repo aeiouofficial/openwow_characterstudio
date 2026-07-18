@@ -47,6 +47,7 @@ export function clampAppearance(state: AppearanceState, profile: RaceGenderProfi
     colors,
     headPreset: state.headPreset ?? null,
     makeupPreset: state.makeupPreset ?? null,
+    textureTransforms: structuredClone(state.textureTransforms || {}),
     extras: state.extras || {},
   };
 }

@@ -157,7 +157,8 @@ async function imageFromBufferView(json: GltfJson, bin: ArrayBuffer, imageIndex:
   } else {
     bytes = new Uint8Array(0);
   }
-  const blob = new Blob([bytes], { type: mimeType });
+  const blobBytes = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
+  const blob = new Blob([blobBytes], { type: mimeType });
   const blobUrl = URL.createObjectURL(blob);
   return { bytes, mimeType, blobUrl, name };
 }

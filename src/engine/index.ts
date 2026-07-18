@@ -26,3 +26,5 @@ export type { BodyMorphAxis, BodyMorphCategory, BodyRegion } from './BodyMorphCa
 export { BodySculptEngine, estimateRegionWeights } from './BodySculptEngine';
 export { CharacterStudioEngine } from './CharacterStudioEngine';
 export type { StudioAppearance } from './CharacterStudioEngine';
+
+export * from './TextureTransform';

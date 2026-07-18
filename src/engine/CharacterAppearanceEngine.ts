@@ -11,6 +11,7 @@ import type {
   MorphAxis,
   RaceGenderProfile,
 } from './types';
+import type { GeosetTextureTransform } from './TextureTransform';
 import { MorphSculptEngine, type SculptVertex } from './MorphSculptEngine';
 import { GeosetLayer } from './GeosetLayer';
 import { ColorLayer, type ColorValue, type MaterialProxy } from './ColorLayer';
@@ -72,6 +73,7 @@ export class CharacterAppearanceEngine {
           colors: prev.colors,
           headPreset: prev.headPreset,
           makeupPreset: prev.makeupPreset,
+          textureTransforms: prev.textureTransforms,
           extras: prev.extras,
         }),
         profile,
@@ -121,6 +123,19 @@ export class CharacterAppearanceEngine {
     this.colors.setColor(channelId, value);
     this.state.colors[channelId] = this.colors.getValues()[channelId];
     this.emit('color', { channelId, value: this.state.colors[channelId] });
+    this.emit('change', this.getState());
+  }
+
+  getTextureTransforms(): Record<string, GeosetTextureTransform> {
+    return structuredClone(this.state.textureTransforms || {});
+  }
+
+  setTextureTransform(geosetName: string, value: GeosetTextureTransform | null): void {
+    const next = { ...(this.state.textureTransforms || {}) };
+    if (value) next[geosetName] = structuredClone(value);
+    else delete next[geosetName];
+    this.state.textureTransforms = next;
+    this.emit('textureTransform', { geosetName, value: value ? structuredClone(value) : null });
     this.emit('change', this.getState());
   }
 

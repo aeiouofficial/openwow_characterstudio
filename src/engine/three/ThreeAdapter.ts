@@ -8,7 +8,7 @@ import type { MaterialProxy } from '../ColorLayer';
 
 /** Minimal Three typings so this file typechecks without @types/three. */
 export type ThreeLike = {
-  Color: new (c?: any) => { set: (c: any) => void; r: number; g: number; b: number };
+  Color: new (c?: any) => { set: (c: any) => any; setHSL: (h: number, s: number, l: number) => any; copy: (c: any) => any; r: number; g: number; b: number };
   Mesh: any;
   SkinnedMesh: any;
   MeshStandardMaterial: any;
@@ -200,6 +200,18 @@ export class ThreeAppearanceBinding {
     this.engine.geosets.applyVisibility();
     this.engine.colors.applyAll();
     this.applyMorphs();
+    this.applyTextureTransformMetadata();
+  }
+
+  private applyTextureTransformMetadata(): void {
+    const transforms = this.engine.getTextureTransforms();
+    this.root.traverse((o: any) => {
+      if (!o.isMesh && !o.isSkinnedMesh) return;
+      o.userData = o.userData || {};
+      const value = transforms[o.name];
+      if (value) o.userData.characterStudioTextureTransform = structuredClone(value);
+      else delete o.userData.characterStudioTextureTransform;
+    });
   }
 
   applyMorphs(): void {

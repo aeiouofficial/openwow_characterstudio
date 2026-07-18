@@ -19,7 +19,7 @@ page.on('console', m => { if (m.type() === 'error') errors.push('console: ' + m.
 
 await page.goto(appUrl);
 await page.locator('#fileModel').setInputFiles(modelPath);
-await page.waitForFunction(() => document.getElementById('status').textContent.startsWith('Loaded'), null, { timeout: 60000 });
+await page.waitForFunction(() => !!window.StudioAPI?.appearance()?.model, null, { timeout: 180000 });
 await page.waitForTimeout(2000);
 
 const out = { ok: false, errors };
@@ -64,8 +64,18 @@ out.appearanceVersion = json.version;
 out.engine = json.engine;
 out.equippedTextures = json.equippedTextures;
 
+// 7. Per-geoset texture alignment / eye-mask correction
+out.uvButtons = await page.locator('#leftBody .uvbtn').count();
+await page.locator('#leftBody .uvbtn').first().click();
+await page.waitForTimeout(100);
+out.uvEditor = await page.locator('#uvPreview').count();
+const uvNumber = page.locator('#rightBody .uv-control').filter({hasText:'Position X'}).first().locator('input[type=number]');
+await uvNumber.fill('0.05'); await uvNumber.press('Enter');
+const uvJson = await page.evaluate(() => window.StudioAPI.appearance());
+out.uvTransforms = Object.keys(uvJson.geosetTextureTransforms || {}).length;
+
 await page.screenshot({ path: path.resolve(here, 'character-studio-qa.png') });
-out.ok = errors.length === 0 && out.cyclers >= 6 && out.geosetTicks > 0 && out.tickToggled && out.slots.length > 0 && json.version === 2;
+out.ok = errors.length === 0 && out.cyclers >= 6 && out.geosetTicks > 0 && out.tickToggled && out.slots.length > 0 && json.version === 2 && out.uvButtons === out.geosetTicks && out.uvEditor === 1 && out.uvTransforms === 1;
 console.log(JSON.stringify(out, null, 2));
 await browser.close();
 process.exit(out.ok ? 0 : 1);

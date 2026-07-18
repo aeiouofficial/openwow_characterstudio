@@ -1,3 +1,5 @@
+import type { GeosetTextureTransform, GeosetTextureTransformMap } from './TextureTransform';
+
 /**
  * Head Customization Engine — shared types
  * Race/gender agnostic. Drop onto any Classic-style character pipeline.
@@ -86,6 +88,8 @@ export type AppearanceState = {
   headPreset?: number | string | null;
   /** Makeup / warpaint texture overlay id. */
   makeupPreset?: string | null;
+  /** Optional per-mesh/geoset texture sampling corrections. */
+  textureTransforms?: GeosetTextureTransformMap;
   /** Freeform extras for race-specific systems. */
   extras?: Record<string, unknown>;
 };
@@ -119,6 +123,7 @@ export type EngineEvents = {
   morph: { id: string; value: number };
   geoset: { slotId: string; value: string | string[] | null };
   color: { channelId: string; value: AppearanceState['colors'][string] };
+  textureTransform: { geosetName: string; value: GeosetTextureTransform | null };
   profile: RaceGenderProfile;
 };
 

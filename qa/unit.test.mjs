@@ -39,7 +39,7 @@ const ctx=vm.createContext({
   Math,Uint8Array,Uint16Array,Uint32Array,Int32Array,Float32Array,Float64Array,
   TextEncoder,TextDecoder,JSON,Array,Object,String,Number,Boolean,isFinite,parseInt,parseFloat,decodeURIComponent,Infinity,NaN,
 });
-for(const name of ['CRC_T','crc32','validateManifest','mulberry32','hexRgb','perspective','lookAt','mat4I','mul','normalizeAssetPath','companionTextureScore'])
+for(const name of ['CRC_T','crc32','validateManifest','mulberry32','hexRgb','perspective','lookAt','mat4I','mul','normalizeAssetPath','companionTextureScore','defaultUvLayer','defaultEyeFine','defaultGeosetTextureTransform','cloneJson','normalizeUvLayer','normalizeGeosetTextureTransform','near','layerIsDefault','isDefaultUvTransform','combinedEyeLayer'])
   vm.runInContext(extract(name),ctx);
 const call=(expr)=>vm.runInContext(expr,ctx);
 
@@ -115,4 +115,34 @@ test('companion base-texture ranking prefers the conventional _texture_1 name',(
   ctx.__other={name:'humanmale_hd_normal.png'};
   assert.equal(call('companionTextureScore(__model,__exact)'),100);
   assert.equal(call('companionTextureScore(__model,__other)'),0);
+});
+
+
+test('default geoset texture transform is shader-identity',()=>{
+  assert.equal(call('isDefaultUvTransform(defaultGeosetTextureTransform())'),true);
+});
+
+test('UV transform normalization clamps unsafe scales and eye feather',()=>{
+  ctx.__uv={full:{scaleX:0,scaleY:-2},eyes:{enabled:true,width:0,height:-0.2,feather:5}};
+  const out=call('normalizeGeosetTextureTransform(__uv)');
+  assert.equal(out.full.scaleX,0.01);
+  assert.equal(out.full.scaleY,2);
+  assert.equal(out.eyes.width,0.005);
+  assert.equal(out.eyes.height,0.2);
+  assert.equal(out.eyes.feather,0.95);
+});
+
+test('eye pair and per-eye fine transforms compose predictably',()=>{
+  ctx.__pair={...call('defaultEyeFine()'),offsetX:0.1,scaleX:1.5,rotation:8};
+  ctx.__fine={...call('defaultEyeFine()'),offsetX:-0.02,scaleX:0.8,rotation:-3};
+  const out=call('combinedEyeLayer(__pair,__fine)');
+  assert.ok(Math.abs(out.offsetX-0.08)<1e-9);
+  assert.ok(Math.abs(out.scaleX-1.2)<1e-9);
+  assert.equal(out.rotation,5);
+});
+
+test('shipped shader transforms all material texture channels with mapped UVs',()=>{
+  assert.match(html,/vec2 sampleUv=mappedUv\(vUv\)/);
+  for(const sampler of ['uTex','uMR','uNorm','uOcc','uEmis']) assert.match(html,new RegExp(`texture\\(${sampler},(?:uv|sampleUv)\\)`));
+  assert.match(html,/characterStudioTextureTransform/);
 });

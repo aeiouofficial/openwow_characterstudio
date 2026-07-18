@@ -5,7 +5,19 @@ Offline, dependency-free WebGL2 character customization studio for glTF/GLB char
 server for agents. Single-file app: `demo/character-studio.html` — open it in a browser.
 No internet access is ever required or used.
 
-## Feature overview (v3.1)
+### Per-geoset texture alignment and eye correction (v3.2)
+
+Select any geoset in **Geoset Visibility** and press **UV**. The **Texture Align & Warp** panel supports:
+
+- Full-texture position, independent X/Y scale, rotation, pivot, shear, and nonlinear warp.
+- Eye-only masks with center, spacing, width, height, and feather controls.
+- Pair transforms plus independent left/right eye fine alignment.
+- UV-wireframe preview, drag positioning, wheel scaling, copy/paste, mirror, and apply-to-group.
+- Appearance JSON persistence and GLB node/asset metadata for runtime shader wiring.
+
+The feature modifies sampling in the studio shader; it does not destructively edit the source PNG.
+
+## Feature overview (v3.2)
 
 ### Rendering & animation
 - **Unlimited-bone skinning** — joint matrices in an RGBA32F bone texture read via
@@ -29,7 +41,7 @@ No internet access is ever required or used.
   onboarding tour + in-app help (`?` in the header).
 - Performance HUD (draw calls / triangles).
 
-### Asset bundle and source-library workflow (v3.1)
+### Asset bundle and source-library workflow (v3.2)
 - Open or drag a `.glb` / `.gltf` together with its `.png` / `.jpg` / `.webp` images.
   Strongly named base textures such as `humanmale_hd_texture_1.png` are detected and
   auto-bound to the base body material. External `.gltf` `.bin` and image URIs resolve

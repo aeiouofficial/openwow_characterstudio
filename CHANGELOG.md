@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.2.0 — 2026-07-18
+
+- Added a live per-geoset **Texture Align & Warp** editor.
+- Added full-texture offset, independent X/Y scale, rotation, pivot, shear, and nonlinear X/Y warp controls.
+- Added eye-only correction with draggable paired eye masks, configurable UV centers/spacing/size/feather, shared pair transforms, and independent left/right fine transforms.
+- Added UV-wireframe texture preview, drag-to-position, wheel-to-scale, scope reset, copy/paste, group propagation, and left-to-right mirroring.
+- Appearance JSON, undo/redo projects, content packs, StudioAPI, and exported GLB metadata now preserve per-geoset texture transforms.
+- Added typed `TextureTransform.ts` integration contracts for Vite/game runtimes.
+- Kept StudioAppearance v2 imports backward compatible; `geosetTextureTransforms` is optional.
+
 ## 3.1.0 — 2026-07-18
 
 ### Model and texture bundles
