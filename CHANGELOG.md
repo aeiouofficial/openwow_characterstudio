@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.2.1 — 2026-07-18
+
+- Rebuilt the right-side **Texture Align & Warp** controls with fully themed buttons, a readable 2×2 scope selector, a larger UV preview, live-state feedback, and Firefox-specific range styling.
+- Fixed **Eye pair** preview dragging so normal drag repositions the texture inside both eye masks; Shift-drag now moves the mask pair itself.
+- Added **Solo** behavior when selecting a geoset for UV editing so overlapping variants in the same subset are hidden automatically.
+- Added independent **All On**, **All Off**, and **Default** controls to every geoset subset.
+- Normal checkbox selection is now exclusive inside a subset; Shift-click and the subset **All On** control remain available for intentional overlaps.
+- Replaced the old “everything head/body on” startup rule with safe base defaults: one core body, one head family, one eye variant, and one ear variant, with hair, facial, equipment, and other overlapping variants off.
+- Added regression coverage for safe startup visibility, subset controls, eye-pair drag semantics, Firefox control styling, and desktop/compact sidebar layouts.
+
 ## 3.2.0 — 2026-07-18
 
 - Added a live per-geoset **Texture Align & Warp** editor.

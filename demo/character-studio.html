@@ -40,8 +40,13 @@ header button.primary:hover{filter:brightness(1.08)}
 .row input[type=range]{width:100%}
 input[type=range]{-webkit-appearance:none;appearance:none;height:18px;background:transparent;margin:0}
 input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:var(--well);border:1px solid #0a0b0c;box-shadow:inset 0 1px 3px #000b,0 1px 0 #ffffff10}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;margin-top:-5px;background:radial-gradient(circle at 35% 28%,#8fb4e4,#3f7fd4 55%,#2a5CA5);border:1px solid #0a0b0c;box-shadow:0 1px 3px #000b,inset 0 1px 0 #ffffff50;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;margin-top:-5px;background:radial-gradient(circle at 35% 28%,#8fb4e4,#3f7fd4 55%,#2a5ca5);border:1px solid #0a0b0c;box-shadow:0 1px 3px #000b,inset 0 1px 0 #ffffff50;cursor:pointer}
 input[type=range]::-webkit-slider-thumb:hover{filter:brightness(1.12)}
+input[type=range]::-moz-range-track{height:5px;border-radius:3px;background:#17191d;border:1px solid #0a0b0c;box-shadow:inset 0 1px 3px #000b,0 1px 0 #ffffff10}
+input[type=range]::-moz-range-progress{height:5px;border-radius:3px;background:linear-gradient(180deg,#4e86ca,#2f68ae);border:1px solid #173b67}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 35% 28%,#8fb4e4,#3f7fd4 55%,#2a5ca5);border:1px solid #0a0b0c;box-shadow:0 1px 3px #000b,inset 0 1px 0 #ffffff50;cursor:pointer}
+input[type=range]::-moz-range-thumb:hover{filter:brightness(1.12)}
+input[type=range]:focus-visible{outline:none}
 #vp{position:relative;background:radial-gradient(ellipse at 50% 28%,#383c44,#1b1d21 55%,#0e0f11 100%)}
 #vp::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 120%,transparent 55%,#00000066),var(--noise)}
 #gl{width:100%;height:100%;display:block}
@@ -63,18 +68,19 @@ input[type=range]::-webkit-slider-thumb:hover{filter:brightness(1.12)}
 .geo .geoname:hover{color:#fff}
 .geo .uvbtn{appearance:none;border:1px solid #111318;border-radius:3px;background:linear-gradient(180deg,#343841,#272a31);color:#9fc3ec;font:700 8.5px/1 var(--mono);padding:3px 5px;cursor:pointer;box-shadow:inset 0 1px 0 #ffffff18}
 .geo .uvbtn:hover{background:linear-gradient(180deg,#46678f,#31577f);color:#fff}
-.uv-editor-head{display:flex;gap:6px;align-items:center;margin-bottom:6px}.uv-editor-head select{flex:1;min-width:0}
-.uv-scope{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin:6px 0}.uv-scope button{padding:6px 3px;font-size:9px}.uv-scope button.on{background:var(--bluesel);color:#fff;border-color:#1e4477}
-.uv-preview-wrap{position:relative;border:1px solid #0b0c0f;border-radius:3px;background:#101217;box-shadow:inset 0 2px 6px #000b;margin:6px 0;overflow:hidden}
-.uv-preview{display:block;width:100%;height:auto;aspect-ratio:1.75/1;cursor:grab}.uv-preview.drag{cursor:grabbing}
-.uv-preview-tip{position:absolute;left:6px;bottom:5px;padding:2px 5px;border-radius:2px;background:#090b0edb;color:#9ca3ad;font:9px/1.35 var(--mono);pointer-events:none}
-.uv-enable{display:flex;align-items:center;gap:6px;font-size:10px;color:#c8ccd3;margin:6px 0}.uv-enable input{accent-color:var(--sel)}
-.uv-control{display:grid;grid-template-columns:88px minmax(72px,1fr) 55px;gap:5px;align-items:center;margin:3px 0}.uv-control label{font-size:10px;color:#aeb3bc}.uv-control input[type=range]{width:100%}.uv-control input[type=number]{width:55px;padding:4px 5px;background:var(--well);color:#c9cdd4;border:1px solid #0a0b0c;border-radius:3px;font:10px var(--mono);box-shadow:inset 0 1px 3px #000a}
-.uv-subhead{display:flex;align-items:center;gap:6px;margin:8px 0 4px;color:#cfd3da;font:700 9.5px/1.2 var(--mono);text-transform:uppercase;letter-spacing:.06em}.uv-subhead:after{content:'';height:1px;background:#ffffff12;flex:1}
+.grpbar{display:flex;align-items:center;gap:6px;margin:9px 0 3px;padding:3px 2px 4px;border-bottom:1px solid #ffffff0b}.grpbar .grp{flex:1;margin:0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.grp-actions{display:flex;gap:3px;flex:none}.grp-actions button{appearance:none;background:linear-gradient(180deg,#353941,#292c32);color:#bfc4cc;border:1px solid #101216;border-radius:3px;padding:3px 6px;font:700 8.5px/1.1 var(--mono);cursor:pointer;box-shadow:inset 0 1px 0 #ffffff17}.grp-actions button:hover{background:linear-gradient(180deg,#454b55,#32363e);color:#fff}.grp-actions button[data-def]{color:#a9c9ef}
+.uv-editor{border-color:#1d3148;box-shadow:inset 0 1px 0 #ffffff0d,0 0 0 1px #0c1622,0 2px 8px #0007}.uv-editor-head{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:5px;align-items:center;margin-bottom:6px}.uv-editor-head select{min-width:0;width:100%}.uv-editor-head button,.uv-scope button{appearance:none;background:var(--metal);color:var(--text);border:1px solid var(--border);border-radius:3px;padding:6px 8px;cursor:pointer;box-shadow:inset 0 1px 0 #ffffff20,inset 0 -1px 0 #00000050,0 1px 2px #00000070;text-shadow:0 1px 1px #0009;font:700 9px/1.1 var(--mono)}.uv-editor-head button:hover,.uv-scope button:hover{background:var(--metalh);color:#fff}.uv-editor-head button[data-solo]{color:#a9c9ef}.uv-editor-state{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 7px;margin:5px 0;border:1px solid #14273c;border-radius:3px;background:linear-gradient(180deg,#192736,#15202c);font:9px/1.3 var(--mono);color:#aab6c5}.uv-editor-state b{color:#cde2fb;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.uv-live{color:#7fcf8e;white-space:nowrap}.uv-scope{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;margin:7px 0}.uv-scope button{min-height:29px;padding:6px 5px;font-size:9px}.uv-scope button.on{background:var(--bluesel);color:#fff;border-color:#1e4477;box-shadow:inset 0 1px 0 #ffffff35,inset 0 -1px 0 #174d8b}.uv-scope-help{margin:4px 0 6px;padding:5px 7px;border-left:2px solid #4d83bc;background:#111a24;color:#9eabb9;font:9px/1.4 var(--mono)}
+.uv-preview-wrap{position:relative;border:1px solid #0b0c0f;border-radius:3px;background:#101217;box-shadow:inset 0 2px 6px #000b;margin:6px 0;overflow:hidden}.uv-preview-wrap:focus-within{border-color:#3f7fd4;box-shadow:inset 0 2px 6px #000b,0 0 0 1px #3f7fd455}
+.uv-preview{display:block;width:100%;height:auto;min-height:150px;aspect-ratio:4/3;cursor:grab;touch-action:none}.uv-preview.drag{cursor:grabbing}
+.uv-preview-tip{position:absolute;left:6px;right:6px;bottom:5px;padding:3px 5px;border-radius:2px;background:#090b0ee8;color:#aeb6c0;font:8.5px/1.35 var(--mono);pointer-events:none;text-align:center}
+.uv-enable{display:flex;align-items:flex-start;gap:6px;font-size:10px;line-height:1.35;color:#c8ccd3;margin:7px 0;padding:5px 6px;border:1px solid #ffffff0c;border-radius:3px;background:#17191d}.uv-enable input{accent-color:var(--sel);margin-top:1px}
+.uv-control{display:grid;grid-template-columns:minmax(74px,84px) minmax(0,1fr) 53px;gap:5px;align-items:center;margin:3px 0}.uv-control label{font-size:9.5px;color:#aeb3bc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.uv-control input[type=range]{width:100%;min-width:0}.uv-control input[type=number]{width:53px;min-width:0;padding:4px 4px;background:var(--well);color:#c9cdd4;border:1px solid #0a0b0c;border-radius:3px;font:9.5px var(--mono);box-shadow:inset 0 1px 3px #000a}.uv-control input[type=number]:focus{outline:1px solid #3f7fd4;border-color:#3f7fd4}
+.uv-subhead{display:flex;align-items:center;gap:6px;margin:9px 0 4px;color:#cfd3da;font:700 9.5px/1.2 var(--mono);text-transform:uppercase;letter-spacing:.06em}.uv-subhead:after{content:'';height:1px;background:#ffffff12;flex:1}
 .uv-dirty{display:inline-block;width:6px;height:6px;border-radius:50%;background:#69a9ec;box-shadow:0 0 6px #4d9bea;margin-left:4px;vertical-align:1px}
 .btnrow{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}
 .btnrow button{font-size:10.5px;background:var(--metal);color:var(--text);border:1px solid var(--border);border-radius:3px;padding:6px 10px;cursor:pointer;box-shadow:inset 0 1px 0 #ffffff20,inset 0 -1px 0 #00000050,0 1px 2px #00000070;text-shadow:0 1px 1px #0009}
 .btnrow button:hover{background:var(--metalh)}
+.btnrow button.primary{background:var(--bluesel);color:#fff;border-color:#1e4477}
 .btnrow button:active{box-shadow:inset 0 2px 4px #000a;background:linear-gradient(180deg,#26292e,#2c2f35)}
 .btnrow button.wide{flex:1;text-align:center;font-weight:700;letter-spacing:.06em;padding:9px}
 .json{width:100%;height:130px;background:var(--well);color:#9fc98a;border:1px solid #0a0b0c;border-radius:3px;font:10px/1.4 var(--mono);padding:8px;box-shadow:inset 0 2px 5px #000b,0 1px 0 #ffffff0c}
@@ -169,7 +175,7 @@ body.headless #timeline{display:none!important}
 </div>
 <script type="module">
 /**
- * Character Studio v3.2 — pure WebGL2
+ * Character Studio v3.2.1 — pure WebGL2
  * - Load GLB/GLTF (+ .bj if glTF magic)
  * - Geoset visibility toggles (all mesh nodes)
  * - Head sculpt + gear-safe body sculpt
@@ -297,6 +303,71 @@ function morphMode(name, group) {
   if (BODY_SAFE_RE.test(name) || BODY_SAFE_RE.test(group) || group==='Geoset' || group==='Torso') return 'body';
   if (/Hair|Facial/i.test(group)||/Hair|Facial/i.test(name)) return 'head';
   return 'none';
+}
+
+const SAFE_DEFAULT_DECORATION_RE=/hair|facial|beard|moustache|mustache|sideburn|eyeglow|glow|pierc|jewel|miscfeature|cloak|cape|tabard|belt|boot|glove|wrist|kneepad|chest|pants|trouser|shoulder|helm|weapon|shield|armor|mail|plate|leather/i;
+const SAFE_DEFAULT_VARIANTS={headswap:2,headpreset:1,eyes:1,ears:2,geoset:0,body:1,skin:1,torso:1,feet:1,hands:1};
+function groupKey(v){return String(v||'').replace(/[^a-z0-9]/gi,'').toLowerCase();}
+function choosePreferredGeoset(list,preferred=null){
+  if(!list?.length)return null;
+  const authored=list.filter(g=>g.authoredDefaultVisible===true).sort((a,b)=>a.variant-b.variant||a.name.localeCompare(b.name));
+  if(authored.length)return authored[0];
+  if(preferred!=null){const exact=list.find(g=>Number(g.variant)===Number(preferred));if(exact)return exact;}
+  return [...list].sort((a,b)=>a.variant-b.variant||a.name.localeCompare(b.name))[0];
+}
+function normalizeGeosetDefaults(geosets){
+  if(!Array.isArray(geosets)||!geosets.length)return geosets||[];
+  const by={};for(const g of geosets)(by[g.group]=by[g.group]||[]).push(g);
+  const selected=new Set();
+  const groups=Object.entries(by);
+  const coreEntry=groups.find(([group])=>groupKey(group)==='geoset');
+  if(coreEntry){const g=choosePreferredGeoset(coreEntry[1],0);if(g)selected.add(g);}
+
+  // HeadSwap and HeadPreset are alternate head families, never simultaneous defaults.
+  const headFamilies=groups.filter(([group])=>/^(headswap|headpreset)$/.test(groupKey(group)));
+  if(headFamilies.length){
+    const authoredFamily=headFamilies.find(([,list])=>list.some(g=>g.authoredDefaultVisible===true));
+    const preferredFamily=authoredFamily||headFamilies.find(([group])=>groupKey(group)==='headswap')||headFamilies[0];
+    const pref=SAFE_DEFAULT_VARIANTS[groupKey(preferredFamily[0])]??null;
+    const g=choosePreferredGeoset(preferredFamily[1],pref);if(g)selected.add(g);
+  }
+
+  for(const [group,list] of groups){
+    const key=groupKey(group);
+    if(key==='geoset'||key==='headswap'||key==='headpreset')continue;
+    if(SAFE_DEFAULT_DECORATION_RE.test(key))continue;
+    if(key==='eyes'||key==='ears'){
+      const g=choosePreferredGeoset(list,SAFE_DEFAULT_VARIANTS[key]);if(g)selected.add(g);continue;
+    }
+    // A Geoset0 core already supplies the naked body. Split body pieces are only needed
+    // for models that do not ship a core mesh.
+    if(!coreEntry&&list.some(g=>g.mode==='body'||g.mode==='head')){
+      const g=choosePreferredGeoset(list,SAFE_DEFAULT_VARIANTS[key]??null);if(g)selected.add(g);
+    }
+  }
+  if(!selected.size){
+    const fallback=geosets.find(g=>!/gear/i.test(g.mode)&&!g.isGear)||geosets[0];if(fallback)selected.add(fallback);
+  }
+  for(const g of geosets){g.defaultVisible=selected.has(g);g.visible=g.defaultVisible;}
+  return geosets;
+}
+function setGeosetGroupVisibility(list,mode){
+  for(const g of list||[]){
+    if(mode==='on')g.visible=true;
+    else if(mode==='off')g.visible=false;
+    else g.visible=!!g.defaultVisible;
+  }
+  return list;
+}
+function geosetExclusivePeers(g){
+  if(!model||!g)return [];
+  if(/^(headswap|headpreset)$/.test(groupKey(g.group)))return model.geosets.filter(x=>/^(headswap|headpreset)$/.test(groupKey(x.group)));
+  return model.geosets.filter(x=>x.group===g.group);
+}
+function focusGeosetForEditing(g){
+  if(!g)return;
+  for(const peer of geosetExclusivePeers(g))peer.visible=false;
+  g.visible=true;dirtyMorph=true;syncGeoHud();
 }
 
 const MODEL_FILE_RE=/\.(glb|gltf|bj)$/i;
@@ -766,11 +837,9 @@ async function loadModelFromFile(file, options={}) {
     const mode=morphMode(name, meta.group);
     const prim=mesh.primitives[0];
     const mat=prim.material??0;
-    let defVis = meta.defaultVisible;
-    if (defVis==null) {
-      defVis = mode!=='none' || /Geoset0|HeadSwap2|Eyes1|Ears2|Hair1|FacialA2|FacialB1|Torso1|Trousers1|Feet1|Boots1|Gloves1/i.test(name);
-      if (/Cloak|Tabard|Eyeglow|Piercing|Jewelry|MiscFeature|Kneepad|Wrist|Chest|Pants|Belt/i.test(name)) defVis=false;
-    }
+    // Defaults are normalized after all geosets are known so mutually exclusive
+    // variants cannot accidentally render on top of each other.
+    const defVis = false;
     const posAcc=prim.attributes.POSITION;
     const pos=asF32(accInfo(json,bin,posAcc));
     for(let i=1;i<pos.length;i+=3){if(pos[i]<yMin)yMin=pos[i];if(pos[i]>yMax)yMax=pos[i];}
@@ -869,6 +938,7 @@ async function loadModelFromFile(file, options={}) {
     const geo={
       nodeIndex:ni, name, meshIndex:nd.mesh, material:mat,
       group:meta.group, variant:meta.variant,
+      authoredDefaultVisible:meta.defaultVisible,
       defaultVisible:!!defVis, visible:!!defVis,
       mode, isGear: mode==='none' && GEAR_RE.test(name),
     };
@@ -900,6 +970,7 @@ async function loadModelFromFile(file, options={}) {
 
   // world matrices rest pose
   const nodeWorld = computeRestPose(json);
+  normalizeGeosetDefaults(geosets);
 
   model={
     json, bin, geosets, drawables, materials, images, textureImages, glTex,
@@ -1547,23 +1618,29 @@ function renderLeft(){
   c=section(body,'Geoset Visibility');
   if(!model){ c.innerHTML='<div class="hint">Loads with the model.</div>'; return; }
   const br=document.createElement('div'); br.className='btnrow';
-  br.innerHTML=`<button type="button" id="gAll">All On</button><button type="button" id="gNone">All Off</button><button type="button" id="gDef">Defaults</button>`;
+  br.innerHTML=`<button type="button" id="gDef" class="primary">Base Defaults</button><button type="button" id="gNone">All Off</button><button type="button" id="gAll">All On</button>`;
   c.appendChild(br);
-  br.querySelector('#gAll').onclick=()=>{model.geosets.forEach(g=>g.visible=true);dirtyMorph=true;renderLeft();renderRight();syncGeoHud();};
-  br.querySelector('#gNone').onclick=()=>{model.geosets.forEach(g=>g.visible=false);dirtyMorph=true;renderLeft();renderRight();syncGeoHud();};
-  br.querySelector('#gDef').onclick=()=>{model.geosets.forEach(g=>g.visible=g.defaultVisible);dirtyMorph=true;renderLeft();renderRight();syncGeoHud();};
+  c.insertAdjacentHTML('beforeend','<div class="hint">Each subset has its own controls. Normal checkbox selection is exclusive inside that subset; Shift-click permits deliberate overlaps.</div>');
+  br.querySelector('#gAll').onclick=()=>{setGeosetGroupVisibility(model.geosets,'on');dirtyMorph=true;renderLeft();renderRight();syncGeoHud();};
+  br.querySelector('#gNone').onclick=()=>{setGeosetGroupVisibility(model.geosets,'off');dirtyMorph=true;renderLeft();renderRight();syncGeoHud();};
+  br.querySelector('#gDef').onclick=()=>{setGeosetGroupVisibility(model.geosets,'default');dirtyMorph=true;renderLeft();renderRight();syncGeoHud();};
   const by={}; model.geosets.forEach(g=>{(by[g.group]=by[g.group]||[]).push(g);});
   Object.keys(by).sort().forEach(group=>{
-    const h=document.createElement('div'); h.className='grp';
-    h.innerHTML=`<span class="chip" style="background:${idColorCss(groupIdxOf(group))}"></span>${group}`;
+    const list=by[group].sort((a,b)=>a.variant-b.variant||a.name.localeCompare(b.name));
+    const h=document.createElement('div'); h.className='grpbar';
+    h.innerHTML=`<div class="grp"><span class="chip" style="background:${idColorCss(groupIdxOf(group))}"></span>${group}</div><div class="grp-actions"><button type="button" data-on title="Enable every ${group} variant">All On</button><button type="button" data-off title="Disable every ${group} variant">All Off</button><button type="button" data-def title="Restore safe defaults for ${group}">Default</button></div>`;
+    h.querySelector('[data-on]').onclick=()=>{setGeosetGroupVisibility(list,'on');dirtyMorph=true;renderLeft();renderRight();syncGeoHud();};
+    h.querySelector('[data-off]').onclick=()=>{setGeosetGroupVisibility(list,'off');dirtyMorph=true;renderLeft();renderRight();syncGeoHud();};
+    h.querySelector('[data-def]').onclick=()=>{setGeosetGroupVisibility(list,'default');dirtyMorph=true;renderLeft();renderRight();syncGeoHud();};
     c.appendChild(h);
-    by[group].sort((a,b)=>a.variant-b.variant).forEach(g=>{
+    list.forEach(g=>{
       const tag=g.mode==='body'?'body':g.mode==='head'?'head':'gear';
       const row=document.createElement('div'); row.className='geo'+(selectedTextureGeosetName===g.name?' selected':''); row.dataset.geoset=g.name;
       const active=!isDefaultUvTransform(getGeosetTextureTransform(g.name,false)||{});
       row.innerHTML=`<input type="checkbox" aria-label="Show ${bareName(g)}" ${g.visible?'checked':''}/><button type="button" class="nm geoname" title="${g.name}">${bareName(g)}${active?'<span class="uv-dirty" title="Texture alignment active"></span>':''}</button><span class="tag ${tag}">${tag}</span><button type="button" class="uvbtn" title="Edit texture alignment for ${bareName(g)}">UV</button>`;
-      row.querySelector('input').onchange=e=>{g.visible=e.target.checked;dirtyMorph=true;syncGeoHud();};
-      const selectUv=()=>{selectedTextureGeosetName=g.name;secState['Texture Align & Warp']=true;renderLeft();renderRight();setStatus(`Texture editor → ${g.name}`);};
+      const check=row.querySelector('input');
+      check.onclick=e=>{if(check.checked&&!e.shiftKey){for(const peer of geosetExclusivePeers(g))peer.visible=false;}g.visible=check.checked;dirtyMorph=true;renderLeft();renderRight();syncGeoHud();};
+      const selectUv=()=>{focusGeosetForEditing(g);selectedTextureGeosetName=g.name;secState['Texture Align & Warp']=true;renderLeft();renderRight();setStatus(`Texture editor → ${g.name}`);};
       row.querySelector('.geoname').onclick=selectUv;row.querySelector('.uvbtn').onclick=selectUv;
       c.appendChild(row);
     });
@@ -1572,13 +1649,30 @@ function renderLeft(){
 
 
 function addUvControl(host,label,get,set,min,max,step,format=v=>Number(v).toFixed(step<0.01?3:2)){
-  const row=document.createElement('div');row.className='uv-control';
-  const lab=document.createElement('label');lab.textContent=label;
-  const range=document.createElement('input');range.type='range';range.min=String(min);range.max=String(max);range.step=String(step);range.value=String(get());
-  const num=document.createElement('input');num.type='number';num.min=String(min);num.max=String(max);num.step=String(step);num.value=format(get());
-  const apply=v=>{v=Math.max(min,Math.min(max,Number(v)));if(!Number.isFinite(v))return;set(v);range.value=String(v);num.value=format(v);scheduleUvPreview();maybeRecord();};
-  range.oninput=()=>apply(range.value);num.onchange=()=>apply(num.value);num.onkeydown=e=>{if(e.key==='Enter'){apply(num.value);num.blur();}};
+  const row=document.createElement('div');row.className='uv-control';row.dataset.uvLabel=label;
+  const lab=document.createElement('label');lab.textContent=label;lab.title=label;
+  const range=document.createElement('input');range.type='range';range.min=String(min);range.max=String(max);range.step=String(step);range.value=String(get());range.setAttribute('aria-label',label);
+  const num=document.createElement('input');num.type='number';num.min=String(min);num.max=String(max);num.step=String(step);num.value=format(get());num.setAttribute('aria-label',label+' numeric value');
+  row.__sync=()=>{const v=get();range.value=String(v);num.value=format(v);};
+  const apply=v=>{v=Math.max(min,Math.min(max,Number(v)));if(!Number.isFinite(v))return;set(v);row.__sync();scheduleUvPreview();maybeRecord();};
+  range.oninput=()=>apply(range.value);range.onchange=()=>renderLeft();num.oninput=()=>{if(num.value!=='')apply(num.value);};num.onchange=()=>{apply(num.value);renderLeft();};num.onkeydown=e=>{if(e.key==='Enter'){apply(num.value);num.blur();renderLeft();}};
   row.append(lab,range,num);host.appendChild(row);return row;
+}
+function syncUvEditorControls(){document.querySelectorAll('#rightBody .uv-control').forEach(row=>row.__sync?.());}
+function applyUvPreviewDrag(scope,cfg,start,dx,dy,moveMasks=false){
+  const clamp=(v,min=-2,max=2)=>Math.max(min,Math.min(max,v));
+  if(scope==='full'){
+    cfg.full.offsetX=clamp(start.full.offsetX+dx);cfg.full.offsetY=clamp(start.full.offsetY+dy);
+  }else if(scope==='eyes'){
+    cfg.eyes.enabled=true;
+    if(moveMasks){cfg.eyes.centerX=clamp(start.eyes.centerX+dx,-.5,1.5);cfg.eyes.centerY=clamp(start.eyes.centerY+dy,-.5,1.5);}
+    else{cfg.eyes.pair.offsetX=clamp(start.eyes.pair.offsetX+dx);cfg.eyes.pair.offsetY=clamp(start.eyes.pair.offsetY+dy);}
+  }else{
+    cfg.eyes.enabled=true;
+    const q=scope==='left'?cfg.eyes.left:cfg.eyes.right,base=scope==='left'?start.eyes.left:start.eyes.right;
+    q.offsetX=clamp(base.offsetX+dx);q.offsetY=clamp(base.offsetY+dy);
+  }
+  return cfg;
 }
 function uvSubhead(host,text){const h=document.createElement('div');h.className='uv-subhead';h.textContent=text;host.appendChild(h);}
 let uvPreviewRaf=0;
@@ -1603,33 +1697,32 @@ function drawUvPreview(cv){
 function wireUvPreviewInteraction(cv){
   let drag=null;
   const pos=e=>{const r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height};};
-  cv.onpointerdown=e=>{const t=uvEditorTarget();if(!t)return;const p=pos(e);drag={p,cfg:cloneJson(t.cfg)};cv.setPointerCapture(e.pointerId);cv.classList.add('drag');};
-  cv.onpointermove=e=>{if(!drag)return;const t=uvEditorTarget();if(!t)return;const p=pos(e),dx=p.x-drag.p.x,dy=-(p.y-drag.p.y),c=t.cfg;
-    if(uvEditorScope==='full'){c.full.offsetX=drag.cfg.full.offsetX+dx;c.full.offsetY=drag.cfg.full.offsetY+dy;}
-    else if(uvEditorScope==='eyes'){c.eyes.centerX=drag.cfg.eyes.centerX+dx;c.eyes.centerY=drag.cfg.eyes.centerY+dy;}
-    else {const q=uvEditorScope==='left'?c.eyes.left:c.eyes.right,base=uvEditorScope==='left'?drag.cfg.eyes.left:drag.cfg.eyes.right;q.offsetX=base.offsetX+dx;q.offsetY=base.offsetY+dy;}
-    scheduleUvPreview();};
-  const end=()=>{if(drag){drag=null;cv.classList.remove('drag');maybeRecord();renderRight();renderLeft();}};cv.onpointerup=end;cv.onpointercancel=end;
+  cv.tabIndex=0;cv.setAttribute('aria-label','Texture UV alignment preview');
+  cv.onpointerdown=e=>{const t=uvEditorTarget();if(!t)return;const p=pos(e);drag={p,cfg:cloneJson(t.cfg),moveMasks:uvEditorScope==='eyes'&&e.shiftKey};if(uvEditorScope!=='full')t.cfg.eyes.enabled=true;cv.setPointerCapture(e.pointerId);cv.classList.add('drag');};
+  cv.onpointermove=e=>{if(!drag)return;const t=uvEditorTarget();if(!t)return;const p=pos(e),dx=p.x-drag.p.x,dy=-(p.y-drag.p.y);applyUvPreviewDrag(uvEditorScope,t.cfg,drag.cfg,dx,dy,drag.moveMasks);syncUvEditorControls();scheduleUvPreview();};
+  const end=()=>{if(drag){drag=null;cv.classList.remove('drag');syncUvEditorControls();maybeRecord();renderLeft();}};cv.onpointerup=end;cv.onpointercancel=end;
   cv.onwheel=e=>{e.preventDefault();const t=uvEditorTarget();if(!t)return;const f=Math.exp(-e.deltaY*.0012),c=t.cfg;
     const apply=o=>{o.scaleX=Math.max(.1,Math.min(8,o.scaleX*f));o.scaleY=Math.max(.1,Math.min(8,o.scaleY*f));};
-    if(uvEditorScope==='full')apply(c.full);else if(uvEditorScope==='eyes')apply(c.eyes.pair);else apply(uvEditorScope==='left'?c.eyes.left:c.eyes.right);
-    scheduleUvPreview();maybeRecord();renderRight();},{passive:false};
+    if(uvEditorScope==='full')apply(c.full);else if(uvEditorScope==='eyes'){c.eyes.enabled=true;apply(c.eyes.pair);}else{c.eyes.enabled=true;apply(uvEditorScope==='left'?c.eyes.left:c.eyes.right);}
+    syncUvEditorControls();scheduleUvPreview();maybeRecord();},{passive:false};
   cv.ondblclick=()=>{resetUvScope();};
 }
 function resetUvScope(){const t=uvEditorTarget();if(!t)return;const c=t.cfg;if(uvEditorScope==='full')c.full=defaultUvLayer();else if(uvEditorScope==='eyes'){const d=defaultGeosetTextureTransform().eyes;c.eyes={...d,pair:defaultEyeFine(),left:c.eyes.left,right:c.eyes.right};}else c.eyes[uvEditorScope]=defaultEyeFine();renderRight();renderLeft();maybeRecord();}
 function appendTextureTransformSection(host){
-  const c=section(host,'Texture Align & Warp',true);if(!model){c.innerHTML='<div class="hint">Load a model to edit texture placement per geoset.</div>';return;}
+  const c=section(host,'Texture Align & Warp',true);c.classList.add('uv-editor');if(!model){c.innerHTML='<div class="hint">Load a model to edit texture placement per geoset.</div>';return;}
   const t=uvEditorTarget();if(!t)return;const {geo,cfg}=t;
   const head=document.createElement('div');head.className='uv-editor-head';
   const sel=document.createElement('select');sel.setAttribute('aria-label','Texture transform geoset');
   const groups={};for(const g of model.geosets)(groups[g.group]=groups[g.group]||[]).push(g);
   for(const [group,list] of Object.entries(groups).sort((a,b)=>a[0].localeCompare(b[0]))){const og=document.createElement('optgroup');og.label=group;for(const g of list.sort((a,b)=>a.variant-b.variant)){const o=document.createElement('option');o.value=g.name;o.textContent=(g.visible?'● ':'○ ')+bareName(g);o.selected=g===geo;og.appendChild(o);}sel.appendChild(og);}
-  sel.onchange=()=>{selectedTextureGeosetName=sel.value;renderLeft();renderRight();};head.appendChild(sel);
-  const reset=document.createElement('button');reset.type='button';reset.textContent='Reset all';reset.onclick=()=>{delete geosetTextureTransforms[geo.name];renderRight();renderLeft();maybeRecord();};head.appendChild(reset);c.appendChild(head);
-  c.insertAdjacentHTML('beforeend',`<div class="hint">Per-geoset UV correction. Drag the preview to reposition; wheel scales; double-click resets the active scope. Eye masks let you correct only the face-eye areas without moving the rest of the texture.</div>`);
-  const scopes=document.createElement('div');scopes.className='uv-scope';[['full','Full texture'],['eyes','Both eyes'],['left','Left eye'],['right','Right eye']].forEach(([id,label])=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.classList.toggle('on',uvEditorScope===id);b.onclick=()=>{uvEditorScope=id;if(id!=='full')cfg.eyes.enabled=true;renderRight();};scopes.appendChild(b);});c.appendChild(scopes);
-  const pw=document.createElement('div');pw.className='uv-preview-wrap';pw.innerHTML='<canvas class="uv-preview" id="uvPreview"></canvas><div class="uv-preview-tip">cyan: geoset UVs · orange/green: eye masks</div>';c.appendChild(pw);wireUvPreviewInteraction(pw.querySelector('canvas'));
-  const eyeToggle=document.createElement('label');eyeToggle.className='uv-enable';eyeToggle.innerHTML=`<input type="checkbox" ${cfg.eyes.enabled?'checked':''}> Enable eye-only correction for this geoset`;eyeToggle.querySelector('input').onchange=e=>{cfg.eyes.enabled=e.target.checked;maybeRecord();scheduleUvPreview();};c.appendChild(eyeToggle);
+  sel.onchange=()=>{const next=model.geosets.find(g=>g.name===sel.value);if(next)focusGeosetForEditing(next);selectedTextureGeosetName=sel.value;renderLeft();renderRight();};head.appendChild(sel);
+  const solo=document.createElement('button');solo.type='button';solo.dataset.solo='';solo.textContent='Solo';solo.title='Show this geoset and hide overlapping variants in its subset';solo.onclick=()=>{focusGeosetForEditing(geo);renderLeft();renderRight();setStatus(`Solo preview → ${geo.name}`);};head.appendChild(solo);
+  const reset=document.createElement('button');reset.type='button';reset.textContent='Reset';reset.title='Reset every texture correction on this geoset';reset.onclick=()=>{delete geosetTextureTransforms[geo.name];renderRight();renderLeft();maybeRecord();};head.appendChild(reset);c.appendChild(head);
+  const state=document.createElement('div');state.className='uv-editor-state';state.innerHTML=`<b title="${geo.name}">${bareName(geo)}</b><span class="uv-live">● LIVE ON MODEL</span>`;c.appendChild(state);
+  const scopes=document.createElement('div');scopes.className='uv-scope';[['full','Full texture'],['eyes','Eye pair'],['left','Left eye'],['right','Right eye']].forEach(([id,label])=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.classList.toggle('on',uvEditorScope===id);b.onclick=()=>{uvEditorScope=id;if(id!=='full')cfg.eyes.enabled=true;renderRight();};scopes.appendChild(b);});c.appendChild(scopes);
+  const scopeHelp=document.createElement('div');scopeHelp.className='uv-scope-help';scopeHelp.textContent=uvEditorScope==='full'?'Drag moves the complete texture. Mouse wheel scales it.':uvEditorScope==='eyes'?'Drag moves the texture inside both eye masks. Shift-drag moves the mask pair itself. Mouse wheel scales both eyes.':uvEditorScope==='left'?'Drag and wheel fine-tune only the left eye inside its mask.':'Drag and wheel fine-tune only the right eye inside its mask.';c.appendChild(scopeHelp);
+  const pw=document.createElement('div');pw.className='uv-preview-wrap';pw.innerHTML='<canvas class="uv-preview" id="uvPreview"></canvas><div class="uv-preview-tip">cyan = selected geoset UVs · orange/green = eye mask regions</div>';c.appendChild(pw);wireUvPreviewInteraction(pw.querySelector('canvas'));
+  const eyeToggle=document.createElement('label');eyeToggle.className='uv-enable';eyeToggle.innerHTML=`<input type="checkbox" ${cfg.eyes.enabled?'checked':''}> <span><b>Use eye-only correction</b><br><span style="color:var(--muted)">Limits eye transforms to the two feathered mask regions.</span></span>`;eyeToggle.querySelector('input').onchange=e=>{cfg.eyes.enabled=e.target.checked;maybeRecord();scheduleUvPreview();renderLeft();};c.appendChild(eyeToggle);
   const target=uvEditorScope==='full'?cfg.full:uvEditorScope==='eyes'?cfg.eyes.pair:cfg.eyes[uvEditorScope];
   uvSubhead(c,uvEditorScope==='full'?'Full texture transform':uvEditorScope==='eyes'?'Eye pair transform':(uvEditorScope==='left'?'Left-eye fine transform':'Right-eye fine transform'));
   const ctrl=(label,key,min,max,step)=>addUvControl(c,label,()=>target[key],v=>{target[key]=v;},min,max,step);
@@ -1784,7 +1877,7 @@ function renderRight(){
     const br=document.createElement('div'); br.className='btnrow';
     br.innerHTML=`<button type="button" id="gsExp">Export JSON</button><button type="button" id="gsImp">Import JSON</button>`;
     c.appendChild(br);
-    br.querySelector('#gsExp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({version:1,engine:'character-studio_v3.2',gearsets},null,2)],{type:'application/json'}));a.download='gearsets.json';a.click();};
+    br.querySelector('#gsExp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({version:1,engine:'character-studio_v3.2.1',gearsets},null,2)],{type:'application/json'}));a.download='gearsets.json';a.click();};
     br.querySelector('#gsImp').onclick=()=>fileGearset.click();
     c.insertAdjacentHTML('beforeend','<div class="hint">Gearsets store slot variants + texture names. Textures resolve from the loaded texture library. Saved locally and exportable as JSON for game wiring.</div>');
   }
@@ -1803,7 +1896,7 @@ function body_appendSlotStatus(card,group){
 }
 function getAppearance(){
   const geosetVisibility={}; if(model) model.geosets.forEach(g=>geosetVisibility[g.name]=g.visible);
-  return {version:2,engine:'character-studio_v3.2',model:model?.fileName||null,
+  return {version:2,engine:'character-studio_v3.2.1',model:model?.fileName||null,
     headMorphs:{...headVals},bodyMorphs:{...bodyVals},geosetVisibility,colors:{...colors},
     equippedTextures:{...slotTexChoice},baseTexture:baseTextureName,textureFolder:texFolderName||null,viewMode,
     geosetTextureTransforms:compactUvTransforms(),
@@ -1958,7 +2051,7 @@ renderRight=function(){ _renderRightV15(); appendPackSection(); };
 
 // ── StudioAPI: scriptable surface for agents / automation / headless ──
 const StudioAPI={
-  version:'3.2.0',
+  version:'3.2.1',
   brand:'CHARACTER STUDIO - made by AEiOU',
   loadFile:f=>loadModelFromFile(f),
   loadPack:f=>loadPackFromZip(f),
@@ -1988,7 +2081,7 @@ window.StudioAPI=StudioAPI;
 // ── headless mode: ?headless=1 hides all chrome, StudioAPI drives everything ──
 if(new URLSearchParams(location.search).get('headless')==='1') document.body.classList.add('headless');
 
-document.dispatchEvent(new CustomEvent('studio:ready',{detail:{version:'3.2.0',brand:StudioAPI.brand,headless:document.body.classList.contains('headless')}}));
+document.dispatchEvent(new CustomEvent('studio:ready',{detail:{version:'3.2.1',brand:StudioAPI.brand,headless:document.body.classList.contains('headless')}}));
 window.__studioReady=true;
 
 renderLeft(); renderRight();
@@ -2058,7 +2151,7 @@ Object.assign(window.StudioAPI,{
     boneCount:(model&&model.skin)?model.skin.joints.length:0,
     poseHash:(model&&model.skin)?Array.from(model.skin.boneMats.slice(0,128)).reduce((h,x)=>(h*31+Math.round(x*1000))|0,0):0 }),
 });
-window.StudioAPI.version='3.2.0';
+window.StudioAPI.version='3.2.1';
 
 
 /* ═══════════ v3.0 Tier 2 — undo/redo · projects · profiles · texture layers · pack authoring ═══════════ */
@@ -2237,7 +2330,7 @@ function idb(){
   });
 }
 function projectRecord(name){
-  return { name, savedAt:new Date().toISOString(), engine:'character-studio_v3.2',
+  return { name, savedAt:new Date().toISOString(), engine:'character-studio_v3.2.1',
     appearance:(model?getAppearance():null), gearsets:JSON.parse(JSON.stringify(gearsets)),
     settings:{...settings}, texLayers:JSON.parse(JSON.stringify(texLayers)),
     modelName:(window._modelFileRef&&window._modelFileRef.name)||null,
@@ -2378,7 +2471,7 @@ async function bitmapPng(bmp){
   return canvasPng(cv);
 }
 function genManifest(name,version){
-  return { name, version, generated:new Date().toISOString(), engine:'character-studio_v3.2', profile:activeProfile.id,
+  return { name, version, generated:new Date().toISOString(), engine:'character-studio_v3.2.1', profile:activeProfile.id,
     model: model?{ name:(window._modelFileRef&&window._modelFileRef.name)||null, geosets:model.geosets.length,
       bones:model.skin?model.skin.joints.length:0, animations:model.animations.length }:null,
     geosetGroups: model?[...new Set(model.geosets.map(g=>g.group))]:[],
@@ -2392,7 +2485,7 @@ async function buildPack(opts){
   const enc=new TextEncoder();
   const files=[];
   const add=(n,data)=>files.push({name:`${base}/${n}`,data});
-  add('version.txt',enc.encode(`${base}\nengine: character-studio_v3.2\ngenerated: ${new Date().toISOString()}\n`));
+  add('version.txt',enc.encode(`${base}\nengine: character-studio_v3.2.1\ngenerated: ${new Date().toISOString()}\n`));
   const manifest=genManifest(name,version);
   const v=validateManifest(manifest);
   if(!v.ok) throw new Error('generated manifest invalid: '+v.errors.join('; '));
@@ -2423,7 +2516,7 @@ async function buildPack(opts){
     add('preview/preview.png',u8);
   }
   add('docs/integration_notes.txt',enc.encode(
-`${base}\nAuthored with CHARACTER STUDIO - made by AEiOU (v3.2.0).\n\nLayout:\n  customization/customization_manifest.json  machine-readable manifest (validated)\n  appearance.json                             portable appearance state\n  geoset_list.txt                             geoset name / group / default visibility\n  textures/                                   texture library + baked atlases (PNG)\n  models/                                     source model (optional)\n  preview/preview.png                         viewport render\n  SHA256SUMS.txt                              integrity (sha256sum -c compatible)\n`));
+`${base}\nAuthored with CHARACTER STUDIO - made by AEiOU (v3.2.1).\n\nLayout:\n  customization/customization_manifest.json  machine-readable manifest (validated)\n  appearance.json                             portable appearance state\n  geoset_list.txt                             geoset name / group / default visibility\n  textures/                                   texture library + baked atlases (PNG)\n  models/                                     source model (optional)\n  preview/preview.png                         viewport render\n  SHA256SUMS.txt                              integrity (sha256sum -c compatible)\n`));
   const sums=[];
   for(const f of files) sums.push(`${await sha256Hex(f.data)}  ${f.name}`);
   files.push({name:`${base}/SHA256SUMS.txt`,data:enc.encode(sums.join('\n')+'\n')});
@@ -2529,14 +2622,14 @@ function exportGlbBytes(opts={}){
   }
   const uvMeta=compactUvTransforms();
   for(const [name,cfg] of Object.entries(uvMeta)){const g=model.geosets.find(x=>x.name===name);if(!g)continue;const nd=json.nodes[g.nodeIndex];nd.extras={...(nd.extras||{}),characterStudioTextureTransform:cfg};}
-  json.asset=json.asset||{};json.asset.extras={...(json.asset.extras||{}),characterStudio:{version:'3.2.0',geosetTextureTransforms:uvMeta}};
+  json.asset=json.asset||{};json.asset.extras={...(json.asset.extras||{}),characterStudio:{version:'3.2.1',geosetTextureTransforms:uvMeta}};
   if(!includeHidden){
     for(const g of model.geosets){
       if(!g.visible&&json.nodes[g.nodeIndex]&&json.nodes[g.nodeIndex].mesh!=null){ delete json.nodes[g.nodeIndex].mesh; strippedNodes++; }
     }
   }
   json.asset=json.asset||{};
-  json.asset.generator='CHARACTER STUDIO - made by AEiOU (v3.2.0)';
+  json.asset.generator='CHARACTER STUDIO - made by AEiOU (v3.2.1)';
   const enc=new TextEncoder();
   let jbytes=enc.encode(JSON.stringify(json));
   const jpad=(4-(jbytes.length%4))%4;
@@ -3158,7 +3251,7 @@ if(!navigator.webdriver&&!/headless=1/.test(location.search)&&!localStorage.getI
   window.__tourAutoStarted=true; setTimeout(()=>{ try{ startTour(); }catch(e){ console.error(e); } },800);
 }
 
-/* ── v3.2 asset source presets + persistent local workspace bridge ── */
+/* ── v3.2.1 asset source presets + persistent local workspace bridge ── */
 const SOURCE_KINDS=['objectcomponents','texturecomponents'];
 const browserSourceFiles={objectcomponents:new Map(),texturecomponents:new Map()};
 const browserSourceArchives={objectcomponents:null,texturecomponents:null};

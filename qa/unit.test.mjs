@@ -39,7 +39,7 @@ const ctx=vm.createContext({
   Math,Uint8Array,Uint16Array,Uint32Array,Int32Array,Float32Array,Float64Array,
   TextEncoder,TextDecoder,JSON,Array,Object,String,Number,Boolean,isFinite,parseInt,parseFloat,decodeURIComponent,Infinity,NaN,
 });
-for(const name of ['CRC_T','crc32','validateManifest','mulberry32','hexRgb','perspective','lookAt','mat4I','mul','normalizeAssetPath','companionTextureScore','defaultUvLayer','defaultEyeFine','defaultGeosetTextureTransform','cloneJson','normalizeUvLayer','normalizeGeosetTextureTransform','near','layerIsDefault','isDefaultUvTransform','combinedEyeLayer'])
+for(const name of ['CRC_T','crc32','validateManifest','mulberry32','hexRgb','perspective','lookAt','mat4I','mul','normalizeAssetPath','companionTextureScore','defaultUvLayer','defaultEyeFine','defaultGeosetTextureTransform','cloneJson','normalizeUvLayer','normalizeGeosetTextureTransform','near','layerIsDefault','isDefaultUvTransform','combinedEyeLayer','SAFE_DEFAULT_DECORATION_RE','SAFE_DEFAULT_VARIANTS','groupKey','choosePreferredGeoset','normalizeGeosetDefaults','setGeosetGroupVisibility','applyUvPreviewDrag'])
   vm.runInContext(extract(name),ctx);
 const call=(expr)=>vm.runInContext(expr,ctx);
 
@@ -145,4 +145,62 @@ test('shipped shader transforms all material texture channels with mapped UVs',(
   assert.match(html,/vec2 sampleUv=mappedUv\(vUv\)/);
   for(const sampler of ['uTex','uMR','uNorm','uOcc','uEmis']) assert.match(html,new RegExp(`texture\\(${sampler},(?:uv|sampleUv)\\)`));
   assert.match(html,/characterStudioTextureTransform/);
+});
+
+
+test('safe model defaults never stack variant subsets',()=>{
+  ctx.__geo=[
+    {name:'orc_hd_Geoset0',group:'Geoset',variant:0,mode:'body',isGear:false,authoredDefaultVisible:null},
+    {name:'orc_hd_HeadSwap1',group:'HeadSwap',variant:1,mode:'head',isGear:false,authoredDefaultVisible:null},
+    {name:'orc_hd_HeadSwap2',group:'HeadSwap',variant:2,mode:'head',isGear:false,authoredDefaultVisible:null},
+    {name:'orc_hd_HeadPreset1',group:'HeadPreset',variant:1,mode:'head',isGear:false,authoredDefaultVisible:null},
+    {name:'orc_hd_Eyes1',group:'Eyes',variant:1,mode:'head',isGear:false,authoredDefaultVisible:null},
+    {name:'orc_hd_Eyes2',group:'Eyes',variant:2,mode:'head',isGear:false,authoredDefaultVisible:null},
+    {name:'orc_hd_Ears1',group:'Ears',variant:1,mode:'head',isGear:false,authoredDefaultVisible:null},
+    {name:'orc_hd_Ears2',group:'Ears',variant:2,mode:'head',isGear:false,authoredDefaultVisible:null},
+    {name:'orc_hd_Hair1',group:'Hair',variant:1,mode:'head',isGear:false,authoredDefaultVisible:true},
+    {name:'orc_hd_Hair2',group:'Hair',variant:2,mode:'head',isGear:false,authoredDefaultVisible:true},
+    {name:'orc_hd_Boots1',group:'Boots',variant:1,mode:'none',isGear:true,authoredDefaultVisible:true},
+    {name:'orc_hd_Torso1',group:'Torso',variant:1,mode:'body',isGear:false,authoredDefaultVisible:true},
+  ];
+  const out=call('normalizeGeosetDefaults(__geo)');
+  const visible=out.filter(g=>g.visible).map(g=>g.name);
+  assert.ok(visible.includes('orc_hd_Geoset0'));
+  assert.ok(visible.includes('orc_hd_HeadSwap2'));
+  assert.ok(visible.includes('orc_hd_Eyes1'));
+  assert.ok(visible.includes('orc_hd_Ears2'));
+  assert.equal(visible.some(n=>/Hair|Boots|Torso|HeadPreset/.test(n)),false);
+  for(const group of new Set(out.map(g=>g.group))){
+    assert.ok(out.filter(g=>g.group===group&&g.visible).length<=1,group+' has overlapping defaults');
+  }
+});
+
+test('subset visibility helpers support all on, all off, and safe default',()=>{
+  ctx.__group=[{visible:false,defaultVisible:true},{visible:true,defaultVisible:false}];
+  call("setGeosetGroupVisibility(__group,'on')");
+  assert.deepEqual(Array.from(ctx.__group,v=>v.visible),[true,true]);
+  call("setGeosetGroupVisibility(__group,'off')");
+  assert.deepEqual(Array.from(ctx.__group,v=>v.visible),[false,false]);
+  call("setGeosetGroupVisibility(__group,'default')");
+  assert.deepEqual(Array.from(ctx.__group,v=>v.visible),[true,false]);
+});
+
+test('eye-pair preview drag moves eye texture, while shift-drag moves masks',()=>{
+  ctx.__cfg=call('defaultGeosetTextureTransform()');
+  ctx.__start=JSON.parse(JSON.stringify(ctx.__cfg));
+  call("applyUvPreviewDrag('eyes',__cfg,__start,0.1,-0.05,false)");
+  assert.ok(Math.abs(ctx.__cfg.eyes.pair.offsetX-0.1)<1e-9);
+  assert.ok(Math.abs(ctx.__cfg.eyes.pair.offsetY+0.05)<1e-9);
+  assert.equal(ctx.__cfg.eyes.centerX,0.5);
+  ctx.__cfg=call('defaultGeosetTextureTransform()');ctx.__start=JSON.parse(JSON.stringify(ctx.__cfg));
+  call("applyUvPreviewDrag('eyes',__cfg,__start,0.1,-0.05,true)");
+  assert.ok(Math.abs(ctx.__cfg.eyes.centerX-0.6)<1e-9);
+  assert.ok(Math.abs(ctx.__cfg.eyes.centerY-0.45)<1e-9);
+  assert.equal(ctx.__cfg.eyes.pair.offsetX,0);
+});
+
+test('Firefox range styling and per-subset controls ship in the UI',()=>{
+  assert.match(html,/::-moz-range-thumb/);
+  assert.match(html,/class=\"grp-actions\"/);
+  assert.match(html,/Shift-drag moves the mask pair/);
 });

@@ -1,4 +1,4 @@
-# CHARACTER STUDIO - made by AEiOU — API reference (v3.2)
+# CHARACTER STUDIO - made by AEiOU — API reference (v3.2.1)
 
 Everything below is available on `window.StudioAPI` in `demo/character-studio.html`.
 The same surface is exposed to agents via the MCP server (`qa/mcp-server.mjs`) and
@@ -21,7 +21,7 @@ usable headlessly (`?headless=1`, no auto-tour, automation-friendly).
 | `saveGearset(name)` / `applyGearsetByName(name)` | Gearsets (localStorage) |
 | `setViewMode(mode)` | `texture` \| `matid` \| `groups` |
 
-## Bundle and source-library API (v3.2)
+## Bundle and source-library API (v3.2.1)
 | Function | Description |
 |---|---|
 | `loadFile(file)` | Load one GLB/GLTF file. |
@@ -68,7 +68,7 @@ texture (`texelFetch`), so joint count is unlimited.
 - `startTour() / endTour() / openHelp()` — onboarding + in-app docs (auto-start suppressed for `navigator.webdriver` and `?headless=1`)
 
 ## Formats
-- **Appearance (v2)**: `{version:2, engine:'character-studio_v3.2', model, headMorphs, bodyMorphs, geosetVisibility, colors, equippedTextures, baseTexture, textureFolder, viewMode, geosetTextureTransforms?, materialTextureOverrides, animationIndex}`
+- **Appearance (v2)**: `{version:2, engine:'character-studio_v3.2.1', model, headMorphs, bodyMorphs, geosetVisibility, colors, equippedTextures, baseTexture, textureFolder, viewMode, geosetTextureTransforms?, materialTextureOverrides, animationIndex}`
 - **Project**: `{format:'character-studio/project', version:1, project:{…}}` (`.studio`)
 - **Palette**: `{format:'character-studio/palette', version:1, colors, exposure, eyeGlow}`
 - **Share**: `{format:'character-studio/share', version:1, appearance}` — deflate-raw + base64url in the URL fragment
@@ -79,7 +79,7 @@ See README “Known limitations” — Draco/Meshopt/KTX2 (detection only), GLB 
 handling, sculpt persistence, LOD rationale, share links carry state not assets.
 
 
-## Per-geoset texture transform API (v3.2)
+## Per-geoset texture transform API (v3.2.1)
 
 `StudioAPI.getGeosetTextureTransform(name)` returns the full/eye transform state.
 `StudioAPI.setGeosetTextureTransform(name, state)` applies it live.
@@ -88,3 +88,10 @@ handling, sculpt persistence, LOD rationale, share links carry state not assets.
 `StudioAPI.listGeosetTextureTransforms()` returns non-default transforms.
 
 Appearance JSON adds the optional `geosetTextureTransforms` map. Existing StudioAppearance v2 files without that field remain valid. Exported GLBs store each active transform in `node.extras.characterStudioTextureTransform` and a complete map in `asset.extras.characterStudio`.
+
+### v3.2.1 editor behavior
+
+- **Eye pair** drag changes the pair texture offset; Shift-drag changes eye-mask center placement.
+- Selecting a geoset for UV editing solos mutually exclusive variants in that subset.
+- Each geoset subset exposes independent **All On**, **All Off**, and **Default** controls.
+- Safe defaults intentionally activate no more than one variant per subset and leave optional hair/facial/equipment groups disabled.

@@ -5,19 +5,21 @@ Offline, dependency-free WebGL2 character customization studio for glTF/GLB char
 server for agents. Single-file app: `demo/character-studio.html` — open it in a browser.
 No internet access is ever required or used.
 
-### Per-geoset texture alignment and eye correction (v3.2)
+### Per-geoset texture alignment and eye correction (v3.2.1)
 
 Select any geoset in **Geoset Visibility** and press **UV**. The **Texture Align & Warp** panel supports:
 
 - Full-texture position, independent X/Y scale, rotation, pivot, shear, and nonlinear warp.
 - Eye-only masks with center, spacing, width, height, and feather controls.
 - Pair transforms plus independent left/right eye fine alignment.
-- UV-wireframe preview, drag positioning, wheel scaling, copy/paste, mirror, and apply-to-group.
+- In **Eye pair**, drag moves the sampled eye texture; Shift-drag moves the mask pair.
+- UV-wireframe preview, drag positioning, wheel scaling, copy/paste, mirror, apply-to-group, and one-click **Solo** preview.
+- The right sidebar uses compact themed controls in Chromium and Firefox instead of browser-default sliders and buttons.
 - Appearance JSON persistence and GLB node/asset metadata for runtime shader wiring.
 
 The feature modifies sampling in the studio shader; it does not destructively edit the source PNG.
 
-## Feature overview (v3.2)
+## Feature overview (v3.2.1)
 
 ### Rendering & animation
 - **Unlimited-bone skinning** — joint matrices in an RGBA32F bone texture read via
@@ -30,6 +32,9 @@ The feature modifies sampling in the studio shader; it does not destructively ed
 ### Studio
 - Head + body customization with gear-safe morphs, geoset tick boxes (wow.export-style),
   17 race/gender profiles with validated morph catalogs and geoset maps.
+- Safe startup visibility enables only the base body/head/eyes/ears instead of stacking every
+  hairstyle or equipment variant. Every subset has **All On / All Off / Default** controls;
+  ordinary selection is exclusive, while Shift-click allows intentional overlaps.
 - **Mirror sculpt brush** — direct on-mesh sculpting with soft falloff, X-symmetry,
   push/pull, gear-safe (body/head vertices only). Session-only; baked into GLB export.
 - Undo/redo command stack (Ctrl+Z / Ctrl+Y) across all edits.
@@ -41,7 +46,7 @@ The feature modifies sampling in the studio shader; it does not destructively ed
   onboarding tour + in-app help (`?` in the header).
 - Performance HUD (draw calls / triangles).
 
-### Asset bundle and source-library workflow (v3.2)
+### Asset bundle and source-library workflow (v3.2.1)
 - Open or drag a `.glb` / `.gltf` together with its `.png` / `.jpg` / `.webp` images.
   Strongly named base textures such as `humanmale_hd_texture_1.png` are detected and
   auto-bound to the base body material. External `.gltf` `.bin` and image URIs resolve
