@@ -101,21 +101,33 @@ select:hover{filter:brightness(1.1)}
 .flrow{display:flex;justify-content:space-between;gap:8px;font:10px/1.5 var(--mono);color:#b9bdc4;padding:2px 7px;border-bottom:1px solid #ffffff06}
 .flrow .fn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .flrow .sz{color:var(--muted);flex:none}
+.sourcegrid{display:grid;grid-template-columns:1fr auto auto;gap:5px;align-items:center;margin:5px 0}.sourcegrid input,.sourcegrid select{min-width:0}.sourceok{color:var(--good)}.sourcewarn{color:#d7ad62}.sourceerr{color:var(--danger)}.sourcepill{display:inline-block;padding:1px 5px;border:1px solid var(--line);border-radius:10px;font:9px var(--mono);color:var(--muted);margin-left:4px}.sourcepath{font:10px var(--mono)}
 body.headless header,body.headless .side,body.headless #viewbar,body.headless .hud,body.headless .empty{display:none!important}
 body.headless #app{grid-template-columns:1fr;grid-template-rows:1fr}
 body.headless #vp{grid-column:1;grid-row:1}
+#timeline{position:absolute;left:10px;right:10px;bottom:36px;z-index:3;display:none;gap:8px;align-items:center;background:linear-gradient(180deg,#25272c,#1e2024);border:1px solid var(--border);box-shadow:inset 0 1px 0 #ffffff14,0 2px 6px #0009;padding:6px 10px;border-radius:3px}
+#timeline button{min-width:30px}
+#timeline input[type=range]{flex:1}
+#timeline .tlab{font:11px var(--mono);color:var(--muted);min-width:120px;text-align:right}
+#timeline button.on{background:linear-gradient(180deg,#5b96e6,#3c7bd4 55%,#2f66b6);color:#fff;border-color:#1e4477}
+body.headless #timeline{display:none!important}
 </style>
 </head>
 <body>
 <div id="app">
   <header>
     <h1>CHARACTER STUDIO</h1><span class="ver">- made by AEiOU</span>
-    <button type="button" class="primary" id="btnOpen">Open GLB / GLTF / BJ</button>
-    <input type="file" id="fileModel" accept=".glb,.gltf,.bj,.zip,model/gltf-binary,model/gltf+json" hidden/>
+    <button type="button" class="primary" id="btnOpen">Open Model / Bundle</button>
+    <input type="file" id="fileModel" accept=".glb,.gltf,.bj,.bin,.zip,.png,.jpg,.jpeg,.webp,.bmp,.gif,model/gltf-binary,model/gltf+json,image/*" multiple hidden/>
     <input type="file" id="fileTex" accept="image/*" hidden/>
     <input type="file" id="folderTex" webkitdirectory multiple hidden/>
+    <input type="file" id="folderObjectSource" webkitdirectory multiple hidden/>
+    <input type="file" id="folderTextureSource" webkitdirectory multiple hidden/>
+    <input type="file" id="zipObjectSource" accept=".zip,application/zip" hidden/>
+    <input type="file" id="zipTextureSource" accept=".zip,application/zip" hidden/>
     <select id="animSel" title="Animation"><option value="">— animations —</option></select>
     <button type="button" id="btnPlay">Play</button>
+    <button type="button" id="btnSources" title="Configure objectcomponents and texturecomponents libraries">Asset Sources</button>
     <div class="spacer"></div>
     <span id="status">Drop a .glb / .gltf to begin</span>
     <button type="button" id="btnRandom">Randomize</button>
@@ -127,8 +139,8 @@ body.headless #vp{grid-column:1;grid-row:1}
   </aside>
   <main id="vp">
     <canvas id="gl"></canvas>
-    <div class="drop" id="drop">Drop GLB / GLTF / BJ here</div>
-    <div class="empty" id="empty"><b>Load a character model</b><div>Open or drop <kbd>.glb</kbd> <kbd>.gltf</kbd> <kbd>.bj</kbd> (glTF-compatible)</div><div>Geosets auto-wire · head+body sculpt · external gear textures</div></div>
+    <div class="drop" id="drop">Drop a GLB + texture(s), model ZIP, or source ZIP here</div>
+    <div class="empty" id="empty"><b>Load a character model</b><div>Open or drop a <kbd>.glb</kbd> together with its texture images, or use a model <kbd>.zip</kbd></div><div>Companion textures auto-bind · geosets auto-wire · source presets stay reusable</div></div>
     <div class="hud">
       <span id="hudInfo">no model</span>
       <span id="hudGeo">geosets: 0</span>
@@ -207,7 +219,7 @@ const BODY_SAFE_RE = /geoset0|torso|body|skin|feet\d|hand/i;
 
 const headVals = Object.fromEntries(headAxes.map(a=>[a.id,0]));
 const bodyVals = Object.fromEntries(bodyAxes.map(a=>[a.id,0]));
-let colors = { skin:'#5a8f3a', hair:'#1a1420', eyes:'#e8a020' };
+let colors = { skin:'#ffffff', hair:'#1a1420', eyes:'#e8a020' };
 let leftTab = 'head:skull', rightTab = 'geosets';
 let dirtyMorph = true;
 
@@ -229,6 +241,12 @@ function parseGlb(buf) {
     off += 8+len;
   }
   if (!json) throw new Error('Missing JSON chunk');
+  const _hardExt={'KHR_draco_mesh_compression':'Draco mesh compression','EXT_meshopt_compression':'Meshopt compression','KHR_texture_basisu':'KTX2/Basis texture compression'};
+  for(const e of Object.keys(_hardExt)){
+    if((json.extensionsRequired||[]).includes(e))
+      throw new Error(`This model requires ${_hardExt[e]} (${e}). Character Studio runs fully offline and does not bundle this decoder \u2014 re-export the asset uncompressed (e.g. "gltf-transform copy input.glb output.glb", or wow.export default settings).`);
+    if((json.extensionsUsed||[]).includes(e)) console.warn('Model lists optional extension '+e+'; loading without its decoder.');
+  }
   return {json, bin: bin||new ArrayBuffer(0)};
 }
 
@@ -267,17 +285,54 @@ function morphMode(name, group) {
   return 'none';
 }
 
-async function decodeImage(json, bin, imageIndex) {
-  const img=json.images[imageIndex];
+const MODEL_FILE_RE=/\.(glb|gltf|bj)$/i;
+const IMAGE_FILE_RE=/\.(png|jpe?g|webp|bmp|gif)$/i;
+const normalizeAssetPath=v=>decodeURIComponent(String(v||'').split(/[?#]/)[0]).replace(/\\/g,'/').replace(/^\.\//,'').toLowerCase();
+function makeCompanionMap(files=[]){
+  const map=new Map();
+  for(const f of files){
+    const rel=normalizeAssetPath(f.webkitRelativePath||f.name);
+    if(rel) map.set(rel,f);
+    const base=rel.split('/').pop(); if(base) map.set(base,f);
+  }
+  return map;
+}
+function findCompanionFile(map,uri){
+  if(!map||!uri) return null;
+  const key=normalizeAssetPath(uri);
+  return map.get(key)||map.get(key.split('/').pop())||null;
+}
+async function dataUriBlob(uri){
+  const comma=uri.indexOf(','); if(comma<0) throw new Error('Malformed data URI');
+  const meta=uri.slice(5,comma), raw=uri.slice(comma+1), mime=(meta.split(';')[0]||'application/octet-stream');
+  if(/;base64/i.test(meta)){
+    const bin=atob(raw), out=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) out[i]=bin.charCodeAt(i);
+    return new Blob([out],{type:mime});
+  }
+  return new Blob([decodeURIComponent(raw)],{type:mime});
+}
+async function decodeImage(json, bin, imageIndex, companionFiles=new Map()) {
+  const img=json.images?.[imageIndex];
   if (!img) return null;
-  let bytes;
+  let blob=null;
   if (img.bufferView!=null) {
     const bv=json.bufferViews[img.bufferView];
-    bytes=new Uint8Array(bin, bv.byteOffset||0, bv.byteLength).slice();
-  } else return null;
-  const blob=new Blob([bytes],{type:img.mimeType||'image/png'});
+    const bytes=new Uint8Array(bin, bv.byteOffset||0, bv.byteLength).slice();
+    blob=new Blob([bytes],{type:img.mimeType||'image/png'});
+  } else if(img.uri){
+    if(/^data:/i.test(img.uri)) blob=await dataUriBlob(img.uri);
+    else blob=findCompanionFile(companionFiles,img.uri);
+  }
+  if(!blob) return null;
   const bmp = await createImageBitmap(blob);
-  return {bmp, name: img.name||`image_${imageIndex}`, mime: img.mimeType||'image/png'};
+  return {bmp, name: img.name||String(img.uri||`image_${imageIndex}`).split('/').pop(), mime: blob.type||img.mimeType||'image/png', external:img.bufferView==null};
+}
+async function resolveGltfBuffer(json,companionFiles){
+  const def=json.buffers?.[0]; if(!def||!def.uri) return new ArrayBuffer(0);
+  if(/^data:/i.test(def.uri)) return (await dataUriBlob(def.uri)).arrayBuffer();
+  const f=findCompanionFile(companionFiles,def.uri);
+  if(!f) throw new Error(`Missing external glTF buffer: ${def.uri}. Select/drop the .gltf and its .bin together.`);
+  return f.arrayBuffer();
 }
 
 // ═══════════ WebGL renderer ═══════════
@@ -286,14 +341,18 @@ const gl=canvas.getContext('webgl2',{antialias:true,alpha:false,preserveDrawingB
 if(!gl) alert('WebGL2 required');
 
 const VS=`#version 300 es
-uniform mat4 uMVP; uniform mat4 uNmat; uniform mat4 uModel; uniform mat4 uBones[80]; uniform int uSkinned;
+uniform mat4 uMVP; uniform mat4 uNmat; uniform mat4 uModel; uniform sampler2D uBoneTex; uniform int uSkinned;
 in vec3 aPos; in vec3 aNrm; in vec2 aUv; in vec4 aJoints; in vec4 aWeights;
 out vec3 vN; out vec2 vUv; out vec3 vW;
+mat4 getBone(int j){
+  return mat4(texelFetch(uBoneTex,ivec2(0,j),0),texelFetch(uBoneTex,ivec2(1,j),0),
+              texelFetch(uBoneTex,ivec2(2,j),0),texelFetch(uBoneTex,ivec2(3,j),0));
+}
 void main(){
   vec4 pos=vec4(aPos,1.0); vec3 nrm=aNrm;
   if(uSkinned==1){
-    mat4 skin=aWeights.x*uBones[int(aJoints.x)] + aWeights.y*uBones[int(aJoints.y)]
-            + aWeights.z*uBones[int(aJoints.z)] + aWeights.w*uBones[int(aJoints.w)];
+    mat4 skin=aWeights.x*getBone(int(aJoints.x)) + aWeights.y*getBone(int(aJoints.y))
+            + aWeights.z*getBone(int(aJoints.z)) + aWeights.w*getBone(int(aJoints.w));
     pos=skin*pos; nrm=mat3(skin)*nrm;
   }
   vec4 worldPos = uModel * pos;
@@ -301,30 +360,94 @@ void main(){
   gl_Position=uMVP*worldPos;
 }`;
 const FS=`#version 300 es
-precision mediump float;
-uniform sampler2D uTex; uniform vec3 uTint; uniform float uUseTex; uniform vec3 uLight;
+precision highp float;
+uniform sampler2D uTex; uniform sampler2D uMR; uniform sampler2D uNorm; uniform sampler2D uEmis; uniform sampler2D uOcc;
+uniform vec3 uTint; uniform float uUseTex; uniform float uHasMR; uniform float uHasNorm; uniform float uHasEmis; uniform float uHasOcc;
+uniform vec4 uBaseColor; uniform float uMetal; uniform float uRough; uniform vec3 uEmisF;
+uniform vec3 uCam; uniform float uUnlit; uniform float uCutoff; uniform float uExposure;
 in vec3 vN; in vec2 vUv; in vec3 vW; out vec4 o;
-void main(){
+vec3 srgb2lin(vec3 c){return pow(c,vec3(2.2));}
+vec3 aces(vec3 x){ x*=uExposure; return clamp((x*(2.51*x+0.03))/(x*(2.43*x+0.59)+0.14),0.0,1.0);}
+vec3 getNormal(){
   vec3 N=normalize(vN);
-  float ndl=clamp(dot(N,normalize(uLight)),0.0,1.0)*0.7+0.3;
-  vec3 base=uTint;
-  if(uUseTex>0.5){
-    vec4 t=texture(uTex,vUv);
-    if(t.a<0.08) discard;
-    base*=t.rgb;
+  if(uHasNorm<0.5) return N;
+  vec3 dp1=dFdx(vW), dp2=dFdy(vW); vec2 duv1=dFdx(vUv), duv2=dFdy(vUv);
+  vec3 dp2perp=cross(dp2,N), dp1perp=cross(N,dp1);
+  vec3 T=dp2perp*duv1.x+dp1perp*duv2.x; vec3 B=dp2perp*duv1.y+dp1perp*duv2.y;
+  float invmax=inversesqrt(max(dot(T,T),dot(B,B))+1e-9);
+  vec3 nt=texture(uNorm,vUv).xyz*2.0-1.0;
+  return normalize(mat3(T*invmax,B*invmax,N)*nt);
+}
+float D_GGX(float NdH,float a){float a2=a*a;float d=NdH*NdH*(a2-1.0)+1.0;return a2/(3.14159*d*d+1e-6);}
+float G_smith(float NdV,float NdL,float a){float k=a*0.5;return (NdV/(NdV*(1.0-k)+k))*(NdL/(NdL*(1.0-k)+k));}
+vec3 lit(vec3 N,vec3 V,vec3 L,vec3 col,vec3 albedo,float metal,float rough){
+  vec3 H=normalize(V+L);
+  float NdL=max(dot(N,L),0.0),NdV=max(dot(N,V),1e-3),NdH=max(dot(N,H),0.0),VdH=max(dot(V,H),0.0);
+  if(NdL<=0.0) return vec3(0.0);
+  float a=rough*rough;
+  vec3 F0=mix(vec3(0.04),albedo,metal);
+  vec3 F=F0+(1.0-F0)*pow(1.0-VdH,5.0);
+  vec3 spec=F*D_GGX(NdH,a)*G_smith(NdV,NdL,a)/(4.0*NdV*NdL+1e-5);
+  vec3 diff=(1.0-F)*(1.0-metal)*albedo/3.14159;
+  return (diff+spec)*col*NdL;
+}
+void main(){
+  vec4 bc=uBaseColor*vec4(uTint,1.0);
+  if(uUseTex>0.5){ vec4 t=texture(uTex,vUv); if(t.a<uCutoff) discard; bc*=vec4(srgb2lin(t.rgb),t.a); }
+  if(uUnlit>0.5){
+    vec3 N=normalize(vN);
+    float ndl=clamp(dot(N,normalize(vec3(0.55,0.75,0.35))),0.0,1.0)*0.55+0.45;
+    o=vec4(pow(bc.rgb*ndl,vec3(1.0/2.2)),1.0); return;
   }
-  float rim=pow(1.0-clamp(dot(N,vec3(0.2,0.5,0.3)),0.,1.),3.0)*0.12;
-  o=vec4(base*ndl+vec3(rim),1.0);
+  float metal=uMetal, rough=uRough;
+  if(uHasMR>0.5){ vec3 mr=texture(uMR,vUv).rgb; rough*=mr.g; metal*=mr.b; }
+  rough=clamp(rough,0.045,1.0);
+  float ao=uHasOcc>0.5?texture(uOcc,vUv).r:1.0;
+  vec3 N=getNormal(); vec3 V=normalize(uCam-vW);
+  vec3 c=vec3(0.0);
+  c+=lit(N,V,normalize(vec3(0.5,0.8,0.45)),vec3(2.6,2.5,2.3),bc.rgb,metal,rough);
+  c+=lit(N,V,normalize(vec3(-0.6,0.15,-0.4)),vec3(0.5,0.55,0.7),bc.rgb,metal,rough);
+  c+=lit(N,V,normalize(vec3(-0.2,0.4,-0.9)),vec3(0.35,0.4,0.5),bc.rgb,metal,rough);
+  vec3 amb=mix(vec3(0.12,0.11,0.10),vec3(0.24,0.26,0.30),N.y*0.5+0.5);
+  vec3 F0=mix(vec3(0.04),bc.rgb,metal);
+  float NdV=max(dot(N,V),1e-3);
+  vec3 Fa=F0+(max(vec3(1.0-rough),F0)-F0)*pow(1.0-NdV,5.0);
+  c+=amb*bc.rgb*(1.0-metal)*ao + amb*Fa*(1.0-rough)*ao;
+  vec3 em=uEmisF; if(uHasEmis>0.5) em*=srgb2lin(texture(uEmis,vUv).rgb);
+  c+=em;
+  o=vec4(pow(aces(c),vec3(1.0/2.2)),bc.a);
 }`;
 function sh(t,s){const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);if(!gl.getShaderParameter(x,gl.COMPILE_STATUS))console.error(gl.getShaderInfoLog(x));return x;}
 const prog=gl.createProgram();
 gl.attachShader(prog,sh(gl.VERTEX_SHADER,VS));gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,FS));gl.linkProgram(prog);
-const U={
-  mvp:gl.getUniformLocation(prog,'uMVP'), nmat:gl.getUniformLocation(prog,'uNmat'), model:gl.getUniformLocation(prog,'uModel'),
-  bones:gl.getUniformLocation(prog,'uBones'), skinned:gl.getUniformLocation(prog,'uSkinned'),
-  tex:gl.getUniformLocation(prog,'uTex'), tint:gl.getUniformLocation(prog,'uTint'),
-  useTex:gl.getUniformLocation(prog,'uUseTex'), light:gl.getUniformLocation(prog,'uLight'),
-};
+const _loc=n=>gl.getUniformLocation(prog,n);
+const U={ mvp:_loc('uMVP'), nmat:_loc('uNmat'), model:_loc('uModel'), boneTex:_loc('uBoneTex'), skinned:_loc('uSkinned'),
+  tex:_loc('uTex'), mr:_loc('uMR'), norm:_loc('uNorm'), emis:_loc('uEmis'), occ:_loc('uOcc'),
+  tint:_loc('uTint'), useTex:_loc('uUseTex'), hasMR:_loc('uHasMR'), hasNorm:_loc('uHasNorm'), hasEmis:_loc('uHasEmis'), hasOcc:_loc('uHasOcc'),
+  baseColor:_loc('uBaseColor'), metal:_loc('uMetal'), rough:_loc('uRough'), emisF:_loc('uEmisF'),
+  cam:_loc('uCam'), unlit:_loc('uUnlit'), cutoff:_loc('uCutoff'), exposure:_loc('uExposure') };
+// v3.0: unlimited-bone skinning via RGBA32F bone texture (4 texels per joint row)
+let boneTexGL=null, boneTexRows=0;
+function uploadBones(){
+  const skin=model&&model.skin; if(!skin) return;
+  const rows=skin.joints.length;
+  if(!boneTexGL||boneTexRows!==rows){
+    if(boneTexGL) gl.deleteTexture(boneTexGL);
+    boneTexGL=gl.createTexture(); boneTexRows=rows;
+    gl.bindTexture(gl.TEXTURE_2D,boneTexGL);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+    gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA32F,4,rows,0,gl.RGBA,gl.FLOAT,null);
+  } else gl.bindTexture(gl.TEXTURE_2D,boneTexGL);
+  gl.texSubImage2D(gl.TEXTURE_2D,0,0,0,4,rows,gl.RGBA,gl.FLOAT,skin.boneMats);
+}
+function bindAux(unit,loc,hasLoc,texIndex){
+  const t=(texIndex!=null&&model)?model.glTex[texIndex]:null;
+  gl.activeTexture(gl.TEXTURE0+unit); gl.bindTexture(gl.TEXTURE_2D,t||null);
+  gl.uniform1i(loc,unit); gl.uniform1f(hasLoc,t?1:0);
+}
 
 let model=null; // runtime model
 let texOverrideMat = {}; // matIndex -> WebGLTexture
@@ -473,7 +596,8 @@ function applyBodyMorphs(base, out, bodyW) {
   }
 }
 
-async function loadModelFromFile(file) {
+async function loadModelFromFile(file, options={}) {
+  const companionFiles=options.companionFiles||new Map();
   const buf=await file.arrayBuffer();
   const u8=new Uint8Array(buf);
   let json, bin;
@@ -482,7 +606,7 @@ async function loadModelFromFile(file) {
   } else {
     const text=new TextDecoder().decode(u8);
     if (text.trim().startsWith('{') && text.includes('"asset"')) {
-      json=JSON.parse(text); bin=new ArrayBuffer(0);
+      json=JSON.parse(text); bin=await resolveGltfBuffer(json,companionFiles);
     } else if (file.name.toLowerCase().endsWith('.bj')) {
       throw new Error('.bj is not glTF/GLB. Convert/export to .glb (or rename if it already has glTF magic).');
     } else throw new Error('Unsupported file — use .glb or .gltf');
@@ -491,16 +615,28 @@ async function loadModelFromFile(file) {
   // images
   const images=[];
   for (let i=0;i<(json.images||[]).length;i++) {
-    try { images[i]=await decodeImage(json, bin, i); } catch { images[i]=null; }
+    try { images[i]=await decodeImage(json, bin, i, companionFiles); } catch(err) { console.warn('Image decode failed',i,err); images[i]=null; }
   }
-  const glTex=[];
-  for (let i=0;i<images.length;i++) glTex[i]=images[i]?createGLTex(images[i].bmp):null;
+  const imageGlTex=images.map(im=>im?createGLTex(im.bmp):null);
+  const textureImages=(json.textures||[]).map((t,i)=>images[t.source??i]||null);
+  const glTex=(json.textures||[]).map((t,i)=>imageGlTex[t.source??i]||null);
 
   // materials
   const materials=(json.materials||[]).map((m,i)=>({
     index:i, name:m.name||`mat_${i}`,
     texIndex: m.pbrMetallicRoughness?.baseColorTexture?.index,
     baseColor: m.pbrMetallicRoughness?.baseColorFactor || [1,1,1,1],
+    mrIndex: m.pbrMetallicRoughness?.metallicRoughnessTexture?.index,
+    // pragmatic default: without an MR map or explicit factor, treat as dielectric
+    metallic: m.pbrMetallicRoughness?.metallicFactor ?? (m.pbrMetallicRoughness?.metallicRoughnessTexture?1:0),
+    roughness: m.pbrMetallicRoughness?.roughnessFactor ?? (m.pbrMetallicRoughness?.metallicRoughnessTexture?1:0.9),
+    normIndex: m.normalTexture?.index,
+    occIndex: m.occlusionTexture?.index,
+    emisIndex: m.emissiveTexture?.index,
+    emissive: m.emissiveFactor || [0,0,0],
+    alphaMode: m.alphaMode || 'OPAQUE',
+    alphaCutoff: m.alphaCutoff ?? 0.5,
+    doubleSided: !!m.doubleSided,
   }));
 
   // geosets / drawables
@@ -639,7 +775,7 @@ async function loadModelFromFile(file) {
     const s=json.skins[0];
     const joints=s.joints||[];
     const ibm=s.inverseBindMatrices!=null?asF32(accInfo(json,bin,s.inverseBindMatrices)):null;
-    skin={joints, ibm, boneMats:new Float32Array(80*16)};
+    skin={joints, ibm, boneMats:new Float32Array(joints.length*16)};
     // identity bones default
     for(let i=0;i<80;i++){skin.boneMats[i*16]=skin.boneMats[i*16+5]=skin.boneMats[i*16+10]=skin.boneMats[i*16+15]=1;}
   }
@@ -655,12 +791,13 @@ async function loadModelFromFile(file) {
   const nodeWorld = computeRestPose(json);
 
   model={
-    json, bin, geosets, drawables, materials, images, glTex,
+    json, bin, geosets, drawables, materials, images, textureImages, glTex,
     animations, skin, nodeWorld,
     yMin, yMax, fileName:file.name,
     generator: json.asset?.generator,
   };
   texOverrideMat={};
+  baseTextureName=null;
   dirtyMorph=true;
   document.getElementById('empty').style.display='none';
   populateAnims();
@@ -710,59 +847,92 @@ function mul4(out,a,b){
   out.set(o); return out;
 }
 
-// Very simplified animation: sample translation/rotation channels onto nodes, rebuild bone matrices
-function updateAnimation(dt) {
-  if (!model || animIndex<0 || !playing) return;
-  const anim=model.animations[animIndex];
-  if (!anim || !anim.duration) return;
-  animTime=(animTime+dt)%Math.max(anim.duration,0.001);
-  // For performance on huge wow models, only update if skin exists
-  if (!model.skin) return;
-  // rest pose bones from node world * ibm — without full TRS animation sampling (heavy),
-  // use rest pose. Full clip sampling added for channels when sampler count reasonable.
-  const json=model.json, bin=model.bin;
-  const raw=anim.raw;
-  if ((raw.channels||[]).length > 2000) {
-    // too heavy — rest pose only
-    fillBonesRest();
-    return;
-  }
-  // sample node locals
-  const nodes=json.nodes||[];
-  const locals=nodes.map(nd=>nodeLocal(nd));
-  for (const ch of raw.channels||[]) {
-    const node=ch.target.node; const path=ch.target.path;
+// v3.0 animation: cached samplers with cursors, T/R/S paths, crossfade, per-clip loop
+let animSpeed=1, prevClip=null, fadeDur=0.25;
+function buildAnimCache(anim){
+  if(anim.cache) return anim.cache;
+  const json=model.json,bin=model.bin,raw=anim.raw;
+  const chans=[];
+  for(const ch of raw.channels||[]){
+    if(ch.target?.node==null) continue;
+    const path=ch.target.path;
+    if(path!=='translation'&&path!=='rotation'&&path!=='scale') continue;
     const samp=raw.samplers[ch.sampler];
-    const input=asF32(accInfo(json,bin,samp.input));
-    const output=asF32(accInfo(json,bin,samp.output));
-    const t=animTime;
-    let i=0; while(i<input.length-1 && input[i+1]<t) i++;
-    const i0=i, i1=Math.min(i+1,input.length-1);
-    const u=input[i1]===input[i0]?0:(t-input[i0])/(input[i1]-input[i0]);
-    if (path==='translation') {
-      const o=i0*3, p=i1*3;
-      const t0=[output[o]+(output[p]-output[o])*u, output[o+1]+(output[p+1]-output[o+1])*u, output[o+2]+(output[p+2]-output[o+2])*u];
-      const nd=nodes[node]; const r=nd.rotation||[0,0,0,1], s=nd.scale||[1,1,1];
-      locals[node]=composeTRS(t0,r,s);
-    } else if (path==='rotation') {
-      const o=i0*4, p=i1*4;
-      // nlerp
-      let q=[0,0,0,0]; let dot=0;
-      for(let k=0;k<4;k++) dot+=output[o+k]*output[p+k];
-      const s=dot>=0?1:-1;
-      for(let k=0;k<4;k++) q[k]=output[o+k]*(1-u)+output[p+k]*s*u;
-      const l=Math.hypot(q[0],q[1],q[2],q[3])||1; for(let k=0;k<4;k++) q[k]/=l;
-      const nd=nodes[node]; const t0=nd.translation||[0,0,0], sc=nd.scale||[1,1,1];
-      locals[node]=composeTRS(t0,q,sc);
-    }
+    chans.push({node:ch.target.node,path,input:asF32(accInfo(json,bin,samp.input)),output:asF32(accInfo(json,bin,samp.output)),cursor:0});
   }
+  anim.cache={chans};
+  return anim.cache;
+}
+function sampleLocals(anim,t){
+  const nodes=model.json.nodes||[];
+  const cache=buildAnimCache(anim);
+  const trs=new Map();
+  for(const ch of cache.chans){
+    const input=ch.input,n=input.length; if(!n) continue;
+    let i=ch.cursor; if(i>n-2||input[i]>t) i=0;
+    while(i<n-2&&input[i+1]<t) i++;
+    ch.cursor=i;
+    const i0=i,i1=Math.min(i+1,n-1);
+    const u=input[i1]===input[i0]?0:Math.min(1,Math.max(0,(t-input[i0])/(input[i1]-input[i0])));
+    let rec=trs.get(ch.node);
+    if(!rec){const nd=nodes[ch.node];rec={t:(nd.translation||[0,0,0]).slice(),r:(nd.rotation||[0,0,0,1]).slice(),s:(nd.scale||[1,1,1]).slice()};trs.set(ch.node,rec);}
+    const out=ch.output,o3=i0*3,p3=i1*3,o4=i0*4,p4=i1*4;
+    if(ch.path==='translation') rec.t=[out[o3]+(out[p3]-out[o3])*u,out[o3+1]+(out[p3+1]-out[o3+1])*u,out[o3+2]+(out[p3+2]-out[o3+2])*u];
+    else if(ch.path==='scale') rec.s=[out[o3]+(out[p3]-out[o3])*u,out[o3+1]+(out[p3+1]-out[o3+1])*u,out[o3+2]+(out[p3+2]-out[o3+2])*u];
+    else{const q=[0,0,0,0];let dot=0;for(let k=0;k<4;k++)dot+=out[o4+k]*out[p4+k];const sg=dot>=0?1:-1;
+      for(let k=0;k<4;k++)q[k]=out[o4+k]*(1-u)+out[p4+k]*sg*u;
+      const l=Math.hypot(q[0],q[1],q[2],q[3])||1;for(let k=0;k<4;k++)q[k]/=l;rec.r=q;}
+  }
+  return trs;
+}
+function blendTRS(a,b,w){
+  if(!a) return b; if(!b) return a;
+  const nodes=model.json.nodes||[];
+  const outM=new Map(); const keys=new Set([...a.keys(),...b.keys()]);
+  for(const k of keys){
+    const nd=nodes[k]||{};
+    const dt=nd.translation||[0,0,0],dr=nd.rotation||[0,0,0,1],ds=nd.scale||[1,1,1];
+    const ra=a.get(k)||{t:dt,r:dr,s:ds}, rb=b.get(k)||{t:dt,r:dr,s:ds};
+    const t=[0,1,2].map(i=>ra.t[i]+(rb.t[i]-ra.t[i])*w);
+    const sc=[0,1,2].map(i=>ra.s[i]+(rb.s[i]-ra.s[i])*w);
+    let dot=0;for(let i=0;i<4;i++)dot+=ra.r[i]*rb.r[i];const sg=dot>=0?1:-1;
+    let q=[0,1,2,3].map(i=>ra.r[i]*(1-w)+rb.r[i]*sg*w);
+    const l=Math.hypot(q[0],q[1],q[2],q[3])||1;q=q.map(v=>v/l);
+    outM.set(k,{t,r:q,s:sc});
+  }
+  return outM;
+}
+function applyLocals(trs){
+  const nodes=model.json.nodes||[];
+  const locals=nodes.map((nd,i)=>{const r=trs.get(i);return r?composeTRS(r.t,r.r,r.s):nodeLocal(nd);});
   const world=nodes.map(()=>mat4I());
   const children=nodes.map(()=>[]); nodes.forEach((nd,i)=>(nd.children||[]).forEach(c=>children[i].push(c)));
   const roots=new Set(nodes.map((_,i)=>i)); nodes.forEach(nd=>(nd.children||[]).forEach(c=>roots.delete(c)));
-  function walk(i,p){mul4(world[i],p,locals[i]); for(const c of children[i]) walk(c,world[i]);}
+  function walk(i,p){mul4(world[i],p,locals[i]);for(const c of children[i]) walk(c,world[i]);}
   const I=mat4I(); for(const r of roots) walk(r,I);
   model.nodeWorld=world;
   fillBonesFromWorld();
+}
+function updateAnimation(dt){
+  if(!model||animIndex<0) return;
+  const anim=model.animations[animIndex];
+  if(!anim||!anim.duration) return;
+  if(playing){
+    animTime+=dt*animSpeed;
+    if(animTime>=anim.duration){
+      if(anim.loop!==false) animTime%=Math.max(anim.duration,0.001);
+      else{animTime=anim.duration;playing=false;const b=document.getElementById('btnPlay');if(b)b.textContent='Play';}
+    }
+    if(prevClip){prevClip.fade+=dt;if(prevClip.fade>=fadeDur)prevClip=null;else prevClip.time+=dt*animSpeed;}
+  }
+  if(!model.skin) return;
+  let trs=sampleLocals(anim,animTime);
+  if(prevClip){
+    const pa=model.animations[prevClip.index];
+    if(pa&&pa.duration){const pt=prevClip.time%pa.duration;const w=Math.min(1,prevClip.fade/Math.max(fadeDur,0.001));trs=blendTRS(sampleLocals(pa,pt),trs,w);}
+  }
+  applyLocals(trs);
+  if(typeof syncTimeline==='function') syncTimeline();
 }
 function fillBonesRest() {
   if (!model?.skin) return;
@@ -772,7 +942,7 @@ function fillBonesRest() {
 function fillBonesFromWorld() {
   const skin=model.skin; if(!skin) return;
   const joints=skin.joints; const ibm=skin.ibm; const out=skin.boneMats;
-  const n=Math.min(joints.length,80);
+  const n=joints.length;
   for(let j=0;j<n;j++){
     const nodeIndex=joints[j];
     const wm=model.nodeWorld[nodeIndex]||mat4I();
@@ -872,10 +1042,10 @@ function frame(now){
     gl.useProgram(prog);
     gl.uniformMatrix4fv(U.mvp,false,mvp);
     gl.uniformMatrix4fv(U.nmat,false,nmat);
-    gl.uniform3fv(U.light,[0.55,0.75,0.35]);
+    gl.uniform3fv(U.cam,[ex,ey,ez]); gl.uniform1f(U.exposure,(settings.exposure??1));
     if (model.skin) {
       gl.uniform1i(U.skinned,1);
-      gl.uniformMatrix4fv(U.bones,false,model.skin.boneMats);
+      gl.activeTexture(gl.TEXTURE7); uploadBones(); gl.uniform1i(U.boneTex,7);
     } else gl.uniform1i(U.skinned,0);
 
     for (const d of model.drawables) {
@@ -898,6 +1068,16 @@ function frame(now){
       gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tex||null);
       gl.uniform1i(U.tex,0);
       gl.uniform1f(U.useTex, tex?1:0);
+      const unlit=(viewMode!=='tex')?1:0;
+      gl.uniform1f(U.unlit,unlit);
+      gl.uniform4fv(U.baseColor, unlit?[1,1,1,1]:(mat.baseColor||[1,1,1,1]));
+      gl.uniform1f(U.metal, mat.metallic??0);
+      gl.uniform1f(U.rough, mat.roughness??0.9);
+      { const _e=mat.emissive||[0,0,0]; const _g=(/glow|eye/i.test(mat.name||'')?(window.__eyeGlow??1):1);
+        gl.uniform3fv(U.emisF,[_e[0]*_g,_e[1]*_g,_e[2]*_g]); }
+      gl.uniform1f(U.cutoff, mat.alphaMode==='MASK'?(mat.alphaCutoff??0.5):0.08);
+      bindAux(1,U.mr,U.hasMR,mat.mrIndex); bindAux(2,U.norm,U.hasNorm,mat.normIndex);
+      bindAux(3,U.emis,U.hasEmis,mat.emisIndex); bindAux(4,U.occ,U.hasOcc,mat.occIndex);
       gl.uniform1i(U.skinned, d.skinned && model.skin ? 1 : 0);
 
       gl.bindVertexArray(d.vao);
@@ -997,7 +1177,7 @@ function renderRight_legacy(){
     model.materials.forEach(m=>{
       const usedBy=model.geosets.filter(g=>g.material===m.index).slice(0,4).map(g=>g.name).join(', ');
       const card=document.createElement('div'); card.className='matcard';
-      const img = model.images[m.texIndex];
+      const img = model.textureImages?.[m.texIndex]||null;
       const thumb = img ? `<img src="${URL.createObjectURL(new Blob())}" data-i="${m.texIndex}"/>` : '';
       card.innerHTML=`<div><b>mat ${m.index}</b> ${m.name||''}</div>
         <div class="hint">tex# ${m.texIndex??'—'} · ${usedBy||'unused'}</div>
@@ -1033,7 +1213,7 @@ function renderRight_legacy(){
     body.innerHTML='';
     [['skin','Skin (body/head tint)'],['hair','Hair / Facial tint'],['eyes','Eyes tint']].forEach(([id,label])=>{
       const cat=document.createElement('div'); cat.className='cat'; cat.textContent=label; body.appendChild(cat);
-      const pal = id==='skin' ? ['#5a8f3a','#6b8f3a','#8a5a32','#8a8a8a','#a04030','#9aaa55','#f0d0b0','#4a2e1c']
+      const pal = id==='skin' ? ['#ffffff','#5a8f3a','#6b8f3a','#8a5a32','#8a8a8a','#a04030','#9aaa55','#f0d0b0','#4a2e1c']
         : id==='hair' ? ['#1a1420','#5a3a22','#d4a85a','#a04028','#e8e8f0','#3050a0','#2a9a9a','#e070b0']
         : ['#e8a020','#3080e0','#40c040','#a040e0','#e02020','#c0e8ff','#80ff40','#f0d040'];
       const sw=document.createElement('div'); sw.className='swatches';
@@ -1089,7 +1269,7 @@ function loadAppearance(a){
 // events
 document.querySelectorAll('[data-rt]').forEach(b=>b.onclick=()=>{rightTab=b.dataset.rt;renderRight();});
 document.getElementById('btnOpen').onclick=()=>document.getElementById('fileModel').click();
-document.getElementById('fileModel').onchange=async e=>{ const f=e.target.files?.[0]; if(!f)return; try{ await loadModelFromFile(f);}catch(err){alert(err.message||err); setStatus(String(err.message||err));} e.target.value='';};
+document.getElementById('fileModel').onchange=async e=>{ const files=[...(e.target.files||[])]; if(!files.length)return; try{ await loadInputBundle(files);}catch(err){alert(err.message||err); setStatus(String(err.message||err));} e.target.value='';};
 document.getElementById('animSel').onchange=e=>{ animIndex=e.target.value===''?-1:parseInt(e.target.value,10); animTime=0; if(animIndex>=0&&model){ document.getElementById('hudAnim').textContent='anim: '+model.animations[animIndex].name; fillBonesRest(); }};
 document.getElementById('btnPlay').onclick=()=>{ playing=!playing; document.getElementById('btnPlay').textContent=playing?'Pause':'Play';};
 document.getElementById('btnReset').onclick=()=>{ headAxes.forEach(a=>headVals[a.id]=0); bodyAxes.forEach(a=>bodyVals[a.id]=0); dirtyMorph=true; renderLeft();};
@@ -1101,10 +1281,57 @@ document.getElementById('btnExport').onclick=()=>{ navigator.clipboard?.writeTex
 const vp=document.getElementById('vp'), drop=document.getElementById('drop');
 ['dragenter','dragover'].forEach(ev=>vp.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('on');}));
 ['dragleave','drop'].forEach(ev=>vp.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('on');}));
-vp.addEventListener('drop',async e=>{ const f=e.dataTransfer?.files?.[0]; if(!f)return; try{await loadModelFromFile(f);}catch(err){alert(err.message||err);} });
+vp.addEventListener('drop',async e=>{ const files=[...(e.dataTransfer?.files||[])]; if(!files.length)return; try{await loadInputBundle(files);}catch(err){alert(err.message||err);setStatus(String(err.message||err));} });
 
 // ═══════════ v1.5 — pro customization suite (flat UI · view modes · gearset creator) ═══════════
 const texLib=new Map(); let texFolderName='';
+let baseTextureName=null;
+function imageMime(name){const e=(name.split('.').pop()||'').toLowerCase();return e==='jpg'||e==='jpeg'?'image/jpeg':e==='webp'?'image/webp':e==='gif'?'image/gif':e==='bmp'?'image/bmp':'image/png';}
+async function addTextureFiles(files,{clear=false,label='bundle'}={}){
+  const imgs=[...files].filter(f=>IMAGE_FILE_RE.test(f.name));
+  if(clear){texLib.clear();for(const k of Object.keys(slotTexChoice))delete slotTexChoice[k];}
+  for(const f of imgs){try{const key=f.webkitRelativePath||f.name;texLib.set(key,{bmp:await createImageBitmap(f),tex:null,file:f});}catch(err){console.warn('Texture import failed',f.name,err);}}
+  if(imgs.length) texFolderName=label;
+  return imgs.length;
+}
+function companionTextureScore(modelFile,imageFile){
+  const ms=modelFile.name.replace(/\.(glb|gltf|bj)$/i,'').toLowerCase();
+  const is=imageFile.name.replace(/\.[^.]+$/,'').toLowerCase();
+  if(is===ms+'_texture_1')return 100;
+  if(is===ms+'_texture'||is===ms+'_basecolor'||is===ms+'_diffuse'||is===ms+'_albedo')return 95;
+  if(is.startsWith(ms+'_texture_'))return 90;
+  if(is.includes(ms)&&(is.includes('base')||is.includes('diffuse')||is.includes('albedo')))return 80;
+  return 0;
+}
+async function autoApplyBaseCompanion(modelFile,imageFiles){
+  if(!model||!imageFiles.length)return null;
+  const ranked=[...imageFiles].map(f=>({f,score:companionTextureScore(modelFile,f)})).sort((a,b)=>b.score-a.score);
+  if(!ranked[0]||ranked[0].score<80)return null;
+  const file=ranked[0].f, key=[...texLib.keys()].find(k=>k===file.name||k.endsWith('/'+file.name))||file.name;
+  const entry=texLib.get(key); if(!entry)return null;
+  if(!entry.tex)entry.tex=createGLTex(entry.bmp);
+  const baseGeo=model.geosets.find(g=>/Geoset0$/i.test(g.name))||model.geosets.find(g=>g.mode==='body')||model.geosets.find(g=>g.mode==='head');
+  if(!baseGeo)return null;
+  texOverrideMat[baseGeo.material]=entry.tex; baseTextureName=key;
+  return key;
+}
+async function loadInputBundle(inputFiles){
+  const files=[...inputFiles].filter(Boolean);
+  const zips=files.filter(f=>/\.zip$/i.test(f.name));
+  const models=files.filter(f=>MODEL_FILE_RE.test(f.name)).sort((a,b)=>b.size-a.size);
+  const images=files.filter(f=>IMAGE_FILE_RE.test(f.name));
+  if(zips.length&&!models.length){for(const z of zips)await loadModelFromFile(z);return;}
+  if(!models.length){
+    if(images.length){await addTextureFiles(images,{label:'loose textures'});renderRight();setStatus(`${images.length} texture(s) added to the library`);return;}
+    throw new Error('No .glb, .gltf, .bj, or .zip model found in the selected files.');
+  }
+  const modelFile=models[0], companions=makeCompanionMap(files);
+  await addTextureFiles(images,{label:modelFile.name.replace(/\.[^.]+$/,'')+' bundle'});
+  await loadModelFromFile(modelFile,{companionFiles:companions});
+  const base=await autoApplyBaseCompanion(modelFile,images);
+  renderRight();
+  if(base)setStatus(`Loaded ${modelFile.name} · companion base texture ${base.split('/').pop()} auto-bound`);
+}
 const slotTexChoice={};
 let sculptSel='head:skull';
 let viewMode='tex';
@@ -1121,7 +1348,7 @@ const CUSTOM_ROWS=[
   {label:'Eyes', groups:['Eyes']},
 ];
 const COLOR_ROWS=[
-  {id:'skin',label:'Skin Color',pal:['#5a8f3a','#6b8f3a','#8a5a32','#8a8a8a','#a04030','#9aaa55','#f0d0b0','#4a2e1c']},
+  {id:'skin',label:'Skin Color',pal:['#ffffff','#5a8f3a','#6b8f3a','#8a5a32','#8a8a8a','#a04030','#9aaa55','#f0d0b0','#4a2e1c']},
   {id:'hair',label:'Hair Color',pal:['#1a1420','#5a3a22','#d4a85a','#a04028','#e8e8f0','#3050a0','#2a9a9a','#e070b0']},
   {id:'eyes',label:'Eye Color',pal:['#e8a020','#3080e0','#40c040','#a040e0','#e02020','#c0e8ff','#80ff40','#f0d040']},
 ];
@@ -1359,7 +1586,7 @@ function renderRight(){
     const br=document.createElement('div'); br.className='btnrow';
     br.innerHTML=`<button type="button" id="gsExp">Export JSON</button><button type="button" id="gsImp">Import JSON</button>`;
     c.appendChild(br);
-    br.querySelector('#gsExp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({version:1,engine:'character-studio_v2.0',gearsets},null,2)],{type:'application/json'}));a.download='gearsets.json';a.click();};
+    br.querySelector('#gsExp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({version:1,engine:'character-studio_v3.1',gearsets},null,2)],{type:'application/json'}));a.download='gearsets.json';a.click();};
     br.querySelector('#gsImp').onclick=()=>fileGearset.click();
     c.insertAdjacentHTML('beforeend','<div class="hint">Gearsets store slot variants + texture names. Textures resolve from the loaded texture library. Saved locally and exportable as JSON for game wiring.</div>');
   }
@@ -1378,21 +1605,19 @@ function body_appendSlotStatus(card,group){
 }
 function getAppearance(){
   const geosetVisibility={}; if(model) model.geosets.forEach(g=>geosetVisibility[g.name]=g.visible);
-  return {version:2,engine:'character-studio_v2.0',model:model?.fileName||null,
+  return {version:2,engine:'character-studio_v3.1',model:model?.fileName||null,
     headMorphs:{...headVals},bodyMorphs:{...bodyVals},geosetVisibility,colors:{...colors},
-    equippedTextures:{...slotTexChoice},textureFolder:texFolderName||null,viewMode,
+    equippedTextures:{...slotTexChoice},baseTexture:baseTextureName,textureFolder:texFolderName||null,viewMode,
     materialTextureOverrides:Object.keys(texOverrideMat).reduce((o,k)=>{o[k]='external';return o;},{}),
     animationIndex:animIndex>=0?animIndex:null};
 }
 document.getElementById('folderTex').onchange=async e=>{
-  const files=[...(e.target.files||[])].filter(f=>/\.(png|jpe?g|webp|bmp|gif)$/i.test(f.name));
+  const files=[...(e.target.files||[])].filter(f=>IMAGE_FILE_RE.test(f.name));
   if(!files.length){setStatus('Folder contains no image files');return;}
-  texFolderName=(files[0].webkitRelativePath||files[0].name).split('/')[0];
-  texLib.clear();
-  for(const k of Object.keys(slotTexChoice)) delete slotTexChoice[k];
-  for(const f of files){ try{ texLib.set(f.webkitRelativePath||f.name,{bmp:await createImageBitmap(f),tex:null}); }catch{} }
+  const label=(files[0].webkitRelativePath||files[0].name).split('/')[0];
+  await addTextureFiles(files,{clear:true,label});
   setStatus(`Texture folder "${texFolderName}" — ${texLib.size} textures ready`);
-  renderRight();
+  renderRight(); e.target.value='';
 };
 
 // ═══════════ v2.0 — CHARACTER STUDIO - made by AEiOU: content packs, StudioAPI, headless, settings ═══════════
@@ -1405,25 +1630,49 @@ let pack=null;
 // ── minimal ZIP reader (stored + deflate via DecompressionStream) ──
 async function inflateRaw(blobPart){const ds=new DecompressionStream('deflate-raw');return new Response(new Blob([blobPart]).stream().pipeThrough(ds)).arrayBuffer();}
 async function readZipEntries(file){
+  // Streaming reader: only the EOCD tail, central directory and per-entry slices are ever read.
   const size=file.size;
-  const tail=new DataView(await file.slice(Math.max(0,size-65558),size).arrayBuffer());
+  const tailStart=Math.max(0,size-(65558+40));
+  const tail=new DataView(await file.slice(tailStart,size).arrayBuffer());
   let eocd=-1;
   for(let i=tail.byteLength-22;i>=0;i--){ if(tail.getUint32(i,true)===0x06054b50){eocd=i;break;} }
   if(eocd<0) throw new Error('Not a valid ZIP archive (no end-of-central-directory record)');
-  const count=tail.getUint16(eocd+10,true);
-  const cdSize=tail.getUint32(eocd+12,true);
-  const cdOfs=tail.getUint32(eocd+16,true);
-  if(cdOfs===0xFFFFFFFF) throw new Error('ZIP64 archives are not supported yet — keep packs under 4 GB');
+  let count=tail.getUint16(eocd+10,true);
+  let cdSize=tail.getUint32(eocd+12,true);
+  let cdOfs=tail.getUint32(eocd+16,true);
+  if(count===0xFFFF||cdSize===0xFFFFFFFF||cdOfs===0xFFFFFFFF){
+    let loc=-1;
+    for(let i=eocd-20;i>=0;i--){ if(tail.getUint32(i,true)===0x07064b50){loc=i;break;} }
+    if(loc<0) throw new Error('ZIP64 archive is missing its EOCD64 locator record');
+    const e64Ofs=Number(tail.getBigUint64(loc+8,true));
+    const e64=new DataView(await file.slice(e64Ofs,e64Ofs+56).arrayBuffer());
+    if(e64.getUint32(0,true)!==0x06064b50) throw new Error('Bad ZIP64 end-of-central-directory record');
+    count=Number(e64.getBigUint64(32,true));
+    cdSize=Number(e64.getBigUint64(40,true));
+    cdOfs=Number(e64.getBigUint64(48,true));
+  }
   const cd=new DataView(await file.slice(cdOfs,cdOfs+cdSize).arrayBuffer());
   const td=new TextDecoder();
   const entries=[]; let p=0;
   for(let i=0;i<count;i++){
-    if(cd.getUint32(p,true)!==0x02014b50) break;
+    if(p+46>cd.byteLength||cd.getUint32(p,true)!==0x02014b50) break;
     const method=cd.getUint16(p+10,true);
-    const csize=cd.getUint32(p+20,true), usize=cd.getUint32(p+24,true);
+    let csize=cd.getUint32(p+20,true), usize=cd.getUint32(p+24,true);
     const nlen=cd.getUint16(p+28,true), elen=cd.getUint16(p+30,true), clen=cd.getUint16(p+32,true);
-    const lho=cd.getUint32(p+42,true);
+    let lho=cd.getUint32(p+42,true);
     const name=td.decode(new Uint8Array(cd.buffer,p+46,nlen));
+    // ZIP64 extended-information extra field (0x0001): 64-bit usize, csize, lho in that order
+    let ep=p+46+nlen; const eEnd=ep+elen;
+    while(ep+4<=eEnd){
+      const id=cd.getUint16(ep,true), sz=cd.getUint16(ep+2,true);
+      if(id===0x0001){
+        let q=ep+4;
+        if(usize===0xFFFFFFFF){ usize=Number(cd.getBigUint64(q,true)); q+=8; }
+        if(csize===0xFFFFFFFF){ csize=Number(cd.getBigUint64(q,true)); q+=8; }
+        if(lho===0xFFFFFFFF){ lho=Number(cd.getBigUint64(q,true)); q+=8; }
+      }
+      ep+=4+sz;
+    }
     entries.push({name,method,csize,usize,lho,dir:name.endsWith('/')});
     p+=46+nlen+elen+clen;
   }
@@ -1451,20 +1700,27 @@ async function loadPackFromZip(file){
   for(const t of texts){ try{ pack.texts[t.name]=td.decode(await readZipEntryData(file,t)); }catch{} }
   const mkey=Object.keys(pack.texts).find(n=>/customization_manifest\.json$/i.test(n))||Object.keys(pack.texts).find(n=>/manifest\.json$/i.test(n));
   if(mkey){ try{ pack.manifest=JSON.parse(pack.texts[mkey]); }catch{} }
+  const sourceKinds=detectSourceKinds(entries);
+  if(sourceKinds.length){ await importDetectedSourceZip(file,entries,sourceKinds); return; }
   texLib.clear(); for(const k of Object.keys(slotTexChoice)) delete slotTexChoice[k];
   texFolderName=pack.name;
-  for(const im of imgs){ try{ const buf=await readZipEntryData(file,im); texLib.set(im.name,{bmp:await createImageBitmap(new Blob([buf])),tex:null}); }catch{} }
-  if(glbs.length){ const g=glbs[0]; const buf=await readZipEntryData(file,g); await loadModelFromFile(new File([buf],g.name.split('/').pop())); }
+  const imageFiles=[];
+  for(const im of imgs){ try{ const buf=await readZipEntryData(file,im); const f=new File([buf],im.name.split('/').pop(),{type:imageMime(im.name)}); imageFiles.push(f); texLib.set(im.name,{bmp:await createImageBitmap(f),tex:null,file:f}); }catch(err){console.warn('ZIP texture failed',im.name,err);} }
+  if(glbs.length){
+    const g=glbs[0], buf=await readZipEntryData(file,g), gf=new File([buf],g.name.split('/').pop(),{type:/\.gltf$/i.test(g.name)?'model/gltf+json':'model/gltf-binary'});
+    await loadModelFromFile(gf,{companionFiles:makeCompanionMap(imageFiles)});
+    await autoApplyBaseCompanion(gf,imageFiles);
+  }
   renderRight();
-  setStatus(`Pack \u201c${pack.name}\u201d \u2014 ${entries.length} files \u00b7 ${glbs.length} model(s) \u00b7 ${imgs.length} texture(s) wired`);
+  setStatus(`Pack “${pack.name}” — ${entries.length} files · ${glbs.length} model(s) · ${imgs.length} texture(s) wired`);
   document.dispatchEvent(new CustomEvent('studio:packloaded',{detail:{name:pack.name,files:pack.files.length,models:glbs.length,images:imgs.length}}));
 }
 
 // ── route .zip through the pack loader; emit model event ──
 const _loadModelCore=loadModelFromFile;
-loadModelFromFile=async function(file){
+loadModelFromFile=async function(file,options={}){
   if(/\.zip$/i.test(file.name)) return loadPackFromZip(file);
-  const r=await _loadModelCore(file);
+  const r=await _loadModelCore(file,options);
   document.dispatchEvent(new CustomEvent('studio:modelloaded',{detail:{name:file.name}}));
   return r;
 };
@@ -1503,7 +1759,7 @@ renderRight=function(){ _renderRightV15(); appendPackSection(); };
 
 // ── StudioAPI: scriptable surface for agents / automation / headless ──
 const StudioAPI={
-  version:'2.0.0',
+  version:'3.1.0',
   brand:'CHARACTER STUDIO - made by AEiOU',
   loadFile:f=>loadModelFromFile(f),
   loadPack:f=>loadPackFromZip(f),
@@ -1533,11 +1789,1307 @@ window.StudioAPI=StudioAPI;
 // ── headless mode: ?headless=1 hides all chrome, StudioAPI drives everything ──
 if(new URLSearchParams(location.search).get('headless')==='1') document.body.classList.add('headless');
 
-document.dispatchEvent(new CustomEvent('studio:ready',{detail:{version:'2.0.0',brand:StudioAPI.brand,headless:document.body.classList.contains('headless')}}));
+document.dispatchEvent(new CustomEvent('studio:ready',{detail:{version:'3.1.0',brand:StudioAPI.brand,headless:document.body.classList.contains('headless')}}));
 window.__studioReady=true;
 
 renderLeft(); renderRight();
 setStatus('Ready \u2014 open or drop a .glb / .gltf or a content-pack .zip');
+
+/* ═══════════ v3.0 Tier 1 — animation timeline + anim API ═══════════ */
+function fmtT(s){return (s||0).toFixed(2);}
+function curAnim(){return model&&animIndex>=0?model.animations[animIndex]:null;}
+let tlDrag=false;
+function renderTimeline(){
+  const vp=document.getElementById('vp'); if(!vp) return;
+  let tl=document.getElementById('timeline');
+  if(!tl){ tl=document.createElement('div'); tl.id='timeline'; vp.appendChild(tl); }
+  const a=curAnim();
+  if(!a){ tl.style.display='none'; return; }
+  tl.style.display='flex';
+  tl.innerHTML=`
+    <button type="button" id="tlPlay" title="Play/Pause" aria-label="Play or pause animation">${playing?'❚❚':'▶'}</button>
+    <input type="range" id="tlScrub" min="0" max="1000" value="0" aria-label="Timeline scrubber">
+    <span class="tlab" id="tlTime">0.00 / ${fmtT(a.duration)}s</span>
+    <button type="button" id="tlLoop" class="${a.loop!==false?'on':''}" title="Loop clip" aria-label="Toggle clip looping">⟳</button>
+    <select id="tlSpeed" title="Playback speed" aria-label="Playback speed">
+      ${[0.25,0.5,1,1.5,2].map(v=>`<option value="${v}" ${v===animSpeed?'selected':''}>${v}\u00d7</option>`).join('')}
+    </select>`;
+  document.getElementById('tlPlay').onclick=()=>{ playing=!playing; document.getElementById('btnPlay').textContent=playing?'Pause':'Play'; renderTimeline(); };
+  const sc=document.getElementById('tlScrub');
+  sc.oninput=e=>{ const a2=curAnim(); if(!a2)return; animTime=(+e.target.value/1000)*a2.duration; };
+  sc.onpointerdown=()=>tlDrag=true; sc.onpointerup=()=>tlDrag=false;
+  document.getElementById('tlLoop').onclick=()=>{ const a2=curAnim(); if(a2){a2.loop=a2.loop===false;} renderTimeline(); };
+  document.getElementById('tlSpeed').onchange=e=>{ animSpeed=parseFloat(e.target.value)||1; };
+  syncTimeline();
+}
+function syncTimeline(){
+  const a=curAnim(); const tl=document.getElementById('timeline'); if(!a||!tl||tl.style.display==='none') return;
+  const sc=document.getElementById('tlScrub'), lb=document.getElementById('tlTime'), pb=document.getElementById('tlPlay');
+  if(sc&&!tlDrag) sc.value=String(Math.round((animTime/Math.max(a.duration,0.001))*1000));
+  if(lb) lb.textContent=`${fmtT(animTime)} / ${fmtT(a.duration)}s`;
+  if(pb){ const want=playing?'❚❚':'▶'; if(pb.textContent!==want) pb.textContent=want; }
+}
+{ const _popA=populateAnims; populateAnims=function(){ _popA(); renderTimeline(); }; }
+document.getElementById('animSel').onchange=e=>{
+  const v=e.target.value; const ni=v===''?-1:parseInt(v,10);
+  if(model && animIndex>=0 && ni>=0 && ni!==animIndex) prevClip={index:animIndex,time:animTime,fade:0};
+  animIndex=ni; animTime=0;
+  if(ni>=0&&model){ playing=true; document.getElementById('btnPlay').textContent='Pause'; document.getElementById('hudAnim').textContent='anim: '+model.animations[ni].name; }
+  else { playing=false; prevClip=null; document.getElementById('btnPlay').textContent='Play'; if(model) fillBonesRest(); document.getElementById('hudAnim').textContent='anim: rest pose'; }
+  renderTimeline();
+};
+Object.assign(window.StudioAPI,{
+  listAnimations:()=>model?model.animations.map(a=>({index:a.index,name:a.name,duration:a.duration,loop:a.loop!==false})):[],
+  playAnimation:(x)=>{ if(!model) return false;
+    const i=typeof x==='number'?x:model.animations.findIndex(a=>a.name===x);
+    if(i<0||i>=model.animations.length) return false;
+    const sel=document.getElementById('animSel'); sel.value=String(model.animations[i].index);
+    sel.onchange({target:sel});
+    return true; },
+  pauseAnimation:()=>{ playing=false; document.getElementById('btnPlay').textContent='Play'; syncTimeline(); return true; },
+  resumeAnimation:()=>{ if(animIndex<0) return false; playing=true; document.getElementById('btnPlay').textContent='Pause'; syncTimeline(); return true; },
+  setAnimTime:t=>{ const a=curAnim(); if(!a) return false; animTime=Math.max(0,Math.min(+t||0,a.duration)); syncTimeline(); return true; },
+  setAnimSpeed:v=>{ animSpeed=Math.max(0.01,+v||1); const s=document.getElementById('tlSpeed'); if(s)s.value=String(animSpeed); return animSpeed; },
+  setAnimLoop:b=>{ const a=curAnim(); if(!a) return false; a.loop=!!b; renderTimeline(); return true; },
+  setCrossfade:s=>{ fadeDur=Math.max(0,+s||0); return fadeDur; },
+  getAnimState:()=>({ index:animIndex, time:animTime, playing, speed:animSpeed,
+    duration:(model&&animIndex>=0)?model.animations[animIndex].duration:0,
+    loop:(model&&animIndex>=0)?model.animations[animIndex].loop!==false:true,
+    crossfading:!!prevClip,
+    boneCount:(model&&model.skin)?model.skin.joints.length:0,
+    poseHash:(model&&model.skin)?Array.from(model.skin.boneMats.slice(0,128)).reduce((h,x)=>(h*31+Math.round(x*1000))|0,0):0 }),
+});
+window.StudioAPI.version='3.1.0';
+
+
+/* ═══════════ v3.0 Tier 2 — undo/redo · projects · profiles · texture layers · pack authoring ═══════════ */
+
+// ── keep source-file refs for pack export ──
+{ const _lm2=loadModelFromFile;
+  loadModelFromFile=async function(f,options={}){
+    if(/\.zip$/i.test(f.name)) window._packFileRef=f; else window._modelFileRef=f;
+    return _lm2(f,options);
+  };
+}
+
+// ── undo / redo: coalesced appearance-snapshot command stack ──
+const undoStack=[], redoStack=[];
+let lastSnap=null, lastRecT=0, restoring=false;
+function snapNow(){ try{ return JSON.stringify(getAppearance()); }catch{ return null; } }
+function maybeRecord(){
+  if(restoring||!model) return;
+  const s=snapNow(); if(!s||s===lastSnap) return;
+  const now=performance.now();
+  if(now-lastRecT>250){ if(lastSnap){ undoStack.push(lastSnap); if(undoStack.length>100) undoStack.shift(); } redoStack.length=0; }
+  lastRecT=now; lastSnap=s; updateUndoUI();
+}
+function doUndo(){
+  if(!undoStack.length||!model) return false;
+  redoStack.push(lastSnap??snapNow());
+  const s=undoStack.pop();
+  restoring=true; try{ window.StudioAPI.applyAppearance(s); }finally{ restoring=false; }
+  lastSnap=s; updateUndoUI(); return true;
+}
+function doRedo(){
+  if(!redoStack.length||!model) return false;
+  undoStack.push(lastSnap??snapNow());
+  const s=redoStack.pop();
+  restoring=true; try{ window.StudioAPI.applyAppearance(s); }finally{ restoring=false; }
+  lastSnap=s; updateUndoUI(); return true;
+}
+function updateUndoUI(){
+  const u=document.getElementById('btnUndo'), r=document.getElementById('btnRedo');
+  if(u) u.disabled=!undoStack.length;
+  if(r) r.disabled=!redoStack.length;
+}
+document.getElementById('btnReset')?.insertAdjacentHTML('beforebegin',
+  '<button type="button" id="btnUndo" title="Undo (Ctrl+Z)" aria-label="Undo" disabled>↶</button><button type="button" id="btnRedo" title="Redo (Ctrl+Shift+Z / Ctrl+Y)" aria-label="Redo" disabled>↷</button>');
+const _bu=document.getElementById('btnUndo'), _br=document.getElementById('btnRedo');
+if(_bu) _bu.onclick=()=>doUndo();
+if(_br) _br.onclick=()=>doRedo();
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&!e.altKey){
+    const k=e.key.toLowerCase();
+    if(k==='z'&&!e.shiftKey){ e.preventDefault(); doUndo(); }
+    else if(k==='y'||(k==='z'&&e.shiftKey)){ e.preventDefault(); doRedo(); }
+  }
+});
+['input','change','click'].forEach(t=>document.addEventListener(t,e=>{
+  if(e.target&&e.target.closest&&e.target.closest('#leftBody,#rightBody,#viewbar,#timeline,header')) setTimeout(maybeRecord,0);
+}));
+document.addEventListener('studio:modelloaded',()=>{ undoStack.length=0; redoStack.length=0; lastSnap=snapNow(); lastRecT=0; updateUndoUI(); });
+// API mutations don't raise DOM events — wrap them so they record too
+for(const k of ['cycle','setSlider','setGeosetVisible','equipTexture','applyGearsetByName','setViewMode']){
+  const f=window.StudioAPI[k];
+  if(typeof f==='function') window.StudioAPI[k]=(...a)=>{ const r=f(...a); setTimeout(maybeRecord,0); return r; };
+}
+
+// ── profile registry: full roster scaffold with geoset-map validation ──
+const PROFILE_GROUPS=['Hair','Facial','Ears','Eyes','Belt','Boots','Cape','Gloves','Legs','Chest','Shirt','Tabard','Skirt','Sleeves','Trousers'];
+const _cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const PROFILES=[{id:'generic',label:'Generic biped',detect:()=>0.05,expectedGroups:PROFILE_GROUPS}];
+for(const race of ['orc','human','dwarf','gnome','nightelf','troll','tauren','scourge'])
+  for(const gender of ['male','female'])
+    PROFILES.push({id:`${race}_${gender}`,label:`${_cap(race)} ${_cap(gender)}`,
+      detect:n=>(n.includes(race)?1:0)+(n.includes(gender)&&!(gender==='male'&&n.includes('female'))?1:0),
+      expectedGroups:PROFILE_GROUPS});
+let activeProfile=PROFILES[0];
+function detectProfile(){
+  const n=((window._modelFileRef&&window._modelFileRef.name)||(pack&&pack.name)||'').toLowerCase();
+  let best=PROFILES[0], bs=0.04;
+  for(const p of PROFILES){ const sc=p.detect(n); if(sc>bs){ bs=sc; best=p; } }
+  return best;
+}
+function profileReport(){
+  if(!model) return {ok:false,found:0,missing:PROFILE_GROUPS.slice(),geosets:0,bones:0,animations:0};
+  const groups=new Set(model.geosets.map(g=>String(g.group||'')));
+  const found=activeProfile.expectedGroups.filter(g=>[...groups].some(x=>x.toLowerCase().includes(g.toLowerCase())));
+  const missing=activeProfile.expectedGroups.filter(g=>!found.includes(g));
+  return {ok:missing.length<=4,found:found.length,missing,geosets:model.geosets.length,
+    bones:model.skin?model.skin.joints.length:0,animations:model.animations.length};
+}
+document.addEventListener('studio:modelloaded',()=>{ activeProfile=detectProfile(); });
+function appendProfileSection(){
+  const host=document.getElementById('leftBody'); if(!host||!model) return;
+  const c=section(host,'Profile',false);
+  const sel=document.createElement('select');
+  sel.setAttribute('aria-label','Character profile');
+  sel.innerHTML=PROFILES.map(p=>`<option value="${p.id}" ${p.id===activeProfile.id?'selected':''}>${p.label}</option>`).join('');
+  sel.onchange=e=>{ activeProfile=PROFILES.find(p=>p.id===e.target.value)||PROFILES[0]; renderLeft(); };
+  c.appendChild(sel);
+  const r=profileReport();
+  c.insertAdjacentHTML('beforeend',`<div class="hint">Geoset map: <b>${r.found}/${activeProfile.expectedGroups.length}</b> groups matched · ${r.geosets} geosets · ${r.bones} bones · ${r.animations} clips${r.missing.length?`<br>missing: ${r.missing.join(', ')}`:''}</div>`);
+}
+
+// ── texture layer compositor (atlas baking) ──
+const texLayers={}; const bakedLayerCanvas={}; let layerMatSel=0;
+async function layerBitmap(name){
+  const e=texLib.get(name); if(!e) return null;
+  if(e.bmp) return e.bmp;
+  if(e instanceof ImageBitmap) return e;
+  return null;
+}
+async function bakeLayers(matIndex){
+  if(!model) return false;
+  const mat=model.materials[matIndex]; if(!mat) return false;
+  const rec=(mat.texIndex!=null)?model.images[mat.texIndex]:null;
+  const base=rec?(rec.bmp||((typeof ImageBitmap!=='undefined'&&rec instanceof ImageBitmap)?rec:null)):null;
+  const W=base?base.width:1024, H=base?base.height:1024;
+  const cv=document.createElement('canvas'); cv.width=W; cv.height=H;
+  const ctx=cv.getContext('2d');
+  if(base) ctx.drawImage(base,0,0,W,H); else { ctx.fillStyle='#808080'; ctx.fillRect(0,0,W,H); }
+  for(const L of texLayers[matIndex]||[]){
+    const src=await layerBitmap(L.tex); if(!src) continue;
+    let img=src;
+    if(L.tint&&L.tint.toLowerCase()!=='#ffffff'){
+      const t=document.createElement('canvas'); t.width=W; t.height=H;
+      const tc=t.getContext('2d');
+      tc.drawImage(src,0,0,W,H);
+      tc.globalCompositeOperation='multiply'; tc.fillStyle=L.tint; tc.fillRect(0,0,W,H);
+      tc.globalCompositeOperation='destination-in'; tc.drawImage(src,0,0,W,H);
+      img=t;
+    }
+    ctx.globalAlpha=(L.opacity??1); ctx.globalCompositeOperation=L.blend||'source-over';
+    ctx.drawImage(img,0,0,W,H);
+  }
+  ctx.globalAlpha=1; ctx.globalCompositeOperation='source-over';
+  bakedLayerCanvas[matIndex]=cv;
+  const bmp=await createImageBitmap(cv);
+  texOverrideMat[matIndex]=createGLTex(bmp);
+  setStatus(`Baked ${ (texLayers[matIndex]||[]).length } layer(s) onto material ${matIndex} (${W}×${H})`);
+  return true;
+}
+function appendLayersSection(){
+  const host=document.getElementById('rightBody'); if(!host||!model) return;
+  const c=section(host,'Texture Layers',false);
+  c.insertAdjacentHTML('beforeend',`<div class="hint">Stack library images (makeup, warpaint, tattoos…) onto a material atlas and bake to a single texture.</div>`);
+  const mats=model.materials.map((m,i)=>`<option value="${i}" ${i===layerMatSel?'selected':''}>${i}: ${m.name||('Material '+i)}</option>`).join('');
+  c.insertAdjacentHTML('beforeend',`<div class="row"><select id="lyMat" aria-label="Layer target material">${mats}</select></div>`);
+  const list=document.createElement('div'); list.className='filelist';
+  (texLayers[layerMatSel]||[]).forEach((L,i)=>{
+    const row=document.createElement('div'); row.className='flrow';
+    row.innerHTML=`<span class="fn">${L.tex.split('/').pop()}</span>
+      <select data-i="${i}" class="lyBlend" aria-label="Blend mode">${['source-over','multiply','screen','overlay'].map(b=>`<option ${b===L.blend?'selected':''}>${b}</option>`).join('')}</select>
+      <input type="range" class="lyOp" data-i="${i}" min="0" max="1" step="0.05" value="${L.opacity??1}" style="width:70px" aria-label="Layer opacity">
+      <input type="color" class="lyTint" data-i="${i}" value="${L.tint||'#ffffff'}" aria-label="Layer tint">
+      <button type="button" class="x lyDel" data-i="${i}" aria-label="Remove layer">✕</button>`;
+    list.appendChild(row);
+  });
+  c.appendChild(list);
+  const opts=[...texLib.keys()].map(k=>`<option value="${k}">${k}</option>`).join('');
+  c.insertAdjacentHTML('beforeend',`<div class="row"><select id="lyTex" aria-label="Layer source texture"><option value="">— add layer from library —</option>${opts}</select></div>
+    <div class="btnrow"><button type="button" id="lyBake" class="wide">Bake &amp; Apply</button><button type="button" id="lyClear">Clear</button></div>`);
+  c.querySelector('#lyMat').onchange=e=>{ layerMatSel=+e.target.value; renderRight(); };
+  c.querySelector('#lyTex').onchange=e=>{ if(!e.target.value) return; (texLayers[layerMatSel]??=[]).push({tex:e.target.value,blend:'source-over',opacity:1,tint:'#ffffff'}); renderRight(); };
+  c.querySelectorAll('.lyBlend').forEach(s=>s.onchange=e=>{ texLayers[layerMatSel][+e.target.dataset.i].blend=e.target.value; });
+  c.querySelectorAll('.lyOp').forEach(s=>s.oninput=e=>{ texLayers[layerMatSel][+e.target.dataset.i].opacity=+e.target.value; });
+  c.querySelectorAll('.lyTint').forEach(s=>s.oninput=e=>{ texLayers[layerMatSel][+e.target.dataset.i].tint=e.target.value; });
+  c.querySelectorAll('.lyDel').forEach(b=>b.onclick=e=>{ texLayers[layerMatSel].splice(+e.target.dataset.i,1); renderRight(); });
+  c.querySelector('#lyBake').onclick=()=>bakeLayers(layerMatSel).then(()=>renderRight());
+  c.querySelector('#lyClear').onclick=()=>{ texLayers[layerMatSel]=[]; delete texOverrideMat[layerMatSel]; delete bakedLayerCanvas[layerMatSel]; renderRight(); };
+}
+
+// ── projects: IndexedDB + .studio files ──
+function idb(){
+  return new Promise((res,rej)=>{
+    const q=indexedDB.open('character-studio',1);
+    q.onupgradeneeded=()=>{ q.result.createObjectStore('projects',{keyPath:'name'}); };
+    q.onsuccess=()=>res(q.result); q.onerror=()=>rej(q.error);
+  });
+}
+function projectRecord(name){
+  return { name, savedAt:new Date().toISOString(), engine:'character-studio_v3.1',
+    appearance:(model?getAppearance():null), gearsets:JSON.parse(JSON.stringify(gearsets)),
+    settings:{...settings}, texLayers:JSON.parse(JSON.stringify(texLayers)),
+    modelName:(window._modelFileRef&&window._modelFileRef.name)||null,
+    pack:pack?{name:pack.name,files:pack.files.length}:null };
+}
+async function saveProjectDB(name){
+  if(!name) throw new Error('project name required');
+  const db=await idb(); const rec=projectRecord(name);
+  await new Promise((res,rej)=>{ const t=db.transaction('projects','readwrite'); t.objectStore('projects').put(rec); t.oncomplete=res; t.onerror=()=>rej(t.error); });
+  db.close(); return {name:rec.name,savedAt:rec.savedAt};
+}
+async function listProjectsDB(){
+  const db=await idb();
+  const rows=await new Promise((res,rej)=>{ const q=db.transaction('projects').objectStore('projects').getAll(); q.onsuccess=()=>res(q.result||[]); q.onerror=()=>rej(q.error); });
+  db.close(); return rows.map(x=>({name:x.name,savedAt:x.savedAt,modelName:x.modelName}));
+}
+async function applyProject(rec){
+  restoring=true;
+  try{
+    if(rec.settings){ Object.assign(settings,rec.settings); persistSettings(); }
+    if(rec.gearsets){ for(const k of Object.keys(rec.gearsets)) gearsets[k]=rec.gearsets[k]; persistGearsets(); }
+    if(rec.texLayers){ for(const k of Object.keys(texLayers)) delete texLayers[k]; Object.assign(texLayers,rec.texLayers); }
+    if(rec.appearance&&model) window.StudioAPI.applyAppearance(typeof rec.appearance==='string'?rec.appearance:JSON.stringify(rec.appearance));
+  } finally { restoring=false; }
+  lastSnap=snapNow(); renderLeft(); renderRight();
+  return true;
+}
+async function loadProjectDB(name){
+  const db=await idb();
+  const rec=await new Promise((res,rej)=>{ const q=db.transaction('projects').objectStore('projects').get(name); q.onsuccess=()=>res(q.result); q.onerror=()=>rej(q.error); });
+  db.close(); if(!rec) return false;
+  return applyProject(rec);
+}
+async function delProjectDB(name){
+  const db=await idb();
+  await new Promise((res,rej)=>{ const t=db.transaction('projects','readwrite'); t.objectStore('projects').delete(name); t.oncomplete=res; t.onerror=()=>rej(t.error); });
+  db.close(); return true;
+}
+function downloadBlob(blob,fname){
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fname;
+  document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2000);
+}
+function appendProjectsSection(){
+  const host=document.getElementById('rightBody'); if(!host) return;
+  const c=section(host,'Projects',false);
+  c.insertAdjacentHTML('beforeend',`
+    <div class="pathrow"><input type="text" id="prjName" placeholder="project name…" aria-label="Project name"><button type="button" id="prjSave">Save</button></div>
+    <div class="filelist" id="prjList"><div class="hint">…</div></div>
+    <div class="btnrow"><button type="button" id="prjExp">Export .studio</button><button type="button" id="prjImp">Import .studio</button></div>
+    <input type="file" id="prjImpFile" accept=".studio,.json" style="display:none">`);
+  const fill=async()=>{
+    const el=c.querySelector('#prjList'); if(!el) return;
+    try{
+      const rows=await listProjectsDB();
+      el.innerHTML=rows.length?'':'<div class="hint">No saved projects.</div>';
+      rows.sort((a,b)=>b.savedAt.localeCompare(a.savedAt)).forEach(p=>{
+        const row=document.createElement('div'); row.className='flrow';
+        row.innerHTML=`<span class="fn" title="${p.modelName||''}">${p.name}</span><span class="sz">${p.savedAt.slice(0,16).replace('T',' ')}</span><button type="button" class="pLoad" data-n="${p.name}">Load</button><button type="button" class="x pDel" data-n="${p.name}" aria-label="Delete project">✕</button>`;
+        el.appendChild(row);
+      });
+      el.querySelectorAll('.pLoad').forEach(b=>b.onclick=()=>loadProjectDB(b.dataset.n).then(ok=>setStatus(ok?`Project “${b.dataset.n}” loaded`:'Project not found')));
+      el.querySelectorAll('.pDel').forEach(b=>b.onclick=()=>delProjectDB(b.dataset.n).then(fill));
+    }catch(e){ el.innerHTML='<div class="hint">IndexedDB unavailable: '+e+'</div>'; }
+  };
+  fill();
+  c.querySelector('#prjSave').onclick=()=>{
+    const n=document.getElementById('prjName').value.trim(); if(!n){ setStatus('Enter a project name first'); return; }
+    saveProjectDB(n).then(()=>{ setStatus(`Project “${n}” saved`); fill(); });
+  };
+  c.querySelector('#prjExp').onclick=()=>{
+    const n=document.getElementById('prjName').value.trim()||'character';
+    const s=JSON.stringify({format:'character-studio/project',version:1,project:projectRecord(n)},null,2);
+    downloadBlob(new Blob([s],{type:'application/json'}),n+'.studio');
+  };
+  c.querySelector('#prjImp').onclick=()=>c.querySelector('#prjImpFile').click();
+  c.querySelector('#prjImpFile').onchange=async e=>{
+    const f=e.target.files[0]; if(!f) return;
+    try{ const o=JSON.parse(await f.text());
+      if(o.format!=='character-studio/project') throw new Error('not a .studio project file');
+      await applyProject(o.project); setStatus(`Imported “${f.name}”`);
+    }catch(err){ setStatus('Import failed: '+err.message); }
+  };
+}
+
+// ── pack authoring: manifest schema + stored-zip writer + SHA256SUMS ──
+function validateManifest(m){
+  const errors=[], warnings=[];
+  if(!m||typeof m!=='object') return {ok:false,errors:['manifest is not an object'],warnings};
+  if(typeof m.name!=='string'||!m.name) errors.push('missing string field "name"');
+  if(typeof m.version!=='string'||!m.version) errors.push('missing string field "version"');
+  if(m.model!=null&&typeof m.model!=='object') errors.push('"model" must be an object');
+  if(m.textures!=null&&!Array.isArray(m.textures)) errors.push('"textures" must be an array');
+  for(const k of ['engine','generated','profile']) if(m[k]==null) warnings.push(`optional field "${k}" missing`);
+  return {ok:errors.length===0,errors,warnings};
+}
+const CRC_T=(()=>{ const t=new Uint32Array(256); for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); t[n]=c>>>0; } return t; })();
+function crc32(u8){ let c=0xFFFFFFFF; for(let i=0;i<u8.length;i++) c=CRC_T[(c^u8[i])&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+function zipStore(files){
+  const enc=new TextEncoder(); const parts=[]; const central=[]; let off=0;
+  const mk=n=>{ const b=new Uint8Array(n); return {b,dv:new DataView(b.buffer)}; };
+  for(const f of files){
+    const nm=enc.encode(f.name); const crc=crc32(f.data);
+    const {b,dv}=mk(30);
+    dv.setUint32(0,0x04034b50,true); dv.setUint16(4,20,true); dv.setUint16(6,0x0800,true); dv.setUint16(8,0,true);
+    dv.setUint32(14,crc,true); dv.setUint32(18,f.data.length,true); dv.setUint32(22,f.data.length,true);
+    dv.setUint16(26,nm.length,true);
+    parts.push(b,nm,f.data);
+    central.push({nm,crc,size:f.data.length,off});
+    off+=30+nm.length+f.data.length;
+  }
+  const cdStart=off; let cdSize=0;
+  for(const cn of central){
+    const {b,dv}=mk(46);
+    dv.setUint32(0,0x02014b50,true); dv.setUint16(4,20,true); dv.setUint16(6,20,true); dv.setUint16(8,0x0800,true);
+    dv.setUint32(16,cn.crc,true); dv.setUint32(20,cn.size,true); dv.setUint32(24,cn.size,true);
+    dv.setUint16(28,cn.nm.length,true);
+    dv.setUint32(42,cn.off,true);
+    parts.push(b,cn.nm); cdSize+=46+cn.nm.length;
+  }
+  const {b:e,dv:ev}=mk(22);
+  ev.setUint32(0,0x06054b50,true); ev.setUint16(8,central.length,true); ev.setUint16(10,central.length,true);
+  ev.setUint32(12,cdSize,true); ev.setUint32(16,cdStart,true);
+  parts.push(e);
+  const total=parts.reduce((a2,p)=>a2+p.length,0);
+  const out=new Uint8Array(total); let p=0;
+  for(const x of parts){ out.set(x,p); p+=x.length; }
+  return out;
+}
+async function sha256Hex(u8){
+  if(!(crypto&&crypto.subtle)) throw new Error('SHA-256 requires a secure context (crypto.subtle unavailable)');
+  const d=await crypto.subtle.digest('SHA-256',u8);
+  return [...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function canvasPng(cv){ return new Promise(res=>cv.toBlob(b=>res(b),'image/png')); }
+async function bitmapPng(bmp){
+  const cv=document.createElement('canvas'); cv.width=bmp.width; cv.height=bmp.height;
+  cv.getContext('2d').drawImage(bmp,0,0);
+  return canvasPng(cv);
+}
+function genManifest(name,version){
+  return { name, version, generated:new Date().toISOString(), engine:'character-studio_v3.1', profile:activeProfile.id,
+    model: model?{ name:(window._modelFileRef&&window._modelFileRef.name)||null, geosets:model.geosets.length,
+      bones:model.skin?model.skin.joints.length:0, animations:model.animations.length }:null,
+    geosetGroups: model?[...new Set(model.geosets.map(g=>g.group))]:[],
+    textures:[...texLib.keys()].map(k=>k.split('/').pop()),
+    appearance: model?getAppearance():null };
+}
+async function buildPack(opts){
+  const name=(opts&&opts.name)||'character_pack';
+  const version=(opts&&opts.version)||'1.0.0';
+  const base=`${name}_v${version}`;
+  const enc=new TextEncoder();
+  const files=[];
+  const add=(n,data)=>files.push({name:`${base}/${n}`,data});
+  add('version.txt',enc.encode(`${base}\nengine: character-studio_v3.1\ngenerated: ${new Date().toISOString()}\n`));
+  const manifest=genManifest(name,version);
+  const v=validateManifest(manifest);
+  if(!v.ok) throw new Error('generated manifest invalid: '+v.errors.join('; '));
+  add('customization/customization_manifest.json',enc.encode(JSON.stringify(manifest,null,2)));
+  if(model){
+    add('appearance.json',enc.encode(JSON.stringify(getAppearance(),null,2)));
+    add('geoset_list.txt',enc.encode(model.geosets.map(g=>`${g.name}\t${g.group}\t${g.visible?'on':'off'}`).join('\n')+'\n'));
+  }
+  add('gearsets.json',enc.encode(JSON.stringify(gearsets,null,2)));
+  if(opts&&opts.includeTextures!==false){
+    for(const [k,e] of texLib){
+      if(!e.bmp) continue;
+      const blob=await bitmapPng(e.bmp);
+      add(`textures/${k.split('/').pop().replace(/\.[a-z]+$/i,'')}.png`,new Uint8Array(await blob.arrayBuffer()));
+    }
+    for(const mi of Object.keys(bakedLayerCanvas)){
+      const blob=await canvasPng(bakedLayerCanvas[mi]);
+      add(`textures/baked_mat${mi}.png`,new Uint8Array(await blob.arrayBuffer()));
+    }
+  }
+  if(opts&&opts.includeModel&&window._modelFileRef){
+    add(`models/${window._modelFileRef.name}`,new Uint8Array(await window._modelFileRef.arrayBuffer()));
+  }
+  if(opts&&opts.includePreview!==false){
+    const durl=document.getElementById('gl').toDataURL('image/png');
+    const bin=atob(durl.split(',')[1]); const u8=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++) u8[i]=bin.charCodeAt(i);
+    add('preview/preview.png',u8);
+  }
+  add('docs/integration_notes.txt',enc.encode(
+`${base}\nAuthored with CHARACTER STUDIO - made by AEiOU (v3.1.0).\n\nLayout:\n  customization/customization_manifest.json  machine-readable manifest (validated)\n  appearance.json                             portable appearance state\n  geoset_list.txt                             geoset name / group / default visibility\n  textures/                                   texture library + baked atlases (PNG)\n  models/                                     source model (optional)\n  preview/preview.png                         viewport render\n  SHA256SUMS.txt                              integrity (sha256sum -c compatible)\n`));
+  const sums=[];
+  for(const f of files) sums.push(`${await sha256Hex(f.data)}  ${f.name}`);
+  files.push({name:`${base}/SHA256SUMS.txt`,data:enc.encode(sums.join('\n')+'\n')});
+  const bytes=zipStore(files);
+  return { zipName:`${base}.zip`, bytes, files:files.map(f=>f.name) };
+}
+async function exportPack(opts){
+  const p=await buildPack(opts);
+  downloadBlob(new Blob([p.bytes],{type:'application/zip'}),p.zipName);
+  setStatus(`Pack exported: ${p.zipName} · ${p.files.length} files · ${(p.bytes.length/1048576).toFixed(1)} MB`);
+  return {zipName:p.zipName,files:p.files.length,size:p.bytes.length};
+}
+function appendAuthoringSection(){
+  const host=document.getElementById('rightBody'); if(!host||!model) return;
+  const c=section(host,'Pack Authoring',false);
+  const defName=((window._modelFileRef&&window._modelFileRef.name)||'character_pack').replace(/\.(glb|gltf)$/i,'').replace(/_v[\d.]+$/,'');
+  c.insertAdjacentHTML('beforeend',`
+    <div class="pathrow"><input type="text" id="pkName" value="${defName}" aria-label="Pack name"><input type="text" id="pkVer" value="1.0.0" style="max-width:70px" aria-label="Pack version"></div>
+    <div class="row"><label><input type="checkbox" id="pkModel"> include model (.glb)</label></div>
+    <div class="row"><label><input type="checkbox" id="pkTex" checked> include texture library + baked atlases</label></div>
+    <div class="row"><label><input type="checkbox" id="pkPrev" checked> include viewport preview</label></div>
+    <div class="btnrow"><button type="button" id="pkExport" class="wide">Export Content Pack (.zip)</button></div>
+    <div class="hint" id="pkInfo">Emits versioned folder, validated manifest, geoset list, appearance, gearsets and SHA256SUMS.txt.</div>`);
+  if(pack&&pack.manifest){
+    const v=validateManifest(pack.manifest);
+    c.insertAdjacentHTML('beforeend',`<div class="hint">Loaded pack manifest: ${v.ok?'<b>valid ✓</b>':'<b>invalid ✗</b> — '+v.errors.join('; ')}${v.warnings.length?'<br>warnings: '+v.warnings.join('; '):''}</div>`);
+  }
+  c.querySelector('#pkExport').onclick=async()=>{
+    const btn=c.querySelector('#pkExport'); btn.disabled=true; btn.textContent='Building…';
+    try{ await exportPack({name:document.getElementById('pkName').value.trim()||defName,version:document.getElementById('pkVer').value.trim()||'1.0.0',
+      includeModel:document.getElementById('pkModel').checked,includeTextures:document.getElementById('pkTex').checked,includePreview:document.getElementById('pkPrev').checked}); }
+    catch(err){ setStatus('Pack export failed: '+err.message); }
+    btn.disabled=false; btn.textContent='Export Content Pack (.zip)';
+  };
+}
+
+// ── section wiring + API surface ──
+{ const _rl=renderLeft; renderLeft=function(){ _rl(); try{ appendProfileSection(); }catch(e){ console.error(e); } };
+  const _rr=renderRight; renderRight=function(){ _rr(); try{ appendLayersSection(); appendProjectsSection(); appendAuthoringSection(); }catch(e){ console.error(e); } }; }
+renderLeft(); renderRight();
+Object.assign(window.StudioAPI,{
+  undo:doUndo, redo:doRedo, getUndoDepth:()=>({undo:undoStack.length,redo:redoStack.length}), checkpoint:()=>{ lastRecT=0; maybeRecord(); },
+  saveProject:saveProjectDB, listProjects:listProjectsDB, loadProject:loadProjectDB, deleteProject:delProjectDB,
+  exportStudioFile:(n)=>JSON.stringify({format:'character-studio/project',version:1,project:projectRecord(n||'untitled')}),
+  importStudioFile:(s)=>{ const o=typeof s==='string'?JSON.parse(s):s; if(o.format!=='character-studio/project') throw new Error('not a .studio file'); return applyProject(o.project); },
+  listProfiles:()=>PROFILES.map(p=>({id:p.id,label:p.label})),
+  setProfile:id=>{ const p=PROFILES.find(x=>x.id===id); if(!p) return false; activeProfile=p; renderLeft(); return true; },
+  getProfile:()=>({id:activeProfile.id,label:activeProfile.label}),
+  validateProfile:profileReport,
+  addTextureLayer:(mi,tex,blend,opacity,tint)=>{ if(!texLib.has(tex)) return false; (texLayers[mi]??=[]).push({tex,blend:blend||'source-over',opacity:opacity??1,tint:tint||'#ffffff'}); renderRight(); return true; },
+  listTextureLayers:mi=>(texLayers[mi]||[]).map(l=>({...l})),
+  clearTextureLayers:mi=>{ texLayers[mi]=[]; delete texOverrideMat[mi]; delete bakedLayerCanvas[mi]; renderRight(); return true; },
+  bakeTextureLayers:bakeLayers,
+  validateManifest, buildPack, exportPack,
+});
+
+
+/* ═══════════ v3.0 Tier 3 — GLB export (baked morphs + geoset stripping) ═══════════ */
+function exportGlbBytes(opts={}){
+  if(!model) throw new Error('no model loaded');
+  const includeHidden=!!opts.includeHidden;
+  const json=JSON.parse(JSON.stringify(model.json));
+  const bin=model.bin.slice(0);
+  const f32=new Float32Array(bin);
+  let baked=0, skippedBake=0, strippedNodes=0;
+  const touched=new Set();
+  for(const d of model.drawables){
+    try{
+      const nd=json.nodes[d.nodeIndex]; if(!nd||nd.mesh==null){ skippedBake++; continue; }
+      const prim=json.meshes[nd.mesh].primitives[0];
+      const ai=prim.attributes.POSITION;
+      const acc=json.accessors[ai];
+      const bv=json.bufferViews[acc.bufferView];
+      if(bv.byteStride&&bv.byteStride!==12){ skippedBake++; continue; } // interleaved layout: cannot bake in place
+      const byteOfs=(bv.byteOffset||0)+(acc.byteOffset||0);
+      if(byteOfs%4!==0){ skippedBake++; continue; }
+      const base=byteOfs/4;
+      if(d.workPos.length===acc.count*3){
+        f32.set(d.workPos,base); touched.add(ai); baked++;
+      }else if(prim.indices!=null){
+        // shared-vertex-pool geoset: the loader extracted window [lo..hi] — write it back at the same offset
+        const idx=asU32(accInfo(json,bin,prim.indices));
+        let lo=Infinity,hi=0;
+        for(let i=0;i<idx.length;i++){ const v=idx[i]; if(v<lo)lo=v; if(v>hi)hi=v; }
+        const used=hi-lo+1;
+        if(d.workPos.length===used*3&&lo+used<=acc.count){ f32.set(d.workPos,base+lo*3); touched.add(ai); baked++; }
+        else skippedBake++;
+      }else skippedBake++;
+    }catch{ skippedBake++; }
+  }
+  // refresh bounds of every accessor we wrote into
+  for(const ai of touched){
+    const acc=json.accessors[ai]; const bv=json.bufferViews[acc.bufferView];
+    const base=((bv.byteOffset||0)+(acc.byteOffset||0))/4;
+    const mn=[1/0,1/0,1/0], mx=[-1/0,-1/0,-1/0];
+    for(let v=0;v<acc.count;v++) for(let k=0;k<3;k++){ const x=f32[base+v*3+k]; if(x<mn[k]) mn[k]=x; if(x>mx[k]) mx[k]=x; }
+    acc.min=mn; acc.max=mx;
+  }
+  if(!includeHidden){
+    for(const g of model.geosets){
+      if(!g.visible&&json.nodes[g.nodeIndex]&&json.nodes[g.nodeIndex].mesh!=null){ delete json.nodes[g.nodeIndex].mesh; strippedNodes++; }
+    }
+  }
+  json.asset=json.asset||{};
+  json.asset.generator='CHARACTER STUDIO - made by AEiOU (v3.1.0)';
+  const enc=new TextEncoder();
+  let jbytes=enc.encode(JSON.stringify(json));
+  const jpad=(4-(jbytes.length%4))%4;
+  if(jpad){ const t=new Uint8Array(jbytes.length+jpad); t.set(jbytes); t.fill(0x20,jbytes.length); jbytes=t; }
+  const bpad=(4-(bin.byteLength%4))%4;
+  const total=12+8+jbytes.length+8+bin.byteLength+bpad;
+  const out=new Uint8Array(total); const dv=new DataView(out.buffer);
+  dv.setUint32(0,0x46546c67,true); dv.setUint32(4,2,true); dv.setUint32(8,total,true);
+  dv.setUint32(12,jbytes.length,true); dv.setUint32(16,0x4e4f534a,true); out.set(jbytes,20);
+  const bo=20+jbytes.length;
+  dv.setUint32(bo,bin.byteLength+bpad,true); dv.setUint32(bo+4,0x004e4942,true);
+  out.set(new Uint8Array(bin),bo+8);
+  return { bytes:out, baked, skippedBake, strippedNodes };
+}
+function appendModelExportSection(){
+  const host=document.getElementById('rightBody'); if(!host||!model) return;
+  const c=section(host,'Model Export',false);
+  c.insertAdjacentHTML('beforeend',`
+    <div class="hint">Bakes current sculpt morphs into vertex data and strips hidden geosets. Embedded textures export as-is; baked atlases ship inside content packs.</div>
+    <div class="row"><label><input type="checkbox" id="geIncHidden"> keep hidden geosets</label></div>
+    <div class="btnrow"><button type="button" id="geExport" class="wide">Export GLB</button></div>`);
+  c.querySelector('#geExport').onclick=()=>{
+    const btn=c.querySelector('#geExport'); btn.disabled=true; btn.textContent='Baking…';
+    setTimeout(()=>{
+      try{
+        const r=exportGlbBytes({includeHidden:document.getElementById('geIncHidden').checked});
+        const nm=(((window._modelFileRef&&window._modelFileRef.name)||'character.glb').replace(/\.(glb|gltf)$/i,''))+'_customized.glb';
+        downloadBlob(new Blob([r.bytes],{type:'model/gltf-binary'}),nm);
+        setStatus(`GLB exported: ${nm} · ${(r.bytes.length/1048576).toFixed(1)} MB · ${r.baked} meshes baked · ${r.strippedNodes} hidden geosets stripped`);
+      }catch(err){ setStatus('GLB export failed: '+err.message); }
+      btn.disabled=false; btn.textContent='Export GLB';
+    },30);
+  };
+}
+{ const _rr=renderRight; renderRight=function(){ _rr(); try{ appendModelExportSection(); }catch(e){ console.error(e); } }; }
+renderRight();
+Object.assign(window.StudioAPI,{
+  exportGlb:(opts)=>{ const r=exportGlbBytes(opts||{}); window.__glbExport=r.bytes; return {size:r.bytes.length,baked:r.baked,skippedBake:r.skippedBake,strippedNodes:r.strippedNodes}; },
+});
+
+
+/* ═══════════ v3.0 Tier 4 — sculpt, presets, turntable, thumbnails, randomize, color mgmt, a11y, perf HUD ═══════════ */
+// i18n scaffolding — all Tier 4 strings route through I18N.t(); add locales to I18N.dict.
+window.I18N={lang:(settings.lang||'en'),dict:{en:{}},t(k,f){const d=this.dict[this.lang]||{};return d[k]||f||k;}};
+const T4=(k,f)=>window.I18N.t(k,f);
+
+/* ── 14. Mirror sculpt brush (soft falloff, gear-safe, rest-pose only) ── */
+const sculpt={on:false,radius:46,strength:0.35,dir:1,mirror:true,stroking:false};
+function sculptScale(){ return model?(model.yMax-model.yMin)*0.004:0.01; }
+function buildMirrorMap(d){
+  if(d.mirrorMap) return d.mirrorMap;
+  const n=d.basePos.length/3, map=new Map(), out=new Int32Array(n).fill(-1);
+  const K=v=>Math.round(v*300);
+  for(let i=0;i<n;i++) map.set(K(d.basePos[i*3])+','+K(d.basePos[i*3+1])+','+K(d.basePos[i*3+2]),i);
+  for(let i=0;i<n;i++){ const j=map.get(K(d.basePos[i*3])+','+K(d.basePos[i*3+1])+','+K(-d.basePos[i*3+2])); if(j!=null) out[i]=j; }
+  d.mirrorMap=out; return out;
+}
+function sculptStrokeAt(px,py){
+  if(!model||!sculpt.on) return 0;
+  const rect=canvas.getBoundingClientRect();
+  const scale=sculptScale()*sculpt.strength*sculpt.dir;
+  let hit=0;
+  for(const d of model.drawables){
+    if(!d.geo.visible||(d.geo.mode!=='head'&&d.geo.mode!=='body')) continue; // gear-safe: sculpt never touches gear
+    const m=model.nodeWorld[d.nodeIndex];
+    const n=d.workPos.length/3;
+    const mir=sculpt.mirror?buildMirrorMap(d):null;
+    if(!d.sculptDelta) d.sculptDelta=new Float32Array(d.workPos.length);
+    for(let i=0;i<n;i++){
+      const x=d.workPos[i*3],y=d.workPos[i*3+1],z=d.workPos[i*3+2];
+      let wx=x,wy=y,wz=z;
+      if(m){ wx=m[0]*x+m[4]*y+m[8]*z+m[12]; wy=m[1]*x+m[5]*y+m[9]*z+m[13]; wz=m[2]*x+m[6]*y+m[10]*z+m[14]; }
+      const cx=mvp[0]*wx+mvp[4]*wy+mvp[8]*wz+mvp[12];
+      const cy=mvp[1]*wx+mvp[5]*wy+mvp[9]*wz+mvp[13];
+      const cw=mvp[3]*wx+mvp[7]*wy+mvp[11]*wz+mvp[15];
+      if(cw<=0) continue;
+      const sx=(cx/cw+1)*0.5*rect.width, sy=(1-cy/cw)*0.5*rect.height;
+      const dd=Math.hypot(sx-px,sy-py);
+      if(dd>sculpt.radius) continue;
+      const t=1-(dd/sculpt.radius)*(dd/sculpt.radius);
+      const w=t*t*scale; // soft-selection falloff
+      const dx=d.localNrm[i*3]*w, dy=d.localNrm[i*3+1]*w, dz=d.localNrm[i*3+2]*w;
+      d.sculptDelta[i*3]+=dx; d.sculptDelta[i*3+1]+=dy; d.sculptDelta[i*3+2]+=dz;
+      if(mir&&mir[i]>=0&&mir[i]!==i){ const j=mir[i]; d.sculptDelta[j*3]+=dx; d.sculptDelta[j*3+1]+=dy; d.sculptDelta[j*3+2]-=dz; }
+      hit++;
+    }
+  }
+  if(hit) dirtyMorph=true;
+  return hit;
+}
+// re-apply sculpt deltas after every morph rebuild
+{ const _amtd=applyMorphsToDrawables;
+  applyMorphsToDrawables=function(){
+    _amtd();
+    if(!model) return;
+    for(const d of model.drawables){
+      if(!d.geo.visible||!d.sculptDelta) continue;
+      for(let i=0;i<d.workPos.length;i++) d.workPos[i]+=d.sculptDelta[i];
+      gl.bindBuffer(gl.ARRAY_BUFFER,d.vbo); gl.bufferSubData(gl.ARRAY_BUFFER,0,d.workPos);
+    }
+  };
+}
+function sculptSetEnabled(on){
+  sculpt.on=!!on;
+  const ov=document.getElementById('sculptOverlay');
+  if(ov) ov.style.display=sculpt.on?'block':'none';
+  if(sculpt.on){ // sculpting requires the rest pose (projection must match the visible mesh)
+    playing=false; animIndex=-1; fillBonesRest();
+    const ha=document.getElementById('hudAnim'); if(ha) ha.textContent='anim: rest pose (sculpt)';
+  }
+}
+function sculptClear(){ if(!model) return; for(const d of model.drawables) d.sculptDelta=null; dirtyMorph=true; }
+function sculptStats(){
+  let sum=0,zsum=0,gear=0;
+  if(model) for(const d of model.drawables){
+    if(!d.sculptDelta) continue;
+    if(d.geo.mode!=='head'&&d.geo.mode!=='body') gear++;
+    for(let i=0;i<d.sculptDelta.length;i+=3){ sum+=Math.abs(d.sculptDelta[i])+Math.abs(d.sculptDelta[i+1])+Math.abs(d.sculptDelta[i+2]); zsum+=d.sculptDelta[i+2]; }
+  }
+  return {deltaSum:sum,zSum:zsum,gearTouched:gear};
+}
+// overlay (captures pointer input while sculpt mode is active; orbit stays untouched otherwise)
+{
+  const vp=document.getElementById('vp'); vp.style.position='relative';
+  vp.insertAdjacentHTML('beforeend',`<div id="sculptOverlay" style="position:absolute;inset:0;z-index:5;display:none;touch-action:none;cursor:crosshair"><div id="brushCursor" style="position:absolute;border:1px solid var(--sel);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);box-shadow:0 0 0 1px rgba(0,0,0,.5)"></div></div>`);
+  const ov=document.getElementById('sculptOverlay'), cur=document.getElementById('brushCursor');
+  const pos=e=>{ const r=canvas.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top}; };
+  const moveCur=e=>{ const p=pos(e); cur.style.left=p.x+'px'; cur.style.top=p.y+'px'; cur.style.width=cur.style.height=(sculpt.radius*2)+'px'; };
+  ov.addEventListener('pointerdown',e=>{ e.preventDefault(); ov.setPointerCapture(e.pointerId); sculpt.stroking=true; const p=pos(e); sculptStrokeAt(p.x,p.y); moveCur(e); });
+  ov.addEventListener('pointermove',e=>{ moveCur(e); if(sculpt.stroking){ const p=pos(e); sculptStrokeAt(p.x,p.y); } });
+  ov.addEventListener('pointerup',()=>{ sculpt.stroking=false; });
+  ov.addEventListener('wheel',e=>{ sculpt.radius=Math.max(8,Math.min(160,sculpt.radius-e.deltaY*0.05)); cur.style.width=cur.style.height=(sculpt.radius*2)+'px'; e.preventDefault(); },{passive:false});
+}
+function appendSculptSection(){
+  const host=document.getElementById('leftBody'); if(!host||!model) return;
+  const c=section(host,T4('sculpt','Sculpt (mirror brush)'),false);
+  c.insertAdjacentHTML('beforeend',`
+    <div class="hint">${T4('sculptHint','Paint on the mesh to inflate/deflate along normals. Gear is never affected. Sculpt requires rest pose, is included in GLB export, and is session-only (not saved in projects).')}</div>
+    <div class="row"><label><input type="checkbox" id="scOn" ${sculpt.on?'checked':''} aria-label="enable sculpt mode"> ${T4('sculptOn','sculpt mode')}</label>
+      <label><input type="checkbox" id="scMir" ${sculpt.mirror?'checked':''} aria-label="mirror across symmetry plane"> ${T4('mirror','mirror')}</label></div>
+    <div class="row"><label>${T4('radius','radius')} <input type="range" id="scRad" min="8" max="160" value="${sculpt.radius}" aria-label="brush radius"></label></div>
+    <div class="row"><label>${T4('strength','strength')} <input type="range" id="scStr" min="5" max="100" value="${Math.round(sculpt.strength*100)}" aria-label="brush strength"></label></div>
+    <div class="row"><label>${T4('direction','direction')} <select id="scDir" aria-label="brush direction"><option value="1">${T4('inflate','inflate')}</option><option value="-1">${T4('deflate','deflate')}</option></select></label></div>
+    <div class="btnrow"><button type="button" id="scClear" class="wide">${T4('clearSculpt','Clear sculpt')}</button></div>`);
+  c.querySelector('#scOn').onchange=e=>sculptSetEnabled(e.target.checked);
+  c.querySelector('#scMir').onchange=e=>{sculpt.mirror=e.target.checked;};
+  c.querySelector('#scRad').oninput=e=>{sculpt.radius=+e.target.value;};
+  c.querySelector('#scStr').oninput=e=>{sculpt.strength=+e.target.value/100;};
+  c.querySelector('#scDir').onchange=e=>{sculpt.dir=+e.target.value;};
+  c.querySelector('#scClear').onclick=()=>sculptClear();
+}
+
+/* ── 15. Shot presets + turntable capture ── */
+const SHOT_PRESETS={
+  'Front':{yaw:0,pitch:0,dist:2.2,fov:40,pan:0},
+  'Three-Quarter':{yaw:0.7,pitch:-0.12,dist:2.0,fov:45,pan:0},
+  'Profile':{yaw:Math.PI/2,pitch:0,dist:2.2,fov:40,pan:0},
+  'Portrait':{yaw:0.3,pitch:-0.03,dist:0.95,fov:33,pan:0.33},
+  'Hero Low':{yaw:0.5,pitch:0.32,dist:2.6,fov:50,pan:-0.05},
+  'Back':{yaw:Math.PI,pitch:0,dist:2.2,fov:40,pan:0},
+};
+const LIGHT_PRESETS={
+  'Studio':{exposure:1,bg:1},'Bright':{exposure:1.35,bg:1.7},'Dim':{exposure:0.75,bg:0.45},'Night':{exposure:0.55,bg:0.12},
+};
+function applyShotPreset(name){
+  const p=SHOT_PRESETS[name]; if(!p) return false;
+  yaw=p.yaw; pitch=p.pitch; dist=p.dist; settings.fov=p.fov;
+  panY=model?(model.yMax-model.yMin)*p.pan:0;
+  persistSettings(); return true;
+}
+function applyLightPreset(name){
+  const p=LIGHT_PRESETS[name]; if(!p) return false;
+  settings.exposure=p.exposure; settings.bg=p.bg; persistSettings();
+  const ex=document.getElementById('setExposure'); if(ex) ex.value=p.exposure;
+  return true;
+}
+function renderTurntable(seconds=4){
+  return new Promise((res,rej)=>{
+    if(typeof MediaRecorder==='undefined') return rej(new Error('MediaRecorder is not available in this browser'));
+    if(!model) return rej(new Error('no model loaded'));
+    const prev={autoRotate:settings.autoRotate,rotateSpeed:settings.rotateSpeed,yaw};
+    settings.autoRotate=true; settings.rotateSpeed=Math.PI*2/seconds;
+    const stream=canvas.captureStream(30);
+    let rec; try{ rec=new MediaRecorder(stream,{mimeType:'video/webm;codecs=vp9'}); }catch{ rec=new MediaRecorder(stream,{mimeType:'video/webm'}); }
+    const chunks=[];
+    rec.ondataavailable=e=>{ if(e.data.size) chunks.push(e.data); };
+    rec.onstop=()=>{
+      settings.autoRotate=prev.autoRotate; settings.rotateSpeed=prev.rotateSpeed; yaw=prev.yaw;
+      const blob=new Blob(chunks,{type:'video/webm'});
+      window.__turntable=blob;
+      res({size:blob.size,type:blob.type,seconds});
+    };
+    rec.onerror=e=>rej(e.error||new Error('MediaRecorder error'));
+    rec.start(250);
+    setTimeout(()=>rec.stop(),seconds*1000);
+  });
+}
+function appendShotSection(){
+  const host=document.getElementById('rightBody'); if(!host||!model) return;
+  const c=section(host,T4('shots','Shot Presets & Turntable'),false);
+  const shotBtns=Object.keys(SHOT_PRESETS).map(n=>`<button type="button" data-shot="${n}">${n}</button>`).join('');
+  const lightBtns=Object.keys(LIGHT_PRESETS).map(n=>`<button type="button" data-light="${n}">${n}</button>`).join('');
+  c.insertAdjacentHTML('beforeend',`
+    <div class="hint">${T4('shotHint','Camera framing presets, lighting moods, and a 360° turntable WebM capture for beauty shots.')}</div>
+    <div class="btnrow">${shotBtns}</div>
+    <div class="btnrow">${lightBtns}</div>
+    <div class="row"><label>${T4('ttSec','turntable seconds')} <input type="number" id="ttSec" min="1" max="30" value="4" style="width:60px" aria-label="turntable duration seconds"></label></div>
+    <div class="btnrow"><button type="button" id="ttGo" class="wide">${T4('ttGo','Record turntable (WebM)')}</button></div>`);
+  c.querySelectorAll('[data-shot]').forEach(b=>b.onclick=()=>applyShotPreset(b.dataset.shot));
+  c.querySelectorAll('[data-light]').forEach(b=>b.onclick=()=>applyLightPreset(b.dataset.light));
+  c.querySelector('#ttGo').onclick=async()=>{
+    const btn=c.querySelector('#ttGo'); btn.disabled=true; btn.textContent=T4('recording','Recording…');
+    try{
+      const r=await renderTurntable(+document.getElementById('ttSec').value||4);
+      downloadBlob(window.__turntable,'turntable_'+Date.now()+'.webm');
+      setStatus(`Turntable captured: ${(r.size/1024).toFixed(0)} KB WebM`);
+    }catch(err){ setStatus('Turntable failed: '+err.message); }
+    btn.disabled=false; btn.textContent=T4('ttGo','Record turntable (WebM)');
+  };
+}
+
+/* ── 16. Preset browser with rendered thumbnails ── */
+let thumbs=[]; try{ thumbs=JSON.parse(localStorage.getItem('cs_thumbs')||'[]'); }catch{}
+const twoFrames=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+function grabThumb(){
+  const s=Math.min(canvas.width,canvas.height);
+  const tc=document.createElement('canvas'); tc.width=tc.height=128;
+  tc.getContext('2d').drawImage(canvas,(canvas.width-s)/2,(canvas.height-s)/2,s,s,0,0,128,128);
+  return tc.toDataURL('image/jpeg',0.72);
+}
+let thumbsBusy=false;
+async function generateThumbnails(){
+  if(!model||thumbsBusy) return thumbs;
+  thumbsBusy=true;
+  const orig=JSON.stringify(StudioAPI.getAppearance());
+  const out=[];
+  try{
+    for(const gs of gearsets){
+      StudioAPI.applyGearsetByName(gs.name); await twoFrames();
+      out.push({type:'gearset',name:gs.name,src:grabThumb()});
+    }
+    const hps=model.geosets.filter(g=>/HeadPreset/i.test(g.name));
+    for(const hp of hps){
+      hps.forEach(g=>{g.visible=(g===hp);}); dirtyMorph=true; await twoFrames();
+      out.push({type:'headpreset',name:hp.name,src:grabThumb()});
+    }
+  } finally {
+    StudioAPI.applyAppearance(orig); await twoFrames();
+    thumbsBusy=false;
+  }
+  thumbs=out;
+  try{ localStorage.setItem('cs_thumbs',JSON.stringify(thumbs)); }catch{}
+  renderThumbGrid();
+  return thumbs;
+}
+function renderThumbGrid(){
+  const grid=document.getElementById('thumbGrid'); if(!grid) return;
+  grid.innerHTML=thumbs.map((t,i)=>`<figure data-i="${i}" style="margin:0;cursor:pointer;text-align:center" tabindex="0" role="button" aria-label="apply preset ${t.name}"><img src="${t.src}" width="72" height="72" style="border:1px solid var(--border);border-radius:3px" alt="${t.name}"><figcaption style="font-size:10px;color:var(--muted);max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.name}</figcaption></figure>`).join('');
+  grid.querySelectorAll('figure').forEach(f=>{
+    const apply=()=>{
+      const t=thumbs[+f.dataset.i]; if(!t) return;
+      StudioAPI.checkpoint&&StudioAPI.checkpoint();
+      if(t.type==='gearset') StudioAPI.applyGearsetByName(t.name);
+      else if(model){ model.geosets.filter(g=>/HeadPreset/i.test(g.name)).forEach(g=>{g.visible=(g.name===t.name);}); dirtyMorph=true; }
+      setStatus(T4('applied','Applied')+' '+t.name);
+    };
+    f.onclick=apply;
+    f.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); apply(); } };
+  });
+}
+function appendThumbSection(){
+  const host=document.getElementById('rightBody'); if(!host||!model) return;
+  const c=section(host,T4('presetBrowser','Preset Browser'),false);
+  c.insertAdjacentHTML('beforeend',`
+    <div class="hint">${T4('thumbHint','Rendered preview thumbnails for saved gearsets and head presets. Click a tile to apply it.')}</div>
+    <div class="btnrow"><button type="button" id="thGen" class="wide">${T4('genThumbs','Generate thumbnails')}</button></div>
+    <div id="thumbGrid" style="display:flex;flex-wrap:wrap;gap:6px;padding:4px 0"></div>`);
+  c.querySelector('#thGen').onclick=async()=>{
+    const b=c.querySelector('#thGen'); b.disabled=true; b.textContent=T4('rendering','Rendering…');
+    try{ await generateThumbnails(); setStatus(thumbs.length+' '+T4('thumbsDone','thumbnails rendered')); }
+    catch(err){ setStatus('Thumbnails failed: '+err.message); }
+    b.disabled=false; b.textContent=T4('genThumbs','Generate thumbnails');
+  };
+  renderThumbGrid();
+}
+
+/* ── 17. Seeded, constrained randomize ── */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const RAND_PALETTES={
+  skin:['#6a8f4f','#7aa35a','#5d7f45','#8fae6b','#4f6f3c','#a67b5b','#8d5b3e'],
+  hair:['#1c1c1c','#3a2a1a','#5a3b1e','#7a2a1a','#2a3a5a','#4a4a4a','#8a6a3a'],
+  eyes:['#c8a03c','#a03c3c','#3c78a0','#3ca05a','#c86a2a'],
+};
+function randomizeSeeded(seed){
+  if(!model) return null;
+  StudioAPI.checkpoint&&StudioAPI.checkpoint();
+  const rnd=mulberry32(seed>>>0);
+  headAxes.forEach(a=>{ if(a.category!=='expression') headVals[a.id]=(rnd()*2-1)*0.65; });
+  bodyAxes.forEach(a=>{ bodyVals[a.id]=(rnd()*2-1)*0.5; });
+  colors.skin=RAND_PALETTES.skin[(rnd()*RAND_PALETTES.skin.length)|0];
+  colors.hair=RAND_PALETTES.hair[(rnd()*RAND_PALETTES.hair.length)|0];
+  colors.eyes=RAND_PALETTES.eyes[(rnd()*RAND_PALETTES.eyes.length)|0];
+  // constraint: only character variant groups (never gear), only groups that follow the one-visible rule
+  const groups={};
+  model.geosets.forEach(g=>{ if(g.isGear||g.group==null) return; (groups[g.group]=groups[g.group]||[]).push(g); });
+  for(const k in groups){
+    const list=groups[k]; if(list.length<2) continue;
+    if(list.filter(g=>g.visible).length!==1) continue;
+    const pick=list[(rnd()*list.length)|0];
+    list.forEach(g=>{g.visible=(g===pick);});
+  }
+  dirtyMorph=true; renderLeft(); renderRight();
+  window.__lastSeed=seed>>>0;
+  setStatus(T4('randomized','Randomized with seed')+' '+(seed>>>0));
+  return seed>>>0;
+}
+function appendRandomSection(){
+  const host=document.getElementById('leftBody'); if(!host||!model) return;
+  const c=section(host,T4('seededRandom','Randomize (seeded)'),false);
+  c.insertAdjacentHTML('beforeend',`
+    <div class="hint">${T4('seedHint','Reproducible random characters: the same seed always yields the same character. Respects the one-variant-per-group rule and never touches gear.')}</div>
+    <div class="row"><label>${T4('seed','seed')} <input type="number" id="rndSeed" value="${(Math.random()*1e6)|0}" style="width:90px" aria-label="random seed"></label></div>
+    <div class="btnrow"><button type="button" id="rndGo" class="wide">${T4('rollSeed','Roll with seed')}</button><button type="button" id="rndNew">${T4('newSeed','New seed')}</button></div>`);
+  c.querySelector('#rndGo').onclick=()=>randomizeSeeded(+document.getElementById('rndSeed').value||0);
+  c.querySelector('#rndNew').onclick=()=>{ const s=(Math.random()*1e9)>>>0; document.getElementById('rndSeed').value=s; randomizeSeeded(s); };
+}
+
+/* ── 18. Color management ── */
+if(settings.eyeGlow==null) settings.eyeGlow=1;
+window.__eyeGlow=settings.eyeGlow;
+function exportPalette(){
+  return {format:'character-studio/palette',version:1,colors:{...colors},exposure:settings.exposure??1,eyeGlow:settings.eyeGlow};
+}
+function importPalette(p){
+  if(!p||p.format!=='character-studio/palette') throw new Error('Not a character-studio palette file');
+  Object.assign(colors,p.colors||{});
+  if(p.exposure!=null){ settings.exposure=p.exposure; }
+  if(p.eyeGlow!=null){ settings.eyeGlow=p.eyeGlow; window.__eyeGlow=p.eyeGlow; }
+  persistSettings(); renderLeft(); return true;
+}
+function appendColorSection(){
+  const host=document.getElementById('rightBody'); if(!host) return;
+  const c=section(host,T4('colorMgmt','Color Management'),false);
+  c.insertAdjacentHTML('beforeend',`
+    <div class="hint">${T4('colorHint','Rendering is a linear-light pipeline: sRGB textures are decoded to linear, lit with PBR, then ACES tone-mapped back. Exposure and eyeglow are HDR-side controls.')}</div>
+    <div class="row"><label>${T4('exposure','exposure')} <b id="expVal">${(settings.exposure??1).toFixed(2)}</b></label><input type="range" id="setExposure" min="0.3" max="2" step="0.05" value="${settings.exposure??1}" aria-label="exposure"></div>
+    <div class="row"><label>${T4('eyeglow','eyeglow boost')} <b id="glowVal">${settings.eyeGlow.toFixed(1)}×</b></label><input type="range" id="setEyeGlow" min="0" max="4" step="0.1" value="${settings.eyeGlow}" aria-label="eyeglow boost"></div>
+    <div class="btnrow"><button type="button" id="palExp">${T4('palExp','Export palette')}</button><button type="button" id="palImp">${T4('palImp','Import palette')}</button><input type="file" id="palFile" accept=".json" style="display:none"></div>`);
+  c.querySelector('#setExposure').oninput=e=>{ settings.exposure=+e.target.value; document.getElementById('expVal').textContent=settings.exposure.toFixed(2); persistSettings(); };
+  c.querySelector('#setEyeGlow').oninput=e=>{ settings.eyeGlow=+e.target.value; window.__eyeGlow=settings.eyeGlow; document.getElementById('glowVal').textContent=settings.eyeGlow.toFixed(1)+'\u00d7'; persistSettings(); };
+  c.querySelector('#palExp').onclick=()=>downloadBlob(new Blob([JSON.stringify(exportPalette(),null,2)],{type:'application/json'}),'palette.json');
+  c.querySelector('#palImp').onclick=()=>c.querySelector('#palFile').click();
+  c.querySelector('#palFile').onchange=async e=>{
+    const f=e.target.files[0]; if(!f) return;
+    try{ importPalette(JSON.parse(await f.text())); setStatus(T4('palOk','Palette imported')); }
+    catch(err){ setStatus('Palette import failed: '+err.message); }
+    e.target.value='';
+  };
+}
+
+/* ── 19. Accessibility & input ── */
+function a11yPass(){
+  // best-effort labels for icon-ish buttons, cycler keyboard support
+  document.querySelectorAll('button:not([aria-label])').forEach(b=>{ const t=(b.textContent||'').trim(); if(t) b.setAttribute('aria-label',t); });
+  document.querySelectorAll('.wrow').forEach(w=>{
+    if(w.dataset.a11y) return; w.dataset.a11y='1';
+    w.tabIndex=0; w.setAttribute('role','group');
+    const lbl=w.querySelector('.wl'); if(lbl) w.setAttribute('aria-label',lbl.textContent.trim());
+    w.addEventListener('keydown',e=>{
+      const ar=w.querySelectorAll('.arrow'); if(ar.length<2) return;
+      if(e.key==='ArrowLeft'){ ar[0].click(); e.preventDefault(); }
+      else if(e.key==='ArrowRight'){ ar[ar.length-1].click(); e.preventDefault(); }
+    });
+  });
+}
+document.addEventListener('keydown',e=>{
+  const tag=(e.target.tagName||'').toLowerCase();
+  if(tag==='input'||tag==='select'||tag==='textarea'||tag==='button') return;
+  if(e.code==='Space'&&model){ e.preventDefault(); const p=document.getElementById('tlPlay')||document.getElementById('btnPlay'); p&&p.click(); }
+});
+// gamepad: left stick orbits, right stick / triggers zoom, A toggles play, Start rolls a seed
+let gpToggle=false;
+setInterval(()=>{
+  const gps=navigator.getGamepads?navigator.getGamepads():[];
+  const gp=gps&&gps[0]; if(!gp||!model) return;
+  const dz=v=>Math.abs(v)>0.18?v:0;
+  yaw+=dz(gp.axes[0]||0)*0.05; pitch=Math.max(-1.4,Math.min(1.4,pitch+dz(gp.axes[1]||0)*0.04));
+  const zoom=(gp.buttons[7]?.value||0)-(gp.buttons[6]?.value||0);
+  if(zoom) dist=Math.max(0.4,Math.min(8,dist-zoom*0.05));
+  const a=gp.buttons[0]?.pressed;
+  if(a&&!gpToggle){ const p=document.getElementById('tlPlay')||document.getElementById('btnPlay'); p&&p.click(); }
+  gpToggle=!!a;
+  if(gp.buttons[9]?.pressed) randomizeSeeded((Math.random()*1e9)>>>0);
+},50);
+// focus visibility for keyboard users
+document.head.insertAdjacentHTML('beforeend','<style>:focus-visible{outline:2px solid var(--sel);outline-offset:1px}.wrow:focus-visible{outline:2px solid var(--sel)}</style>');
+
+/* ── 20. Performance HUD ── */
+document.getElementById('hudFps').insertAdjacentHTML('afterend','<span id="hudPerf">—</span>');
+{
+  const _frame=frame; let lastPerf=0;
+  frame=function(now){
+    _frame(now);
+    if(now-lastPerf>500){
+      lastPerf=now;
+      let dc=0,tris=0;
+      if(model) for(const d of model.drawables){ if(!d.geo.visible) continue; dc++; tris+=d.indexCount/3; }
+      const el=document.getElementById('hudPerf');
+      if(el) el.textContent=`${dc} dc · ${(tris/1000).toFixed(0)}k tri`;
+    }
+  };
+}
+
+/* ── wire new sections into panel rebuilds ── */
+{ const _rl=renderLeft; renderLeft=function(){ _rl(); try{ appendSculptSection(); appendRandomSection(); a11yPass(); }catch(e){ console.error(e); } }; }
+{ const _rr=renderRight; renderRight=function(){ _rr(); try{ appendShotSection(); appendThumbSection(); appendColorSection(); a11yPass(); }catch(e){ console.error(e); } }; }
+renderLeft(); renderRight();
+
+Object.assign(window.StudioAPI,{
+  getAppearance:()=>getAppearance(),
+  sculptSetEnabled, sculptStroke:(x,y)=>sculptStrokeAt(x,y), sculptClear, sculptStats,
+  setSculptBrush:(o)=>{ Object.assign(sculpt,o||{}); return {...sculpt}; },
+  listShotPresets:()=>Object.keys(SHOT_PRESETS), applyShotPreset,
+  listLightPresets:()=>Object.keys(LIGHT_PRESETS), applyLightPreset,
+  getCamera:()=>({yaw,pitch,dist,panY,fov:settings.fov}),
+  renderTurntable, generateThumbnails, listThumbnails:()=>thumbs.map(t=>({type:t.type,name:t.name,srcLength:t.src.length})),
+  randomizeSeeded, getLastSeed:()=>window.__lastSeed,
+  setExposure:v=>{ settings.exposure=+v; persistSettings(); return settings.exposure; },
+  setEyeGlow:v=>{ settings.eyeGlow=+v; window.__eyeGlow=+v; persistSettings(); return settings.eyeGlow; },
+  exportPalette, importPalette,
+  getPerfStats:()=>{ let dc=0,tris=0; if(model) for(const d of model.drawables){ if(!d.geo.visible) continue; dc++; tris+=d.indexCount/3; } return {drawCalls:dc,triangles:Math.round(tris)}; },
+});
+
+
+/* ═══════════ v3.0 Tier 5 — share links, plugin API, onboarding tour, in-app docs ═══════════ */
+
+/* ── 21. Share links (state encoded in the URL fragment; works on any hosted copy) ── */
+async function deflateB64(str){
+  const cs=new CompressionStream('deflate-raw');
+  const buf=await new Response(new Blob([new TextEncoder().encode(str)]).stream().pipeThrough(cs)).arrayBuffer();
+  const b=new Uint8Array(buf); let s='';
+  for(let i=0;i<b.length;i+=32768) s+=String.fromCharCode.apply(null,b.subarray(i,i+32768));
+  return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+async function inflateB64(b64){
+  const bin=atob(b64.replace(/-/g,'+').replace(/_/g,'/'));
+  const bytes=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+  const ds=new DecompressionStream('deflate-raw');
+  const buf=await new Response(new Blob([bytes]).stream().pipeThrough(ds)).arrayBuffer();
+  return new TextDecoder().decode(buf);
+}
+async function buildShareLink(){
+  if(!model) throw new Error('no model loaded');
+  const payload={format:'character-studio/share',version:1,appearance:getAppearance()};
+  return location.href.split('#')[0]+'#share='+await deflateB64(JSON.stringify(payload));
+}
+async function applyShareString(link){
+  const m=String(link).match(/#share=([A-Za-z0-9_-]+)/); if(!m) throw new Error('not a share link');
+  const p=JSON.parse(await inflateB64(m[1]));
+  if(p.format!=='character-studio/share') throw new Error('not a character-studio share payload');
+  StudioAPI.applyAppearance(JSON.stringify(p.appearance));
+  window.__shareApplied=true;
+  return true;
+}
+let pendingShare=null;
+(async()=>{
+  const m=location.hash.match(/^#share=(.+)$/); if(!m) return;
+  try{
+    const p=JSON.parse(await inflateB64(m[1]));
+    if(p.format==='character-studio/share'){
+      pendingShare=JSON.stringify(p.appearance);
+      setStatus(T4('shareWaiting','Shared character link detected — load the matching model or pack to apply it'));
+    }
+  }catch(e){ console.warn('share link parse failed',e); }
+})();
+document.addEventListener('studio:modelloaded',()=>{
+  if(!pendingShare) return;
+  const s=pendingShare; pendingShare=null;
+  setTimeout(()=>{
+    try{ StudioAPI.applyAppearance(s); window.__shareApplied=true; setStatus(T4('shareApplied','Shared character applied from link')); }
+    catch(e){ setStatus('Share apply failed: '+e.message); }
+  },80);
+});
+function appendShareSection(){
+  const host=document.getElementById('rightBody'); if(!host||!model) return;
+  const c=section(host,T4('share','Share'),false);
+  c.insertAdjacentHTML('beforeend',`
+    <div class="hint">${T4('shareHint','Encodes the full character state into a URL fragment. The recipient opens the link and loads the same model/pack file — the character applies automatically. State-only: no assets travel with the link.')}</div>
+    <div class="btnrow"><button type="button" id="shGen" class="wide">${T4('shGen','Create share link')}</button></div>
+    <div class="row"><input type="text" id="shOut" readonly aria-label="share link" style="width:100%" placeholder="—"></div>`);
+  c.querySelector('#shGen').onclick=async()=>{
+    try{
+      const link=await buildShareLink();
+      const out=c.querySelector('#shOut'); out.value=link; out.select();
+      try{ await navigator.clipboard.writeText(link); setStatus(T4('shCopied','Share link copied to clipboard')); }
+      catch{ setStatus(T4('shReady','Share link ready — copy it from the field')); }
+    }catch(err){ setStatus('Share link failed: '+err.message); }
+  };
+}
+
+/* ── 22. Plugin API ── */
+const plugins=[];
+function pluginApi(p){
+  return {
+    studio:window.StudioAPI,
+    on:(ev,cb)=>document.addEventListener(ev,cb),
+    t:(k,f)=>window.I18N.t(k,f),
+    registerLocale:(lang,dict)=>{ window.I18N.dict[lang]=Object.assign(window.I18N.dict[lang]||{},dict); },
+  };
+}
+function registerPlugin(p){
+  if(!p||!p.id) throw new Error('plugin needs an id');
+  if(plugins.some(x=>x.id===p.id)) throw new Error('duplicate plugin id: '+p.id);
+  plugins.push(p);
+  if(typeof p.onload==='function'){ try{ p.onload(pluginApi(p)); }catch(e){ console.error('plugin '+p.id+' onload failed',e); } }
+  renderRight();
+  return true;
+}
+function appendPluginSections(){
+  const host=document.getElementById('rightBody'); if(!host) return;
+  for(const p of plugins){
+    if(!p.panel) continue;
+    const c=section(host,p.panel.title||p.name||p.id,false);
+    try{ p.panel.render(c,pluginApi(p)); }
+    catch(e){ c.insertAdjacentHTML('beforeend','<div class="hint">plugin panel failed: '+String(e.message||e)+'</div>'); }
+  }
+}
+function appendPluginManager(){
+  const host=document.getElementById('rightBody'); if(!host) return;
+  const c=section(host,T4('plugins','Plugins'),false);
+  const rows=plugins.map(p=>`<div class="row">▪ ${p.name||p.id} <span style="color:var(--muted)">(${p.id})</span></div>`).join('')||`<div class="hint">${T4('noPlugins','No plugins loaded.')}</div>`;
+  c.insertAdjacentHTML('beforeend',`${rows}
+    <div class="hint">${T4('plugHint','A plugin is a .js file that calls registerPlugin({id, name, onload(api), panel:{title, render(container, api)}}). It gets the full StudioAPI plus event hooks (studio:ready, studio:modelloaded, studio:packloaded).')}</div>
+    <div class="btnrow"><button type="button" id="plLoad" class="wide">${T4('plLoad','Load plugin (.js)')}</button><input type="file" id="plFile" accept=".js" style="display:none"></div>`);
+  c.querySelector('#plLoad').onclick=()=>c.querySelector('#plFile').click();
+  c.querySelector('#plFile').onchange=async e=>{
+    const f=e.target.files[0]; if(!f) return;
+    try{ new Function('registerPlugin','StudioAPI','studio',await f.text())(registerPlugin,window.StudioAPI,window.StudioAPI); setStatus(T4('plOk','Plugin loaded')); }
+    catch(err){ setStatus('Plugin failed: '+err.message); }
+    e.target.value='';
+  };
+}
+
+/* ── 23. Onboarding tour + in-app documentation ── */
+const TOUR_STEPS=[
+  {sel:'#btnOpen',title:'Load a model',text:'Open a .glb/.gltf together with companion textures, a model ZIP, or a content pack — drag & drop works too.'},
+  {sel:'#leftBody',title:'Customize',text:'Sculpt sliders, geoset tick boxes, race/gender profile, mirror sculpt brush, and seeded randomize.'},
+  {sel:'#rightBody',title:'Equip & author',text:'Gear textures, gearsets, texture layers, projects, pack authoring, GLB export, shot presets, sharing.'},
+  {sel:'#timeline',title:'Animate',text:'Pick a clip, scrub the timeline, loop, and set playback speed. Clip changes crossfade automatically.'},
+  {sel:'#viewbar',title:'View modes',text:'Switch between textured, material-ID, and geoset-group views; viewport settings live here too.'},
+];
+let tourIx=0;
+function tourEls(){ return {ov:document.getElementById('tourOverlay'),tip:document.getElementById('tourTip'),hl:document.getElementById('tourHl')}; }
+function tourSteps(){ return TOUR_STEPS.filter(s=>{ const el=document.querySelector(s.sel); if(!el) return false; const r=el.getBoundingClientRect(); return r.width>0&&r.height>0; }); }
+function showTourStep(){
+  const steps=tourSteps(); const {ov,tip,hl}=tourEls();
+  if(tourIx>=steps.length){ endTour(); return; }
+  const s=steps[tourIx]; const r=document.querySelector(s.sel).getBoundingClientRect();
+  hl.style.cssText=`position:fixed;left:${r.left-4}px;top:${r.top-4}px;width:${r.width+8}px;height:${r.height+8}px;border:2px solid var(--sel);border-radius:4px;box-shadow:0 0 0 4000px rgba(0,0,0,.55);pointer-events:none`;
+  const tx=Math.min(Math.max(r.left,12),innerWidth-332), ty=(r.bottom+12+150<innerHeight)?r.bottom+12:Math.max(12,r.top-160);
+  tip.style.left=tx+'px'; tip.style.top=ty+'px';
+  tip.querySelector('#tourTitle').textContent=`${tourIx+1}/${steps.length} · ${s.title}`;
+  tip.querySelector('#tourText').textContent=s.text;
+  tip.querySelector('#tourBack').disabled=tourIx===0;
+  tip.querySelector('#tourNext').textContent=tourIx===steps.length-1?T4('finish','Finish'):T4('next','Next');
+  ov.style.display='block';
+}
+function startTour(){ tourIx=0; showTourStep(); }
+function endTour(){ const {ov}=tourEls(); ov.style.display='none'; try{ localStorage.setItem('cs_tour_done','1'); }catch{} window.__tourDone=true; }
+document.body.insertAdjacentHTML('beforeend',`
+<div id="tourOverlay" style="display:none;position:fixed;inset:0;z-index:90">
+  <div id="tourHl"></div>
+  <div id="tourTip" role="dialog" aria-label="onboarding tour" style="position:fixed;width:320px;background:var(--panel);border:1px solid var(--border);border-radius:5px;padding:12px;box-shadow:0 8px 30px rgba(0,0,0,.6)">
+    <div id="tourTitle" style="font-weight:600;margin-bottom:6px"></div>
+    <div id="tourText" style="color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:10px"></div>
+    <div class="btnrow"><button type="button" id="tourBack">Back</button><button type="button" id="tourNext">Next</button><button type="button" id="tourSkip">Skip tour</button></div>
+  </div>
+</div>
+<div id="helpModal" role="dialog" aria-label="help and documentation" style="display:none;position:fixed;inset:0;z-index:95;background:rgba(0,0,0,.55)">
+  <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(620px,92vw);max-height:84vh;overflow:auto;background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:18px">
+    <h3 style="margin:0 0 10px">CHARACTER STUDIO - made by AEiOU — Help</h3>
+    <h4>Keyboard & input</h4>
+    <ul style="font-size:12px;line-height:1.6;color:var(--muted)">
+      <li><b>Space</b> play/pause · <b>Ctrl+Z / Ctrl+Y</b> undo/redo · <b>Tab</b> + <b>← →</b> on cyclers</li>
+      <li><b>LMB</b> orbit · <b>scroll</b> zoom · <b>RMB/Shift</b> pan · sculpt mode: <b>scroll</b> = brush radius</li>
+      <li>Gamepad: left stick orbit, triggers zoom, A play/pause, Start random seed</li>
+    </ul>
+    <h4>Workflow</h4>
+    <ul style="font-size:12px;line-height:1.6;color:var(--muted)">
+      <li>Load a GLB + texture bundle or content-pack ZIP → companion textures auto-bind; customize left, equip right</li>
+      <li>Projects persist in this browser; source presets persist through the local workspace launcher</li>
+      <li>Export: GLB (baked sculpt + stripped hidden geosets), content packs with SHA256SUMS, palettes, turntable WebM, share links</li>
+      <li>Agents: <code>qa/mcp-server.mjs</code> exposes everything as MCP tools; <code>?headless=1</code> for embedding</li>
+    </ul>
+    <h4>Known limitations (by design, offline)</h4>
+    <ul style="font-size:12px;line-height:1.6;color:var(--muted)">
+      <li>Draco/Meshopt/KTX2-compressed glTF is rejected with guidance — no decoders are bundled offline; re-export uncompressed</li>
+      <li>GLB export keeps originally embedded textures; baked texture layers ship via content packs</li>
+      <li>Sculpt deltas are session-only: included in GLB export, not in .studio projects</li>
+      <li>Share links carry character state, not assets — recipients load the same model file</li>
+    </ul>
+    <div class="btnrow"><button type="button" id="helpTour">Restart tour</button><button type="button" id="helpClose" class="wide">Close</button></div>
+  </div>
+</div>`);
+document.getElementById('tourNext').onclick=()=>{ tourIx++; showTourStep(); };
+document.getElementById('tourBack').onclick=()=>{ if(tourIx>0){ tourIx--; showTourStep(); } };
+document.getElementById('tourSkip').onclick=endTour;
+document.getElementById('helpClose').onclick=()=>{ document.getElementById('helpModal').style.display='none'; };
+document.getElementById('helpTour').onclick=()=>{ document.getElementById('helpModal').style.display='none'; startTour(); };
+function openHelp(){ document.getElementById('helpModal').style.display='block'; }
+{
+  const hdr=document.querySelector('header');
+  if(hdr){ hdr.insertAdjacentHTML('beforeend','<button type="button" id="btnHelp" aria-label="help and documentation" title="Help">?</button>');
+    document.getElementById('btnHelp').onclick=openHelp; }
+}
+// auto-start once for real users; never for automation (webdriver) or headless embeds
+if(!navigator.webdriver&&!/headless=1/.test(location.search)&&!localStorage.getItem('cs_tour_done')){
+  window.__tourAutoStarted=true; setTimeout(()=>{ try{ startTour(); }catch(e){ console.error(e); } },800);
+}
+
+/* ── v3.1 asset source presets + persistent local workspace bridge ── */
+const SOURCE_KINDS=['objectcomponents','texturecomponents'];
+const browserSourceFiles={objectcomponents:new Map(),texturecomponents:new Map()};
+const browserSourceArchives={objectcomponents:null,texturecomponents:null};
+let sourceBridgeOnline=false, sourceBusy='';
+let sourceState=(()=>{try{return JSON.parse(localStorage.getItem('cs_source_presets')||'null')||{version:1,activePreset:'Default',presets:[{name:'Default',objectcomponents:{path:'',managed:false,count:0},texturecomponents:{path:'',managed:false,count:0}}]};}catch{return {version:1,activePreset:'Default',presets:[{name:'Default',objectcomponents:{path:'',managed:false,count:0},texturecomponents:{path:'',managed:false,count:0}}]};}})();
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function persistSourceState(){try{localStorage.setItem('cs_source_presets',JSON.stringify(sourceState));}catch{}}
+function activeSourcePreset(){
+  let p=sourceState.presets.find(x=>x.name===sourceState.activePreset);
+  if(!p){p=sourceState.presets[0]||{name:'Default',objectcomponents:{path:'',managed:false,count:0},texturecomponents:{path:'',managed:false,count:0}};sourceState.presets=[p];sourceState.activePreset=p.name;}
+  for(const k of SOURCE_KINDS) p[k] ||= {path:'',managed:false,count:0};
+  return p;
+}
+function detectSourceKinds(entries){
+  const names=entries.map(e=>normalizeAssetPath(e.name));
+  return SOURCE_KINDS.filter(k=>names.some(n=>n===k||n.startsWith(k+'/')||n.includes('/'+k+'/')));
+}
+async function refreshSourceBridge(){
+  if(!/^https?:$/.test(location.protocol)){sourceBridgeOnline=false;return false;}
+  try{
+    const h=await fetch('/api/health',{cache:'no-store'}); if(!h.ok)throw new Error('offline');
+    const r=await fetch('/api/source-presets',{cache:'no-store'}); if(!r.ok)throw new Error('preset API unavailable');
+    sourceState=await r.json(); sourceBridgeOnline=true; persistSourceState(); renderRight();
+    const p=activeSourcePreset();
+    if(!p.objectcomponents.path&&!p.texturecomponents.path&&!localStorage.getItem('cs_source_setup_seen')){
+      localStorage.setItem('cs_source_setup_seen','1');
+      setStatus('Set the objectcomponents and texturecomponents source folders');
+      setTimeout(openAssetSources,350);
+    }
+    return true;
+  }catch{sourceBridgeOnline=false;renderRight();return false;}
+}
+async function saveSourcePaths(name,objPath,texPath){
+  name=(name||'Default').trim()||'Default'; sourceBusy='Saving source preset…'; renderRight();
+  try{
+    if(sourceBridgeOnline){
+      const r=await fetch('/api/source-presets',{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({name,objectcomponents:objPath,texturecomponents:texPath})});
+      const data=await r.json(); if(!r.ok)throw new Error(data.error||'Could not save paths'); sourceState=data;
+    }else{
+      let p=sourceState.presets.find(x=>x.name===name); if(!p){p={name,objectcomponents:{path:'',managed:false,count:0},texturecomponents:{path:'',managed:false,count:0}};sourceState.presets.push(p);}
+      p.objectcomponents.path=objPath||p.objectcomponents.path||''; p.texturecomponents.path=texPath||p.texturecomponents.path||''; sourceState.activePreset=name;
+    }
+    persistSourceState(); sourceBusy=''; setStatus(`Asset source preset “${name}” saved`); renderRight();
+  }catch(err){sourceBusy='';setStatus('Source preset failed: '+err.message);renderRight();throw err;}
+}
+async function deleteSourcePreset(name){
+  if(sourceState.presets.length<=1)return;
+  if(sourceBridgeOnline){const r=await fetch('/api/source-presets?name='+encodeURIComponent(name),{method:'DELETE'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Delete failed');sourceState=d;}
+  else{sourceState.presets=sourceState.presets.filter(p=>p.name!==name);sourceState.activePreset=sourceState.presets[0].name;}
+  persistSourceState();renderRight();
+}
+async function importSourceFolder(kind,files){
+  const list=[...files].filter(f=>!f.name.startsWith('.')); if(!list.length)return;
+  const map=browserSourceFiles[kind]; map.clear(); for(const f of list)map.set(normalizeAssetPath(f.webkitRelativePath||f.name),f);
+  const root=(list[0].webkitRelativePath||list[0].name).split('/')[0], p=activeSourcePreset();
+  p[kind]={path:`Browser folder: ${root}`,managed:false,count:list.length}; persistSourceState();
+  setStatus(`${kind} source “${root}” indexed · ${list.length} files`); renderRight();
+}
+async function uploadSourceZip(kind,file){
+  sourceBusy=`Importing ${kind} ZIP…`; renderRight();
+  try{
+    if(sourceBridgeOnline){
+      const preset=activeSourcePreset().name;
+      const url=`/api/import-zip?kind=${encodeURIComponent(kind)}&preset=${encodeURIComponent(preset)}&filename=${encodeURIComponent(file.name)}`;
+      const r=await fetch(url,{method:'POST',headers:{'content-type':'application/zip'},body:file}); const d=await r.json(); if(!r.ok)throw new Error(d.error||'ZIP import failed');
+      sourceState=d.state; persistSourceState(); setStatus(`${kind} imported into local workspace · ${d.files} files`);
+    }else{
+      const entries=(await readZipEntries(file)).filter(e=>!e.dir); browserSourceArchives[kind]={file,entries};
+      const p=activeSourcePreset(); p[kind]={path:`Browser ZIP: ${file.name}`,managed:false,count:entries.length}; persistSourceState();
+      setStatus(`${kind} ZIP indexed for this browser session · ${entries.length} files`);
+    }
+  }finally{sourceBusy='';renderRight();}
+}
+async function importDetectedSourceZip(file,entries,kinds){
+  if(kinds.length===1)return uploadSourceZip(kinds[0],file);
+  // A combined asset archive is imported into both managed source roots when the local bridge is active.
+  if(sourceBridgeOnline){for(const k of kinds)await uploadSourceZip(k,file);}
+  else{
+    for(const k of kinds){browserSourceArchives[k]={file,entries};const p=activeSourcePreset();p[k]={path:`Browser ZIP: ${file.name}`,managed:false,count:entries.filter(e=>normalizeAssetPath(e.name).includes(k)).length};}
+    persistSourceState();setStatus(`Combined source ZIP indexed · ${kinds.join(' + ')}`);renderRight();
+  }
+}
+function appendAssetSourcesSection(){
+  const host=document.getElementById('rightBody'); if(!host)return;
+  const p=activeSourcePreset(), c=section(host,'Asset Source Presets',true);
+  c.id='assetSourcesSection';
+  const opts=sourceState.presets.map(x=>`<option value="${esc(x.name)}" ${x.name===p.name?'selected':''}>${esc(x.name)}</option>`).join('');
+  const mode=sourceBridgeOnline?'<span class="sourcepill sourceok">LOCAL WORKSPACE ONLINE</span>':'<span class="sourcepill sourcewarn">BROWSER-ONLY MODE</span>';
+  c.insertAdjacentHTML('beforeend',`<div class="hint">Reusable roots for item models and geoset textures. ${mode}</div>
+    <div class="sourcegrid"><select id="srcPresetSel">${opts}</select><button type="button" id="srcNew">New</button><button type="button" id="srcDelete">Delete</button></div>
+    <div class="row"><label>Preset name</label><input type="text" id="srcPresetName" value="${esc(p.name)}"/></div>
+    <div class="row"><label>Object Components path</label><input class="sourcepath" type="text" id="srcObjPath" value="${esc(p.objectcomponents.path||'')}" placeholder="F:\\…\\assets\\models\\item\\objectcomponents" ${sourceBridgeOnline?'':'readonly'}/></div>
+    <div class="btnrow"><button type="button" id="srcObjFolder">Choose Folder</button><button type="button" id="srcObjZip">Import ZIP</button></div>
+    <div class="hint">${p.objectcomponents.count||0} indexed file(s)${p.objectcomponents.managed?' · copied into the app workspace':''}</div>
+    <div class="row"><label>Texture Components path</label><input class="sourcepath" type="text" id="srcTexPath" value="${esc(p.texturecomponents.path||'')}" placeholder="F:\\…\\assets\\models\\item\\texturecomponents" ${sourceBridgeOnline?'':'readonly'}/></div>
+    <div class="btnrow"><button type="button" id="srcTexFolder">Choose Folder</button><button type="button" id="srcTexZip">Import ZIP</button></div>
+    <div class="hint">${p.texturecomponents.count||0} indexed file(s)${p.texturecomponents.managed?' · copied into the app workspace':''}</div>
+    ${sourceBridgeOnline?'<div class="btnrow"><button type="button" class="wide" id="srcSave">Validate & Save Paths</button></div>':'<div class="hint">For exact Windows paths, persistent presets, and automatic ZIP extraction into the app root, launch <b>START_CHARACTER_STUDIO.cmd</b> instead of opening the HTML with <code>file://</code>. Browser folder/ZIP imports still work for the current session.</div>'}
+    ${sourceBusy?`<div class="hint sourcewarn">${esc(sourceBusy)}</div>`:''}`);
+  c.querySelector('#srcPresetSel').onchange=e=>{sourceState.activePreset=e.target.value;persistSourceState();renderRight();};
+  c.querySelector('#srcNew').onclick=()=>{let i=1,n='Preset '+i;while(sourceState.presets.some(x=>x.name===n))n='Preset '+(++i);sourceState.presets.push({name:n,objectcomponents:{path:'',managed:false,count:0},texturecomponents:{path:'',managed:false,count:0}});sourceState.activePreset=n;persistSourceState();renderRight();};
+  c.querySelector('#srcDelete').onclick=()=>deleteSourcePreset(p.name).catch(err=>setStatus(err.message));
+  c.querySelector('#srcObjFolder').onclick=()=>document.getElementById('folderObjectSource').click();
+  c.querySelector('#srcTexFolder').onclick=()=>document.getElementById('folderTextureSource').click();
+  c.querySelector('#srcObjZip').onclick=()=>document.getElementById('zipObjectSource').click();
+  c.querySelector('#srcTexZip').onclick=()=>document.getElementById('zipTextureSource').click();
+  const save=c.querySelector('#srcSave'); if(save)save.onclick=()=>saveSourcePaths(c.querySelector('#srcPresetName').value,c.querySelector('#srcObjPath').value,c.querySelector('#srcTexPath').value).catch(err=>alert(err.message));
+}
+document.getElementById('folderObjectSource').onchange=e=>{importSourceFolder('objectcomponents',e.target.files);e.target.value='';};
+document.getElementById('folderTextureSource').onchange=e=>{importSourceFolder('texturecomponents',e.target.files);e.target.value='';};
+document.getElementById('zipObjectSource').onchange=e=>{const f=e.target.files?.[0];if(f)uploadSourceZip('objectcomponents',f).catch(err=>{alert(err.message);setStatus(err.message);});e.target.value='';};
+document.getElementById('zipTextureSource').onchange=e=>{const f=e.target.files?.[0];if(f)uploadSourceZip('texturecomponents',f).catch(err=>{alert(err.message);setStatus(err.message);});e.target.value='';};
+function openAssetSources(){
+  secState['Asset Source Presets']=true;
+  renderRight();
+  requestAnimationFrame(()=>{
+    const target=document.getElementById('assetSourcesSection'), panel=document.getElementById('right');
+    if(target&&panel) panel.scrollTo({top:Math.max(0,target.offsetTop-54),behavior:'smooth'});
+    document.getElementById(sourceBridgeOnline?'srcObjPath':'srcObjFolder')?.focus();
+  });
+}
+document.getElementById('btnSources').onclick=openAssetSources;
+
+/* ── wiring ── */
+{ const _rr=renderRight; renderRight=function(){ _rr(); try{ appendShareSection(); appendPluginManager(); appendPluginSections(); appendAssetSourcesSection(); a11yPass(); }catch(e){ console.error(e); } }; }
+renderRight();
+refreshSourceBridge();
+Object.assign(window.StudioAPI,{
+  buildShareLink, applyShareString,
+  registerPlugin, listPlugins:()=>plugins.map(p=>({id:p.id,name:p.name||p.id,hasPanel:!!p.panel})),
+  startTour, endTour, openHelp,
+  loadBundle:files=>loadInputBundle(files),
+  openAssetSources,
+  getAssetSources:()=>JSON.parse(JSON.stringify(sourceState)),
+  refreshAssetSources:refreshSourceBridge,
+  listBrowserSourceAssets:(kind)=>[...(browserSourceFiles[kind]||new Map()).keys()],
+});
+
 </script>
 </body>
 </html>

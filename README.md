@@ -1,119 +1,110 @@
-<h1 align="center">CHARACTER STUDIO</h1>
-<p align="center"><em>made by AEiOU</em></p>
-<p align="center">
-  A zero-dependency, offline, browser-based character customization studio for Classic-style MMORPGs.<br>
-  Load GLB/GLTF models or content-pack ZIPs, sculpt heads &amp; bodies, toggle geosets, equip gear textures, and script everything headlessly.
-</p>
-<img width="1680" height="1000" alt="image" src="https://github.com/user-attachments/assets/d8caca80-8804-438f-863b-427ef658bb24" />
-<img width="1680" height="1000" alt="image" src="https://github.com/user-attachments/assets/bfdc9ee5-f271-407a-b259-3e79963f6774" />
-<img width="1600" height="950" alt="image" src="https://github.com/user-attachments/assets/8a774467-fd47-4e46-8b27-e9efbe8dd6fb" />
-<img width="344" height="978" alt="image" src="https://github.com/user-attachments/assets/be6aed43-0b83-477c-b7a1-612d32b34876" />
+# CHARACTER STUDIO - made by AEiOU
 
-<p align="center">
-  <img alt="version" src="https://img.shields.io/badge/version-2.0.0-3d7fd6">
-  <img alt="license" src="https://img.shields.io/badge/license-MIT-7dbb63">
-  <img alt="runtime" src="https://img.shields.io/badge/runtime-WebGL2%20%C2%B7%20no%20deps-c99a5a">
-</p>
+Offline, dependency-free WebGL2 character customization studio for glTF/GLB characters
+(WoW-style geoset models), with content-pack authoring, headless automation, and an MCP
+server for agents. Single-file app: `demo/character-studio.html` — open it in a browser.
+No internet access is ever required or used.
 
----
+## Feature overview (v3.1)
 
-## Highlights
+### Rendering & animation
+- **Unlimited-bone skinning** — joint matrices in an RGBA32F bone texture read via
+  `texelFetch`; 220-joint WoW skins play every clip (no uniform-array cap).
+- **Full animation timeline** — scrubber, play/pause, loop toggle, playback speed,
+  automatic crossfade between clips, per-clip loop metadata.
+- **PBR** — metallic-roughness with normal / AO / emissive maps, hemisphere ambient,
+  ACES tone mapping with exposure control, proper sRGB/linear pipeline, HDR eye-glow.
 
-- **Runs anywhere, offline.** The studio is a single self-contained HTML file using raw WebGL2 — no build step, no CDN, no network. Just open it in Chrome/Edge.
-- **Loads real assets.** GLB / GLTF out of the box, plus **content-pack `.zip`** drag-and-drop (built-in ZIP reader, no libraries).
-- **Gear-safe morphing.** Head and body sculpting only displaces body/skin geosets — armor, cloak, gloves and boots never move, so item textures stay correct.
-- **Professional flat UI** with machined-metal styling, collapsible sections, and color-separated geoset/material view modes.
-- **Fully scriptable.** `window.StudioAPI` + a headless mode (`?headless=1`) and a Node runner make it drivable by agents and CI.
+### Studio
+- Head + body customization with gear-safe morphs, geoset tick boxes (wow.export-style),
+  17 race/gender profiles with validated morph catalogs and geoset maps.
+- **Mirror sculpt brush** — direct on-mesh sculpting with soft falloff, X-symmetry,
+  push/pull, gear-safe (body/head vertices only). Session-only; baked into GLB export.
+- Undo/redo command stack (Ctrl+Z / Ctrl+Y) across all edits.
+- Texture layer compositor — stack skin/makeup/warpaint/tattoo layers, bake to atlas.
+- Projects in IndexedDB + portable `.studio` export/import.
+- Seeded constrained randomize, palette import/export, preset browser with
+  auto-rendered thumbnails, camera/light shot presets, turntable WebM render.
+- Accessibility: full keyboard nav, ARIA labels, gamepad support, i18n scaffolding,
+  onboarding tour + in-app help (`?` in the header).
+- Performance HUD (draw calls / triangles).
+
+### Asset bundle and source-library workflow (v3.1)
+- Open or drag a `.glb` / `.gltf` together with its `.png` / `.jpg` / `.webp` images.
+  Strongly named base textures such as `humanmale_hd_texture_1.png` are detected and
+  auto-bound to the base body material. External `.gltf` `.bin` and image URIs resolve
+  from the same multi-file selection.
+- Open a model ZIP containing the model plus companion images for the same automatic flow.
+- **Asset Source Presets** keep separate `objectcomponents` and `texturecomponents` roots.
+  Presets can reference existing folders or import either source as a ZIP.
+- `START_CHARACTER_STUDIO.cmd` / `npm start` runs the local workspace bridge required for
+  exact Windows paths, persistent presets, automatic ZIP extraction, and `/api/assets`.
+  Plain `file://` mode remains supported with browser folder/ZIP indexing for the session.
+
+### I/O & integration
+- Loads `.glb` / `.gltf` and **content-pack ZIPs** (drag & drop), including **ZIP64**;
+  entries stream via `File.slice` — packs are not fully buffered in memory.
+- **Content-pack authoring**: manifest schema validation, SHA256SUMS, versioned filename.
+- **GLB export** of the customized character (morphs + sculpt baked, hidden geosets stripped).
+- **Share links** — the full character state deflate-compressed into a URL fragment.
+- **Plugin API** — `StudioAPI.registerPlugin({id, name, onload(api), panel})`.
+- **Headless mode** (`?headless=1`) and **MCP server** (`qa/mcp-server.mjs`, 14 tools).
 
 ## Quick start
 
-```bash
-# 1. clone
-git clone https://github.com/AEiOU/character-studio.git
-cd character-studio
-
-# 2. open the app — no build required
-#    macOS:  open demo/character-studio.html
-#    Linux:  xdg-open demo/character-studio.html
-#    or just double-click it in a file browser
-```
-
-Then **Open GLB / GLTF / ZIP** (or drag a file onto the viewport) and start customizing.
-
-> Tip: any WoW-export-style content pack (a `.zip` with `models/`, `textures/`, and a `customization_manifest.json`) auto-wires its model, textures and docs into the studio.
-
-## Features
-
-| Area | What you get |
-|---|---|
-| **Model loading** | GLB / GLTF, drag-drop or file picker; content-pack ZIP auto-wiring |
-| **Head sculpt** | ~70 morph axes (skull, brow, jaw, cheeks, nose, eyes, ears, mouth) |
-| **Body sculpt** | ~28 gear-safe body morph axes (torso, chest, shoulders, arms, waist, hips, legs, posture, bulk) |
-| **Geoset control** | Every mesh node listed with per-geoset visibility, group color chips, All On/Off/Defaults |
-| **View modes** | Textured · Material ID · Geosets — the ID modes color-separate the model with an on-screen legend |
-| **Customization cyclers** | Face, hair, facial hair, sideburns, ears, eyes + skin/hair/eye color |
-| **Character Equipper** | Per-slot gear model variants + external image textures |
-| **Gearset Creator** | Save/apply/delete named gearsets, export/import as JSON, persisted to localStorage |
-| **Viewport settings** | FOV, turntable auto-rotate + speed, background level (persisted) |
-| **Appearance JSON** | Portable state: head/body morphs, geoset visibility, colors, texture overrides, view mode, anim index |
-| **Automation** | `window.StudioAPI`, lifecycle events, headless mode, Node CI runner |
-
-## Content-pack ZIP format
-
-Drop any `.zip` onto the app. Wiring is by convention:
+For the full reusable source-library workflow on Windows, double-click:
 
 ```
-mypack_v1.0.zip
-├─ models/…            → largest .glb/.gltf loads as the model
-├─ textures/*.png      → added to the texture library (equippable per slot)
-├─ customization/customization_manifest.json  → parsed manifest
-└─ *.txt / *.json / *.md / *.csv (<512 KB)     → readable in the Content Pack panel
+START_CHARACTER_STUDIO.cmd
 ```
 
-Stored and deflate entries are supported. ZIP64 (archives &gt; 4 GB) is not.
+Or run `npm start`, then open `http://127.0.0.1:4173/`. The bridge writes imported
+source ZIPs and preset metadata to `.character-studio-workspace/` inside the app root.
 
-## Automation &amp; headless
-
-Every control is scriptable through `window.StudioAPI`. Open the app with `?headless=1` to render viewport-only for agents and CI, or use the bundled runner:
-
-```bash
-node qa/headless-runner.mjs <model.glb|pack.zip> \
-  [--appearance=file.json] [--viewmode=tex|matid|groups] \
-  [--out=shot.png] [--json=report.json]
-```
-
-Full API reference: [`docs/API.md`](docs/API.md).
-
-## Repository layout
+The original serverless mode still works:
 
 ```
-demo/     self-contained studio app (open this) + standalone head-sculpt editor
-src/      TypeScript engine modules (appearance, morphs, geosets, three adapter, glTF runtime)
-docs/     API.md (automation) + GEAR_SAFE_BODY.md (morph safety design)
-qa/       browser-smoke.mjs (regression) + headless-runner.mjs (CI/agent runner)
+open demo/character-studio.html     # any Chromium/Firefox, no server needed
 ```
 
-## Development
+Select a model and its companion texture images together, or drag a model ZIP anywhere
+in the viewport. Use **Asset Sources** in the header to configure item model and texture roots.
 
-```bash
-npm install            # dev-only: playwright for QA
-npm run qa             # headless regression smoke test
-npm run headless -- model.glb --out=shot.png
+## QA
+
+```
+npm test                                            # unit tests (extracted from shipped HTML)
+node qa/browser-smoke.mjs <model.glb> [texDir]      # end-to-end browser smoke
+CS_TEST_MODEL=<model.glb> node qa/visual-regression.mjs [--update]
+node qa/mcp-test.mjs                                # MCP server conformance
+node qa/headless-runner.mjs <model.glb>             # headless automation example
 ```
 
-The shipped app has **no runtime dependencies**; `src/` is provided as a typed engine for embedding into a Vite/Three.js project (`three` is a peer dependency there).
+## MCP server
 
-## Known limitations
+```
+node qa/mcp-server.mjs        # newline JSON-RPC 2.0 on stdio (protocol 2024-11-05)
+```
+Env: `CS_APP` (path to the HTML), `CHROMIUM_PATH`. Tools: load_model, get_appearance,
+apply_appearance, list_geosets, set_geoset, list_animations, play_animation,
+get_anim_state, randomize, screenshot, save_project, list_projects, export_glb, build_pack.
 
-- The demo shader supports up to **80 bones**; skins with more joints (e.g. 220-joint WoW rips) fall back to the rest pose for very heavy animation clips.
-- ZIP64 content packs (&gt; 4 GB) are not yet supported.
+## Known limitations (deliberate, offline-first)
 
-## Assets &amp; licensing
+- **Draco / Meshopt / KTX2** compressed assets are *detected* and rejected with a clear
+  message — no decoders are bundled offline. Re-export uncompressed (e.g. gltf-transform).
+- **GLB export** keeps the originally embedded textures; baked texture-layer atlases are
+  distributed via content packs, not re-embedded into the GLB.
+- **Sculpt deltas** are session-only: included in GLB export, not persisted in `.studio`.
+- **LOD / frustum culling**: not applicable to a single-character studio; geoset
+  visibility toggles are the LOD mechanism. The perf HUD shows live draw-call/tri counts.
+- **Share links** carry state, not assets — the recipient loads the same model/pack file.
 
-The **code** in this repository is released under the [MIT License](LICENSE).
+## File formats
 
-This repository does **not** include any game assets. Models, textures and content packs you load are your own responsibility — do not distribute copyrighted game data (e.g. Blizzard/WoW assets) with this tool.
+See `docs/API.md` for the appearance JSON (v2), `.studio` project, palette, share-link,
+and content-pack manifest formats, plus the full StudioAPI and plugin API reference.
 
-## Changelog
+## License
 
-See [CHANGELOG.md](CHANGELOG.md).
+MIT (code). Bundled demo art is original work — see LICENSE notes in the release repo.

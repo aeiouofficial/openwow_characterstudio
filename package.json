@@ -1,48 +1,39 @@
 {
   "name": "@aeiou/character-studio",
-  "version": "2.0.0",
-  "description": "Zero-dependency browser character customization studio for Classic-style MMORPGs: GLB/GLTF + content-pack ZIP loading, gear-safe head/body sculpt, geosets, gearsets, and a scriptable headless API.",
+  "version": "3.1.0",
+  "description": "CHARACTER STUDIO - made by AEiOU \u2014 offline WebGL2 character customization studio with GLB/texture bundle auto-wiring, reusable asset-source presets, content packs, GLB export, MCP, and headless mode",
   "type": "module",
-  "license": "MIT",
-  "author": "AEiOU",
-  "homepage": "https://github.com/AEiOU/character-studio#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/AEiOU/character-studio.git"
-  },
-  "bugs": {
-    "url": "https://github.com/AEiOU/character-studio/issues"
-  },
-  "keywords": [
-    "webgl2", "gltf", "glb", "character-customization", "mmorpg",
-    "morph-target", "geoset", "three", "wow", "headless", "studio"
-  ],
   "main": "./src/engine/index.ts",
   "exports": {
     ".": "./src/engine/index.ts",
     "./studio": "./src/engine/CharacterStudioEngine.ts",
     "./io": "./src/io/GltfRuntime.ts"
   },
-  "files": [
-    "src",
-    "demo",
-    "docs",
-    "qa",
-    "README.md",
-    "CHANGELOG.md",
-    "LICENSE"
-  ],
   "scripts": {
-    "qa": "node qa/browser-smoke.mjs",
-    "headless": "node qa/headless-runner.mjs"
+    "start": "node server.mjs",
+    "test": "node --test qa/unit.test.mjs",
+    "qa:smoke": "node qa/browser-smoke.mjs",
+    "qa:visual": "node qa/visual-regression.mjs",
+    "qa:mcp": "node qa/mcp-test.mjs",
+    "mcp": "node qa/mcp-server.mjs"
   },
   "peerDependencies": {
     "three": ">=0.160.0"
   },
   "peerDependenciesMeta": {
-    "three": { "optional": true }
+    "three": {
+      "optional": true
+    }
   },
-  "devDependencies": {
-    "playwright": "^1.44.0"
-  }
+  "files": [
+    "server.mjs",
+    "START_CHARACTER_STUDIO.cmd",
+    "src",
+    "demo",
+    "docs",
+    "qa",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "license": "MIT"
 }

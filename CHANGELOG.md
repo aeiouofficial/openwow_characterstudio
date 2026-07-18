@@ -1,55 +1,65 @@
 # Changelog
 
-All notable changes to this project are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
+## 3.1.0 — 2026-07-18
 
-## [2.0.0] - 2026-07-18
+### Model and texture bundles
+- The model picker and viewport drop zone now accept multiple files in one action.
+- `.glb` / `.gltf` companion images are indexed together; external `.bin` and image URIs resolve from the selected bundle.
+- Strong base-texture names such as `*_texture_1` auto-bind to the base body material.
+- Model ZIPs containing a GLB/GLTF and companion textures load through the same auto-wiring path.
+- Corrected glTF texture-to-image source mapping.
+- Removed the unintended green default skin multiplier; neutral white now preserves authored base textures.
+- Appearance JSON now records `baseTexture`.
 
-### Added
-- **Branding**: application titled “CHARACTER STUDIO - made by AEiOU”.
-- **Content-pack ZIP support**: open or drag-drop a pack `.zip`. Built-in ZIP reader (stored + deflate, no libraries); largest GLB auto-loads, all images auto-wire into the texture library, `customization_manifest.json` is parsed, and text docs are viewable in the new **Content Pack** panel with a full file inventory.
-- **StudioAPI**: full scriptable surface on `window.StudioAPI` (load, appearance, view modes, geosets, cyclers, sliders, textures, gearsets, pack docs, settings, screenshot) plus `studio:ready` / `studio:modelloaded` / `studio:packloaded` events. Documented in `docs/API.md`.
-- **Headless mode**: `?headless=1` renders viewport-only for agents/CI; bundled `qa/headless-runner.mjs` produces a JSON report + screenshot from any model or pack.
-- **Viewport Settings**: FOV, turntable auto-rotate + speed, background level, persisted to localStorage.
-- Screenshot-accurate rendering (`preserveDrawingBuffer`) for `StudioAPI.screenshot()`.
+### Reusable asset sources
+- Added separate `objectcomponents` and `texturecomponents` source roots and named presets.
+- Added browser folder indexing and source ZIP indexing for serverless use.
+- Added a local Node workspace bridge (`START_CHARACTER_STUDIO.cmd` / `npm start`) for exact filesystem paths, persistent presets, safe ZIP extraction, managed source copies, asset listing, and asset serving.
+- Combined source archives are split by their folder roots instead of cross-importing unrelated files.
+- Added an **Asset Sources** header shortcut and first-run source setup focus.
 
-### Changed
-- Verified content-pack loading against a real 89 MB pack; all v1.x features regression-tested.
+## 3.0.0 — 2026-07-18
 
-## [1.6.0] - 2026-07-18
+Complete 24-item roadmap implementation, tier by tier, each gated by automated QA.
 
-### Added
-- **Metal finish** visual pass: machined-gradient controls, bevel highlights, pressed states, recessed wells, procedural noise grain, engraved text, depth shadows, custom scrollbars and slider thumbs. Layout and features unchanged.
+### Tier 1 — Correctness
+- Unlimited-bone skinning: RGBA32F bone texture + `texelFetch` (220-joint clips play fully; no `uBones[80]` cap, no rest-pose fallback).
+- Full animation playback: timeline scrubber, play/pause/loop/speed, crossfade between clips, per-clip loop metadata, scrub-while-paused.
+- PBR: metallic-roughness + normal/AO/emissive maps, Cook-Torrance GGX, hemisphere ambient, ACES tone mapping + exposure, sRGB-correct pipeline.
 
-## [1.5.0] - 2026-07-18
+### Tier 2 — Studio completeness
+- Projects persisted to IndexedDB + portable `.studio` export/import.
+- Undo/redo snapshot stack across all edits (Ctrl+Z / Ctrl+Y).
+- 17 race/gender profiles with validated per-profile morph catalogs and geoset groups.
+- Texture layer compositor with runtime atlas baking (skin/makeup/warpaint/tattoo stacking).
+- Content-pack authoring: manifest validation, SHA256SUMS, versioned ZIP export.
 
-### Added
-- **Flat professional UI** (reference-matched): removed rounded pill/tag chrome; collapsible chevron sections, squared controls, segmented button groups, path-row inputs.
-- **View modes**: Textured / Material ID / Geosets with color-separated regions and an on-screen legend.
-- **Gearset Creator**: save/apply/delete named gearsets (slot variants + textures), export/import as JSON, persisted to localStorage.
-- Group ID color chips on geoset list and equipper slots.
+### Tier 3 — Robustness & integration
+- ZIP64 reading + streaming pack loading (slice-based; 4 GB cap lifted).
+- Draco/Meshopt/KTX2 detection with explicit, actionable rejection (no decoders bundled offline — documented gap).
+- GLB export: morphs + sculpt baked into geometry, hidden geosets stripped, round-trip verified.
+- MCP server (`qa/mcp-server.mjs`): 14 tools over newline JSON-RPC 2.0 stdio.
+- Visual regression harness (`qa/visual-regression.mjs`): pure-node PNG diff against goldens, wired into CI.
 
-## [1.4.0] - 2026-07-18
+### Tier 4 — Pro polish & UX
+- Mirror sculpt brush: on-mesh soft-falloff push/pull with X-symmetry, gear-safe.
+- Camera shot presets (6) + light presets (4) + turntable WebM render.
+- Preset browser with auto-rendered thumbnails (gearsets + head presets).
+- Seeded, constraint-respecting randomize (reproducible).
+- Color management: exposure control, HDR eye-glow, palette import/export.
+- Accessibility: keyboard nav + ARIA on all controls, gamepad input, i18n scaffolding.
+- Performance HUD (draw calls / triangles). LOD/frustum culling documented as N/A for a single-character studio.
 
-### Added
-- wow.export-style layout: left-side customization + geoset visibility, right-side character equipper with folder-loaded textures.
-- External gear-texture folder loading and per-slot assignment.
+### Tier 5 — Reach
+- Share links: full character state deflate-compressed into the URL fragment; auto-applies on model load.
+- Plugin API: `registerPlugin` with custom panels, StudioAPI access, event hooks, locale registration; `.js` plugin file loader.
+- Onboarding tour + in-app help/documentation modal.
+- Unit test suite (`node --test`) that extracts and tests functions from the shipped HTML itself.
 
-## [1.3.0] - 2026-07-18
-### Added
-- Interactive + external-texture browser QA harness (`qa/browser-smoke.mjs`).
+## 2.0.0 — 2026-07-18
+- Branding: “CHARACTER STUDIO - made by AEiOU”.
+- Content-pack ZIP reader with drag & drop, pack auto-wiring.
+- StudioAPI + DOM events, headless mode (`?headless=1`), `qa/headless-runner.mjs`.
 
-## [1.2.0] - 2026-07-18
-### Fixed
-- Sideways preview caused by an up-vector cross-product error in `lookAt`.
-
-## [1.1.0] - 2026-07-18
-### Added
-- Initial Character Studio prototype: pure WebGL2 renderer, geoset panel, appearance JSON.
-
-[2.0.0]: https://github.com/AEiOU/character-studio/releases/tag/v2.0.0
-[1.6.0]: https://github.com/AEiOU/character-studio/releases/tag/v1.6.0
-[1.5.0]: https://github.com/AEiOU/character-studio/releases/tag/v1.5.0
-[1.4.0]: https://github.com/AEiOU/character-studio/releases/tag/v1.4.0
-[1.3.0]: https://github.com/AEiOU/character-studio/releases/tag/v1.3.0
-[1.2.0]: https://github.com/AEiOU/character-studio/releases/tag/v1.2.0
-[1.1.0]: https://github.com/AEiOU/character-studio/releases/tag/v1.1.0
+## 1.x — 2026-07-18
+- 1.6 metal-finish UI · 1.5 flat Blender-style UI, view modes, gearset creator · 1.4 wow.export-style layout · 1.3 QA harness · 1.2 camera fix · 1.1 first prototype.
