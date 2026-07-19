@@ -1,7 +1,7 @@
 {
   "name": "@aeiou/character-studio",
-  "version": "3.4.0",
-  "description": "CHARACTER STUDIO - made by AEiOU \u2014 offline WebGL2 character customization studio with per-geoset texture alignment/warp, eye-region correction, GLB/texture bundle auto-wiring, reusable asset-source presets, content packs, GLB export, MCP, headless mode, and dedicated Asset Library and Scene Studio workspaces",
+  "version": "4.1.0",
+  "description": "CHARACTER STUDIO - made by AEiOU \u2014 offline WebGL2 character creation and premium browser machinima suite with a frame-accurate nonlinear timeline, world-space camera rigs, layered stereo audio, portable media bundles, and configurable HD\u20134K real-time WebM masters.",
   "type": "module",
   "main": "./src/engine/index.ts",
   "exports": {
@@ -14,9 +14,11 @@
     "test": "node --test qa/unit.test.mjs",
     "qa:smoke": "node qa/browser-smoke.mjs",
     "qa:visual": "node qa/visual-regression.mjs",
-    "qa:v340": "node qa/v340-check.mjs",
     "qa:mcp": "node qa/mcp-test.mjs",
-    "mcp": "node qa/mcp-server.mjs"
+    "mcp": "node qa/mcp-server.mjs",
+    "qa:v400": "node qa/v400-check.mjs",
+    "qa:v410": "node qa/v410-check.mjs",
+    "qa:release": "npm test && npm run qa:v410"
   },
   "peerDependencies": {
     "three": ">=0.160.0"
@@ -34,7 +36,10 @@
     "docs",
     "qa",
     "README.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "RELEASE_NOTES_v4.1.0.md",
+    "BUILD_INFO.json",
+    "SHA256SUMS.txt"
   ],
   "license": "MIT"
 }

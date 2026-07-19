@@ -1,0 +1,38 @@
+{
+  "product": "CHARACTER STUDIO - made by AEiOU",
+  "version": "4.1.0",
+  "releaseName": "Machinima Studio Elite",
+  "releaseDate": "2026-07-19",
+  "baseVersion": "4.0.0",
+  "entrypoint": "demo/character-studio.html",
+  "runtime": "Offline WebGL2 / ES modules / IndexedDB / Web Audio / MediaRecorder",
+  "machinimaTracks": [
+    "camera",
+    "scene",
+    "animation",
+    "video",
+    "effect",
+    "music",
+    "dialogue",
+    "sfx"
+  ],
+  "releaseProfile": {
+    "camera": "World-space target, exact transform keys, editable motion presets",
+    "editing": "Move, trim, split, razor, slip, ripple, snap, markers, clipboard, track reorder",
+    "audio": "Music, dialogue, SFX, waveform decode, fades, gain, stereo pan, voice recording",
+    "portability": "Project JSON and portable ZIP with media remapping and SHA256SUMS",
+    "render": "Project/loop range, 1080p/1440p/4K/custom, bitrate, progress, cancellation"
+  },
+  "qa": {
+    "unitTests": 28,
+    "passed": 27,
+    "skippedOptionalFixture": 1,
+    "failed": 0,
+    "releaseSurfaceChecks": 41,
+    "renderedDesktop": true,
+    "renderedCompact": true,
+    "webgl2Runtime": true,
+    "consoleErrors": 0,
+    "browserPath": "Playwright Chromium under Xvfb with software WebGL2; Browser plugin unavailable"
+  }
+}

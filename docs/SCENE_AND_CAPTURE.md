@@ -1,40 +1,64 @@
-# Scene Studio, Backdrops & Capture — v3.4.0
+# Scene Studio, Stage, and Capture — v4.1.0
 
-## Dedicated Scene Studio workspace
-Open **Scene Studio** from the top toolbar. The workspace reparents the actual live WebGL canvas into a focused stage editor, so orbit, zoom, animation, model updates, and captures remain the same real scene rather than a duplicate preview. Closing the workspace returns the canvas to the standard editor.
+Scene Studio combines the real Character Studio WebGL2 stage with the Machinima Studio Elite timeline. The canvas is reparented into the production workspace and restored when closed, so scene edits, camera changes, model animation, and captures operate on one renderer.
 
-The workspace includes:
-- A large live stage preview with snapshot and save controls.
-- Room enable/disable, green/blue chroma selection, tracking markers, marker density/strength/size, room size, and contact-shadow controls.
-- Skymap upload/clear controls.
-- Per-face media controls for north, south, east, west, floor, and ceiling.
-- A horizontal gallery of saved scene presets; selecting a card applies it immediately to the live stage.
-- Direct switching to the full Asset Library.
+## Stage controls
 
-Saved scenes share the same IndexedDB collection as the Library and include a live PNG thumbnail when supported by the browser.
+- Room enablement
+- Broadcast green or blue chroma
+- Tracking crosses and density
+- Room scale and contact shadow
+- Equirectangular skymap
+- Independent north/south/east/west/floor/ceiling modes: chroma, image, video, or open
+- Perspective or orthographic projection
+- Safe frame and rule-of-thirds overlay
+- Snapshot capture and synchronized reference-video monitor
 
-## Backdrop & Post FX (left panel)
-- **Background mode:** Studio, Chroma Green (`#00B140`), Pure Green, Chroma Blue (`#0047BB`), Pure Blue, Chroma Magenta, 18% Gray, 50% Gray, Custom color, Gradient, Image, or Transparent.
-- **Pixelate** 1–16: renders at reduced resolution with nearest-neighbor upscale.
-- **Posterize** 0/2–32 levels with optional 4×4 Bayer dithering.
-- **Outline:** depth-edge pass.
-- **FOV / Orthographic:** orthographic is recommended for sprite baking.
-- FX render through an offscreen framebuffer; MSAA is bypassed while an FX pass is active.
+## Persistent scene media
 
-## Capture & Export (right panel)
-- **Screenshot** at 1×/2×/4× supersampling.
-- **Transparent PNG** with a true alpha channel.
-- **Sprite sheet:** eight directions at 45° intervals, single row, JSON metadata sidecar, transparent or current background.
+Scene skymaps and per-face image/video selections are saved to the Asset Library. Normalized scene state stores `sourceId`, filename, and MIME metadata. Loading a scene resolves the actual Library blob; portable project import remaps those IDs on the destination machine.
 
-## Chroma room behavior
-- Walls, floor, and ceiling render in broadcast green or blue chroma.
-- Tracking crosses use an automatically contrasting tint and can be toggled.
-- An equirectangular skymap can render behind the room.
-- Each face can independently use chroma, image, video, or off. Media files are session-local; saved JSON remembers filenames and requires the files to be picked again after reload.
-- The room grows to keep the camera enclosed and hides any face the camera crosses.
-- With a model loaded, the floor tracks the model’s feet; an empty room uses a stable standing-height floor.
-- The optional contact shadow is a soft projected blob, not a ray-traced shadow.
-- Scene state persists in `localStorage` (`cs_scene`) and in appearance JSON/share links.
+A scene clip captures the complete normalized stage state at the playhead and acts as an instantaneous stage cut. Scene-cut snapping uses those clip boundaries without mixing them with unrelated clip edges.
 
-## StudioAPI
-`setBackground(mode,color,color2)`, `getBackground()`, `setFx({pixelate,posterize,dither,outline})`, `getFx()`, `setProjection({ortho,fov})`, `captureScreenshot({scale,transparent})`, `renderSpriteSheet({directions,size,transparent})`, `scene.{state,set,enable,setChroma,setMarkers,setFaceMedia}`.
+## Backdrop and post effects
+
+The standard editor retains Studio, chroma, gray, custom color, gradient, image, and transparent backgrounds plus pixelation, posterization, dithering, and depth outlines. An Effects timeline clip captures those settings for timed playback.
+
+## Camera interaction
+
+- LMB drag: orbit around the target.
+- RMB or Shift-drag: move the look-at target in world X/Y/Z.
+- Wheel: dolly.
+- Inspector: exact world camera position, exact target, lens, easing, and shake.
+
+Camera keys and movement presets use the same camera state as the live renderer.
+
+## Capture and render
+
+- PNG screenshot at 1×/2×/4×
+- True-alpha PNG
+- Directional sprite sheet and JSON sidecar
+- Turntable WebM
+- Machinima WebM with mixed timeline audio
+- 1080p, 1440p, 4K, or custom machinima dimensions
+- project or loop-range render, bitrate, progress, and cancellation
+
+## StudioAPI scene controls
+
+```js
+StudioAPI.setBackground(mode, color, color2)
+StudioAPI.getBackground()
+StudioAPI.setFx(fx)
+StudioAPI.getFx()
+StudioAPI.setProjection({ortho, fov})
+StudioAPI.captureScreenshot({scale, transparent})
+StudioAPI.renderSpriteSheet({directions, size, transparent})
+StudioAPI.scene.state()
+StudioAPI.scene.set(scene)
+StudioAPI.scene.enable(value)
+StudioAPI.scene.setChroma('green' | 'blue')
+StudioAPI.scene.setMarkers(value)
+StudioAPI.scene.setFaceMedia(face, media, name)
+StudioAPI.getCamera()
+StudioAPI.machinima.setCamera(camera)
+```

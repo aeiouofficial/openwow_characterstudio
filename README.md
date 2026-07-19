@@ -1,134 +1,125 @@
-# CHARACTER STUDIO - made by AEiOU
+# CHARACTER STUDIO — Machinima Studio Elite
 
-Offline, dependency-free WebGL2 character customization studio for glTF/GLB characters
-(WoW-style geoset models), with content-pack authoring, headless automation, and an MCP
-server for agents. Single-file app: `demo/character-studio.html` — open it in a browser.
-No internet access is ever required or used.
+**v4.1.0** turns the existing offline-first WebGL2 character editor into a production-oriented browser machinima workstation. It keeps the real Character Studio renderer, scene state, animation state, Asset Library, capture system, and IndexedDB data model while adding a frame-accurate nonlinear editor rather than a disconnected mock timeline.
 
-### Per-geoset texture alignment and eye correction (v3.4.0)
+## What ships in v4.1.0
 
-Select any geoset in **Geoset Visibility** and press **UV**. The **Texture Align & Warp** panel supports:
+### Professional nonlinear timeline
 
-- Full-texture position, independent X/Y scale, rotation, pivot, shear, and nonlinear warp.
-- Eye-only masks with center, spacing, width, height, and feather controls.
-- Pair transforms plus independent left/right eye fine alignment.
-- In **Eye pair**, drag moves the sampled eye texture; Shift-drag moves the mask pair.
-- UV-wireframe preview, drag positioning, wheel scaling, copy/paste, mirror, apply-to-group, and one-click **Solo** preview.
-- The right sidebar uses compact themed controls in Chromium and Firefox instead of browser-default sliders and buttons.
-- Appearance JSON persistence and GLB node/asset metadata for runtime shader wiring.
+- Eight production track types: **Camera, Scene, Animation, Reference Video, Effects, Music, Dialogue/Voice, and SFX**.
+- Any track type can be duplicated and reordered.
+- Move, edge-trim, razor/split, source slip, duplicate, delete, ripple delete, copy, cut, and paste.
+- Frame, marker, clip-edge, and scene-cut snapping with a visible snap guide.
+- Draggable colored markers with names and production notes.
+- Mute, solo, lock, visibility, gain, pan, and handheld controls where relevant.
+- Fit-to-project and optional auto-follow playhead behavior.
+- Exact timecode, frame stepping, loop in/out, timeline zoom, and keyboard-first editing.
 
-The feature modifies sampling in the studio shader; it does not destructively edit the source PNG.
+### Camera direction and movement
 
-## Feature overview (v3.4.0)
+- Camera keys store yaw, pitch, dolly distance, world-space target X/Y/Z, field of view, easing, and shake.
+- Inspector exposes exact camera position and look-at target values.
+- Editable motion presets: Dolly In/Out, Orbit Left/Right, Truck Left/Right, Crane Up/Down, Tilt Up/Down, Hero Reveal, and Camera Cut.
+- Preset duration and interpolation are adjustable before insertion; generated keys remain normal editable timeline keys.
+- Camera curves, cuts, safe-frame guides, rule-of-thirds guides, lens presets, and handheld motion are available inside the live stage.
 
-### Rendering & animation
-- **Unlimited-bone skinning** — joint matrices in an RGBA32F bone texture read via
-  `texelFetch`; 220-joint WoW skins play every clip (no uniform-array cap).
-- **Full animation timeline** — scrubber, play/pause, loop toggle, playback speed,
-  automatic crossfade between clips, per-clip loop metadata.
-- **PBR** — metallic-roughness with normal / AO / emissive maps, hemisphere ambient,
-  ACES tone mapping with exposure control, proper sRGB/linear pipeline, HDR eye-glow.
+### Layered audio and reference media
 
-### Studio
-- Head + body customization with gear-safe morphs, geoset tick boxes (wow.export-style),
-  17 race/gender profiles with validated morph catalogs and geoset maps.
-- Safe startup visibility enables only the base body/head/eyes/ears instead of stacking every
-  hairstyle or equipment variant. Every subset has **All On / All Off / Default** controls;
-  ordinary selection is exclusive, while Shift-click allows intentional overlaps.
-- **Mirror sculpt brush** — direct on-mesh sculpting with soft falloff, X-symmetry,
-  push/pull, gear-safe (body/head vertices only). Session-only; baked into GLB export.
-- Undo/redo command stack (Ctrl+Z / Ctrl+Y) across all edits.
-- Texture layer compositor — stack skin/makeup/warpaint/tattoo layers, bake to atlas.
-- Projects in IndexedDB + portable `.studio` export/import.
-- Seeded constrained randomize, palette import/export, preset browser with
-  auto-rendered thumbnails, camera/light shot presets, turntable WebM render.
-- Accessibility: full keyboard nav, ARIA labels, gamepad support, i18n scaffolding,
-  onboarding tour + in-app help (`?` in the header).
-- Performance HUD (draw calls / triangles).
+- Music, dialogue, voice, and SFX live on independent tracks.
+- Browser waveform decoding, clip source-in, playback speed, gain, stereo pan, fade-in, and fade-out.
+- Track gain and stereo pan, mute/solo routing, and automatic media-node cleanup.
+- Microphone takes are saved to the Asset Library and inserted on the Dialogue track.
+- Reference video follows the playhead as a planning monitor; scene-face video can be rendered in the WebGL stage.
 
-### Dedicated Library and Scene Studio workspaces (v3.4.0)
-- Two permanent top-toolbar buttons open full-width **Library** and **Scene Studio** workspaces without leaving the editor.
-- **Library** provides visual thumbnails and file previews, search, type filters, sorting, grid/list/compact layouts, a detail inspector, rename/apply/export/delete actions, direct multi-file intake, and a full-library ZIP export.
-- Saved appearances and scenes capture a live viewport thumbnail. Imported images and videos preview directly; scene JSON falls back to a readable stage schematic.
-- **Scene Studio** moves the real WebGL viewport into a focused stage editor with room, chroma, marker, shadow, sky, and per-face media controls plus a saved-scene gallery. Closing the workspace restores the canvas to the normal editor.
-- Both workspaces reuse the existing IndexedDB library and optional Node workspace mirror, so sidebar saves and full-workspace saves stay in one coherent collection.
+### Portable productions
 
-### Asset bundle and source-library workflow (v3.4.0)
-- Open or drag a `.glb` / `.gltf` together with its `.png` / `.jpg` / `.webp` images.
-  Strongly named base textures such as `humanmale_hd_texture_1.png` are detected and
-  auto-bound to the base body material. External `.gltf` `.bin` and image URIs resolve
-  from the same multi-file selection.
-- Open a model ZIP containing the model plus companion images for the same automatic flow.
-- **Asset Source Presets** keep separate `objectcomponents` and `texturecomponents` roots.
-  Presets can reference existing folders or import either source as a ZIP.
-- `START_CHARACTER_STUDIO.cmd` / `npm start` runs the local workspace bridge required for
-  exact Windows paths, persistent presets, automatic ZIP extraction, and `/api/assets`.
-  Plain `file://` mode remains supported with browser folder/ZIP indexing for the session.
+- Continuous local autosave plus reusable `machinima` records in the Asset Library.
+- Plain project JSON for light interchange.
+- **Portable Machinima ZIP** includes project JSON, referenced audio/video/scene media, a remapping manifest, and `SHA256SUMS.txt`.
+- Scene skymaps and per-face image/video assignments persist by Asset Library ID and survive portable project import.
+- Drag files or Library assets directly onto a compatible track at the intended timeline time.
 
-### I/O & integration
-- Loads `.glb` / `.gltf` and **content-pack ZIPs** (drag & drop), including **ZIP64**;
-  entries stream via `File.slice` — packs are not fully buffered in memory.
-- **Content-pack authoring**: manifest schema validation, SHA256SUMS, versioned filename.
-- **GLB export** of the customized character (morphs + sculpt baked, hidden geosets stripped).
-- **Share links** — the full character state deflate-compressed into a URL fragment.
-- **Plugin API** — `StudioAPI.registerPlugin({id, name, onload(api), panel})`.
-- **Headless mode** (`?headless=1`) and **MCP server** (`qa/mcp-server.mjs`, 14 tools).
+### Master rendering
+
+- Real-time browser WebM master with the live WebGL stage and mixed timeline audio.
+- Project or loop-range rendering.
+- 1920×1080, 2560×1440, 3840×2160, or custom output dimensions.
+- Configurable video bitrate, progress display, cancellation, and automatic canvas restoration.
 
 ## Quick start
 
-For the full reusable source-library workflow on Windows, double-click:
+### Recommended local workspace
 
-```
-START_CHARACTER_STUDIO.cmd
-```
-
-Or run `npm start`, then open `http://127.0.0.1:4173/`. The bridge writes imported
-source ZIPs and preset metadata to `.character-studio-workspace/` inside the app root.
-
-The original serverless mode still works:
-
-```
-open demo/character-studio.html     # any Chromium/Firefox, no server needed
+```bash
+npm start
 ```
 
-Select a model and its companion texture images together, or drag a model ZIP anywhere
-in the viewport. Use **Asset Sources** in the header to configure item model and texture roots.
+Open `http://127.0.0.1:4173/`, or double-click `START_CHARACTER_STUDIO.cmd` on Windows. Localhost is recommended for microphone permissions, source-folder presets, ZIP extraction, and workspace mirroring.
+
+### Serverless use
+
+Open `demo/character-studio.html` directly in a current Chromium or Firefox build. IndexedDB, timeline editing, project autosave, Library records, and most import/export workflows remain available. Browser security rules may limit microphone and filesystem behavior under `file://`.
+
+## Recommended production workflow
+
+1. Load a GLB/GLTF character and companion textures or an authored content pack.
+2. Save recurring room states in **Scene Studio** and media in **Library**.
+3. Open **Scene Studio**, set project FPS and duration, then place beat/dialogue markers.
+4. Block scene and animation clips before adding camera keys.
+5. Refine camera movement, cuts, clip trims, source slips, fades, gain, and pan.
+6. Save milestone projects to Library and export a **Portable ZIP** before transfer or review.
+7. Render a short loop-range proof, then render the complete WebM master.
+
+## Keyboard map
+
+| Shortcut | Action |
+|---|---|
+| Space | Play / pause |
+| Left / Right | Step one frame |
+| Shift + Left / Right | Step one second |
+| Alt + Left / Right | Nudge selection one frame |
+| Alt + Shift + Left / Right | Nudge selection ten frames |
+| S | Split selected clip at playhead |
+| M | Add marker |
+| K | Capture camera key |
+| I / O | Set loop in / out |
+| F | Fit complete project in timeline |
+| Delete / Backspace | Delete selection |
+| Ctrl/Cmd + C / X / V | Copy / cut / paste selection |
+| Ctrl/Cmd + D | Duplicate selection |
+| Ctrl/Cmd + Z / Y | Undo / redo |
+| Ctrl/Cmd + S | Save project to Library |
+| Home / End | Project start / end |
+
+The in-app **?** panel contains the complete context-aware shortcut list.
 
 ## QA
 
-```
-npm test                                            # unit tests (extracted from shipped HTML)
-node qa/browser-smoke.mjs <model.glb> [texDir]      # end-to-end browser smoke
-CS_TEST_MODEL=<model.glb> node qa/visual-regression.mjs [--update]
-node qa/mcp-test.mjs                                # MCP server conformance
-node qa/headless-runner.mjs <model.glb>             # headless automation example
+```bash
+npm test             # 27 passed + 1 optional fixture skip
+npm run qa:v410      # v4.1.0 release-surface assertions
+npm run qa:release   # unit + release checks
 ```
 
-## MCP server
+Rendered QA validates application identity, WebGL2 startup, no framework overlay, console health, workspace launch, timeline controls, camera world fields, key and marker insertion, fit/follow behavior, and desktop/compact layouts.
 
-```
-node qa/mcp-server.mjs        # newline JSON-RPC 2.0 on stdio (protocol 2024-11-05)
-```
-Env: `CS_APP` (path to the HTML), `CHROMIUM_PATH`. Tools: load_model, get_appearance,
-apply_appearance, list_geosets, set_geoset, list_animations, play_animation,
-get_anim_state, randomize, screenshot, save_project, list_projects, export_glb, build_pack.
+## Browser-scope limitations
 
-## Known limitations (deliberate, offline-first)
+- Master output is browser-native **WebM** and renders in real time. MP4/H.264/ProRes, background render farms, and offline frame rendering require a separate encoder pipeline.
+- Codec decoding and MediaRecorder formats depend on the browser and operating system.
+- Microphone recording requires permission and generally a secure or localhost context.
+- Reference-monitor HTML video is not automatically composited into the WebGL canvas; assign media to a Scene Studio face when it must appear in the rendered stage.
+- Very high-resolution 4K output still depends on GPU memory, model complexity, texture sizes, browser limits, and sustained real-time frame rate.
+- Draco, Meshopt, and KTX2 compressed model inputs are detected but not decoded in this dependency-free build.
 
-- **Draco / Meshopt / KTX2** compressed assets are *detected* and rejected with a clear
-  message — no decoders are bundled offline. Re-export uncompressed (e.g. gltf-transform).
-- **GLB export** keeps the originally embedded textures; baked texture-layer atlases are
-  distributed via content packs, not re-embedded into the GLB.
-- **Sculpt deltas** are session-only: included in GLB export, not persisted in `.studio`.
-- **LOD / frustum culling**: not applicable to a single-character studio; geoset
-  visibility toggles are the LOD mechanism. The perf HUD shows live draw-call/tri counts.
-- **Share links** carry state, not assets — the recipient loads the same model/pack file.
+## Documentation
 
-## File formats
-
-See `docs/API.md` for the appearance JSON (v2), `.studio` project, palette, share-link,
-and content-pack manifest formats, plus the full StudioAPI and plugin API reference.
+- [`docs/MACHINIMA_STUDIO.md`](docs/MACHINIMA_STUDIO.md)
+- [`docs/ASSET_LIBRARY.md`](docs/ASSET_LIBRARY.md)
+- [`docs/SCENE_AND_CAPTURE.md`](docs/SCENE_AND_CAPTURE.md)
+- [`docs/API.md`](docs/API.md)
+- [`RELEASE_NOTES_v4.1.0.md`](RELEASE_NOTES_v4.1.0.md)
 
 ## License
 
-MIT (code). Bundled demo art is original work — see LICENSE notes in the release repo.
+MIT for the code. Production owners remain responsible for the rights and licenses of all models, textures, music, voices, video, and other imported assets.

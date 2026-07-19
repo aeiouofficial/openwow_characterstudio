@@ -205,7 +205,7 @@ test('Firefox range styling and per-subset controls ship in the UI',()=>{
   assert.match(html,/Shift-drag moves the mask pair/);
 });
 
-/* ───────── v3.4.0 — backdrop, capture, dedicated scene studio, visual asset library ───────── */
+/* ───────── v4.1.0 — backdrop, library, and Machinima Studio Elite ───────── */
 ctx.Date=Date;
 for(const name of ['csChromaPresetColor','csResolveBackground','csCoverScale','orthographic','spriteSheetYaws','csNormalizeFx','csDefaultScene','csNormalizeScene','validateLibraryRecord'])
   vm.runInContext(extract(name),ctx);
@@ -276,7 +276,7 @@ test('scene state defaults to a keyable greenscreen room and survives garbage in
   assert.equal(d.chroma,'green');
   assert.equal(d.markers,true);
   for(const k of Object.keys(d.faces)) assert.equal(d.faces[k].media,'chroma');
-  const s=call('csNormalizeScene({enabled:1,chroma:"purple",markerTiles:999,sizeMul:-3,faces:{floor:{media:"hologram"},north:{media:"video",name:"clip.mp4"}},sky:{enabled:"yes",name:42}})');
+  const s=call('csNormalizeScene({enabled:1,chroma:"purple",markerTiles:999,sizeMul:-3,faces:{floor:{media:"hologram"},north:{media:"video",name:"clip.mp4",sourceId:"face-1",mime:"video/mp4"}},sky:{enabled:"yes",name:"sky.hdr",sourceId:"sky-1",mime:"image/jpeg"}})');
   assert.equal(s.enabled,true);
   assert.equal(s.chroma,'green');
   assert.equal(s.markerTiles,20);
@@ -285,7 +285,11 @@ test('scene state defaults to a keyable greenscreen room and survives garbage in
   assert.equal(s.faces.north.media,'video');
   assert.equal(s.faces.north.name,'clip.mp4');
   assert.equal(s.sky.enabled,true);
-  assert.equal(s.sky.name,null);
+  assert.equal(s.sky.name,'sky.hdr');
+  assert.equal(s.sky.sourceId,'sky-1');
+  assert.equal(s.sky.mime,'image/jpeg');
+  assert.equal(s.faces.north.sourceId,'face-1');
+  assert.equal(s.faces.north.mime,'video/mp4');
   assert.equal(call('csNormalizeScene(null).chroma'),'green');
 });
 
@@ -293,6 +297,10 @@ test('validateLibraryRecord accepts real records and rejects malformed ones',()=
   const ok=call('validateLibraryRecord({id:"abcd-1234",type:"appearance",name:"Orc hero",createdAt:"2026-07-18T20:00:00.000Z",json:"{}"})');
   assert.equal(ok.ok,true);
   assert.equal(ok.errors.length,0);
+  for(const type of ['machinima','audio','video']){
+    const rec=call(`validateLibraryRecord({id:"abcd-${type}",type:"${type}",name:"Asset",createdAt:"2026-07-18T20:00:00.000Z",json:"{}"})`);
+    assert.equal(rec.ok,true,type);
+  }
   const bad=call('validateLibraryRecord({id:"x",type:"malware",name:"",createdAt:"not a date"})');
   assert.equal(bad.ok,false);
   assert.ok(bad.errors.length>=4);
@@ -307,7 +315,7 @@ test('csCoverScale crops (never letterboxes) for cover-fit backdrops',()=>{
   assert.deepEqual(Array.from(call('csCoverScale(NaN,-1)')),[1,1]);
 });
 
-test('v3.4.0 workspaces and prior scene/capture features ship in the HTML',()=>{
+test('v4.1.0 Machinima Studio Elite and prior scene/capture features ship in the HTML',()=>{
   assert.match(html,/alpha:true,premultipliedAlpha:false,preserveDrawingBuffer:true/);
   assert.match(html,/Scene Studio \(Chroma Room\)/);
   assert.match(html,/'Asset Library'/);
@@ -325,8 +333,36 @@ test('v3.4.0 workspaces and prior scene/capture features ship in the HTML',()=>{
   assert.match(html,/uPosterize/);        // post FX shader
   assert.match(html,/csShotAlpha/);       // transparent PNG button
   assert.match(html,/#gl\.cs-alpha/);     // transparency checkerboard CSS
-  assert.match(html,/character-studio_v3\.4\.0/);
+  assert.match(html,/character-studio_v4\.1\.0/);
   assert.match(html,/a\.background=/);    // appearance JSON carries backdrop state
   assert.match(html,/a\.scene=/);         // appearance JSON carries scene state
+  assert.match(html,/Machinima Studio/);
+  assert.match(html,/cs-pro-timeline/);
+  assert.match(html,/CS_V4_TRACK_TYPES/);
+  assert.match(html,/music:\{label:'Music'/);
+  assert.match(html,/dialogue:\{label:'Dialogue \/ Voice'/);
+  assert.match(html,/function csV4AddCameraKey/);
+  assert.match(html,/function csV4SplitClip/);
+  assert.match(html,/function csV4SnapTime/);
+  assert.match(html,/function csV4RippleDeleteSelection/);
+  assert.match(html,/function csV4ParseTimecode/);
+  assert.match(html,/id="csProMarkIn"/);
+  assert.match(html,/function csV4StartExport/);
+  assert.match(html,/navigator\.mediaDevices\?\.getUserMedia/);
+  assert.match(html,/CS_V41_BUNDLE_FORMAT/);
+  assert.match(html,/character-studio\/machinima-bundle/);
+  assert.match(html,/function csV41DownloadBundle/);
+  assert.match(html,/function csV41InsertAsset/);
+  assert.match(html,/application\/x-character-studio-asset/);
+  assert.match(html,/mode:'slip'/);
+  assert.match(html,/createStereoPanner/);
+  assert.match(html,/id=\"v41FitTimeline\"/);
+  assert.match(html,/id=\"v41Follow\"/);
+  assert.match(html,/id=\"v41RenderResolution\"/);
+  assert.match(html,/data-v41-cam-pos/);
+  assert.match(html,/panX/);
+  assert.match(html,/panZ/);
+  assert.match(html,/\.json,\.zip,application\/json,application\/zip/);
+  assert.match(html,/machinima:\{getProject/);
   assert.doesNotMatch(html,/window\.StudioAPI\.version='3\.3\.0'/);
 });

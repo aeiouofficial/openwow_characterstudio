@@ -1,0 +1,80 @@
+{
+  "dropMusicClips": 1,
+  "cameraPresetKeys": {
+    "before": 4,
+    "after": 5
+  },
+  "dialogueClipsAfterPaste": 2,
+  "followClassBefore": "cs-pro-btn v41-follow on",
+  "renderUI": {
+    "title": "Render WebM master",
+    "resolutions": [
+      "1080p",
+      "1440p",
+      "4k",
+      "custom"
+    ],
+    "range": [
+      "project",
+      "loop"
+    ],
+    "cancel": true
+  },
+  "desktop": {
+    "version": "4.1.0",
+    "title": "CHARACTER STUDIO - made by AEiOU",
+    "webgl": true,
+    "tracks": 8,
+    "markers": 4,
+    "cameraKeys": 5,
+    "sceneClips": 2,
+    "audioClips": 4,
+    "fit": true,
+    "portable": "function",
+    "camera": {
+      "yaw": 0.275,
+      "pitch": -0.04,
+      "dist": 1.5725,
+      "panX": 0.225,
+      "panY": 0.185,
+      "panZ": -0.1,
+      "fov": 36,
+      "ease": "smooth",
+      "shake": 0,
+      "position": {
+        "x": 1.7372030537939651,
+        "y": 0.12211677199151778,
+        "z": 0.3266659978618405
+      }
+    },
+    "worldFields": 3,
+    "rows": 8,
+    "modalOpen": false
+  },
+  "compact": {
+    "shell": true,
+    "overflowX": 0,
+    "stage": {
+      "x": 190,
+      "y": 104,
+      "width": 770,
+      "height": 275.515625,
+      "top": 104,
+      "right": 960,
+      "bottom": 379.515625,
+      "left": 190
+    },
+    "timeline": {
+      "x": 190,
+      "y": 379.515625,
+      "width": 770,
+      "height": 380.484375,
+      "top": 379.515625,
+      "right": 960,
+      "bottom": 760,
+      "left": 190
+    }
+  },
+  "relevantLogs": [],
+  "allLogCount": 4
+}

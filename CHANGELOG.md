@@ -1,5 +1,48 @@
 # Changelog
 
+## 4.1.0 — 2026-07-19
+
+### Machinima Studio Elite
+- Added world-space camera targets, exact camera transforms, editable movement presets, richer keys, and camera API controls.
+- Added direct timeline drops, source slip, marker dragging, track reordering, clipboard operations, fit/follow navigation, and extended shortcuts.
+- Added clip/track stereo pan, media lifecycle cleanup, and long-media project auto-extension.
+- Added persistent scene media and portable project ZIPs with media remapping and SHA-256 checksums.
+- Added 1080p/1440p/4K/custom WebM render settings, project/loop ranges, progress, cancellation, and canvas restoration.
+- Hardened responsive layout, inspector controls, runtime API, schema normalization, documentation, and release QA.
+
+## 4.0.0 — 2026-07-19
+
+### Machinima Studio Pro
+- Rebuilt Scene Studio as a full nonlinear machinima workspace around the real WebGL renderer.
+- Added layered camera, scene, animation, reference-video, effects, music, dialogue/voice, and SFX tracks with support for multiple tracks of each type.
+- Added frame ruler, timecode, playhead, editable duration and 24/25/30/50/60 fps projects, visible loop in/out range, markers, timeline zoom, and project autosave.
+- Added selection and razor tools, dragging, edge trimming, exact start/duration/source-in/speed controls, clip gain and fades, split, duplicate, delete, ripple delete, and keyboard nudging.
+- Added snapping to frames, markers, clip edges, or scene-cut boundaries.
+
+### Camera production
+- Added timeline camera keyframes for yaw, pitch, dolly distance, target height, field of view, interpolation, and shake.
+- Added Smooth, Linear, Ease In, Ease Out, Hold, and Cut interpolation plus track-level handheld motion.
+- Added Dolly In/Out, Orbit 90°, Crane Up, Hero Reveal, Camera Cut, and lens presets.
+- Added safe-frame/rule-of-thirds stage overlay and derived Cartesian camera-position readout.
+
+### Audio, video and output
+- Added music, dialogue/voice, and SFX imports backed by persistent Asset Library records.
+- Added waveform previews, overlapping synchronized playback, clip speed/source-in/gain/fades, track gain, mute, and solo.
+- Added browser microphone recording to the Dialogue track.
+- Added synchronized picture-in-picture reference-video clips.
+- Added real-time WebM export from `canvas.captureStream()` with mixed timeline audio attached through `MediaStreamDestination`.
+
+### Persistence and integration
+- Added `machinima`, `audio`, and `video` Asset Library record types and full Library previews/filtering/apply behavior.
+- Added local project recovery, portable JSON import/export, Library project saves with viewport previews, and public `StudioAPI.machinima` methods.
+- Added undo/redo history for project editing and context menus for clips, keys, markers, and tracks.
+
+### UI and hardening
+- Added a modern three-region production layout with Production Browser, live stage, inspector, and full-width timeline.
+- Added compact-desktop and mobile-width responsive behavior with an inspector drawer and reduced workspace chrome.
+- Added input validation, project normalization, safe media caches, cancellation-safe render finalization, and browser capability fallbacks.
+- Automated regression suite: 28 tests total, 27 passed, one optional fixture skipped. `qa:v400` release assertions pass.
+
 ## 3.4.0 — 2026-07-19
 
 ### Dedicated top-level workspaces
