@@ -1,7 +1,7 @@
 {
   "name": "@aeiou/character-studio",
-  "version": "4.1.0",
-  "description": "CHARACTER STUDIO - made by AEiOU \u2014 offline WebGL2 character creation and premium browser machinima suite with a frame-accurate nonlinear timeline, world-space camera rigs, layered stereo audio, portable media bundles, and configurable HD\u20134K real-time WebM masters.",
+  "version": "4.1.1",
+  "description": "CHARACTER STUDIO - made by AEiOU \u2014 offline WebGL2 character creation and premium browser machinima suite with reusable full-character Library assets, a frame-accurate nonlinear timeline, unified professional UI, layered stereo audio, portable media bundles, and configurable HD\u20134K WebM masters.",
   "type": "module",
   "main": "./src/engine/index.ts",
   "exports": {
@@ -17,8 +17,8 @@
     "qa:mcp": "node qa/mcp-test.mjs",
     "mcp": "node qa/mcp-server.mjs",
     "qa:v400": "node qa/v400-check.mjs",
-    "qa:v410": "node qa/v410-check.mjs",
-    "qa:release": "npm test && npm run qa:v410"
+    "qa:v411": "node qa/v411-check.mjs",
+    "qa:release": "npm test && npm run qa:v411"
   },
   "peerDependencies": {
     "three": ">=0.160.0"
@@ -37,7 +37,7 @@
     "qa",
     "README.md",
     "CHANGELOG.md",
-    "RELEASE_NOTES_v4.1.0.md",
+    "RELEASE_NOTES_v4.1.1.md",
     "BUILD_INFO.json",
     "SHA256SUMS.txt"
   ],

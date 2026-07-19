@@ -1,4 +1,4 @@
-# CHARACTER STUDIO API — v4.1.0
+# CHARACTER STUDIO API — v4.1.1
 
 The browser API is available on `window.StudioAPI` in `demo/character-studio.html`. The app also exposes automation events and the existing MCP bridge.
 
@@ -61,7 +61,7 @@ StudioAPI.machinima.renderWebM(options)
 
 ## Project schema
 
-Projects normalize to `engine: "character-studio_v4.1.0"`, `version: 2` and contain FPS, duration, playhead, zoom, loop range, snap state, auto-follow state, motion-preset defaults, export settings, markers, a base scene, and ordered tracks.
+Projects normalize to `engine: "character-studio_v4.1.1"`, `version: 2` and contain FPS, duration, playhead, zoom, loop range, snap state, auto-follow state, motion-preset defaults, export settings, markers, a base scene, and ordered tracks.
 
 Track types:
 
@@ -140,3 +140,14 @@ When started with `npm start`, the server exposes source-preset and asset bridge
 ## Other established surfaces
 
 The release preserves GLB/GLTF loading, morph and gear-safe body controls, animation playback, content-pack validation, GLB export, source presets, texture transforms, project profiles, plugin hooks, MCP automation, share links, screenshots, sprite sheets, turntables, and deterministic randomization.
+
+
+## Full-character Library API
+
+```js
+const saved = await StudioAPI.library.saveCharacter()
+const record = await StudioAPI.library.get(saved.id)
+await StudioAPI.library.openCharacter(record)
+```
+
+`saveCharacter()` opens the normal naming prompt and saves the active model, textures, full appearance/settings state, gearsets, preview, manifest, and checksums as a `character` ZIP record. `openCharacter(record)` restores that bundle and reapplies its saved state.

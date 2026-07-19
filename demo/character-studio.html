@@ -132,7 +132,7 @@ body.headless #vp{grid-column:1;grid-row:1}
 #timeline .tlab{font:11px var(--mono);color:var(--muted);min-width:120px;text-align:right}
 #timeline button.on{background:linear-gradient(180deg,#5b96e6,#3c7bd4 55%,#2f66b6);color:#fff;border-color:#1e4477}
 body.headless #timeline{display:none!important}
-/* v4.1.0 — backdrop, scene studio, asset library */
+/* v4.1.1 — backdrop, scene studio, asset library */
 #gl.cs-alpha{background-image:linear-gradient(45deg,#2a2d34 25%,transparent 25%,transparent 75%,#2a2d34 75%),linear-gradient(45deg,#2a2d34 25%,#1c1f24 25%,#1c1f24 75%,#2a2d34 75%);background-size:24px 24px;background-position:0 0,12px 12px}
 .cs-btnrow{display:flex;gap:6px;flex-wrap:wrap}
 .cs-btnrow button{flex:1;min-width:0;white-space:nowrap}
@@ -148,7 +148,7 @@ body.headless #timeline{display:none!important}
 .cs-librow button[disabled]{opacity:.3}
 
 
-/* v4.1.0 — dedicated Library and Scene Studio workspaces */
+/* v4.1.1 — dedicated Library and Scene Studio workspaces */
 .top-workspaces{display:flex;align-items:center;gap:4px;padding-left:4px;border-left:1px solid #ffffff12}
 header .workspace-tab{display:inline-flex;align-items:center;gap:7px;min-height:30px;padding:6px 10px;font-weight:700;letter-spacing:.01em}
 header .workspace-tab svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
@@ -181,7 +181,7 @@ body.headless #workspaceLayer{display:none!important}
 @media(max-width:1250px){#app{grid-template-columns:290px 1fr 310px}.cs-library-body{grid-template-columns:minmax(0,1fr) 290px}.cs-scene-shell{grid-template-columns:minmax(420px,1fr) 340px}.top-workspaces .workspace-tab span{display:none}.top-workspaces .workspace-tab{padding:6px 8px}}
 @media(max-width:980px){#app{grid-template-columns:250px 1fr 270px}header{overflow-x:auto}.cs-library-toolbar{grid-template-columns:minmax(190px,1fr) auto}.cs-library-toolbar .cs-toolbar-actions{grid-column:1/-1;justify-content:flex-start}.cs-library-body{grid-template-columns:1fr}.cs-detail{display:none}.cs-scene-shell{grid-template-columns:1fr;grid-template-rows:430px max-content 210px;align-content:start;overflow:auto}.cs-live-panel{grid-column:1;grid-row:1;min-height:0;border-right:0}.cs-scene-controls{grid-column:1;grid-row:2;overflow:visible}.cs-scene-gallery-panel{grid-column:1;grid-row:3;min-height:210px}}
 
-/* ═══════════ v4.1.0 — Machinima Studio Pro ═══════════ */
+/* ═══════════ v4.1.1 — Machinima Studio Pro ═══════════ */
 :root{
   --pro-bg:#0d1117;--pro-panel:#141a22;--pro-panel2:#19212b;--pro-panel3:#202a36;
   --pro-line:#2a3441;--pro-line2:#344253;--pro-text:#e6edf3;--pro-muted:#8f9baa;
@@ -217,7 +217,7 @@ body.v40-scene-active #csWorkspaceContent{background:var(--pro-bg)}
 @media(max-width:1080px){.cs-pro-shell{grid-template-columns:190px minmax(430px,1fr);grid-template-rows:minmax(250px,42%) minmax(260px,1fr)}.cs-pro-assets{grid-column:1;grid-row:1/3}.cs-pro-stage{grid-column:2;grid-row:1;border-right:0}.cs-pro-timeline{grid-column:2;grid-row:2}.cs-pro-inspector{position:absolute;right:0;top:0;bottom:0;width:310px;z-index:40;border-left:1px solid #070a0d;box-shadow:-12px 0 28px #000b;transform:translateX(100%);transition:transform .18s}.cs-pro-shell.inspector-open .cs-pro-inspector{transform:none}.cs-pro-inspector-toggle{display:grid!important}:root{--pro-track-head:180px}}
 @media(max-width:780px){.cs-pro-shell{display:flex;flex-direction:column;overflow:auto}.cs-pro-assets{display:none}.cs-pro-stage{height:330px;min-height:330px}.cs-pro-timeline{height:420px;min-height:420px}.cs-pro-inspector{position:fixed;top:46px;width:min(92vw,330px)}.cs-pro-stage-tools select{max-width:92px}.cs-pro-timecode{min-width:78px}.cs-pro-timeline-head{overflow-x:auto}:root{--pro-track-head:156px;--pro-row-h:44px}}
 
-/* v4.1.0 responsive hardening */
+/* v4.1.1 responsive hardening */
 @media(max-width:1080px){
   .cs-pro-shell{position:relative}
   .cs-pro-inspector{position:fixed;right:0;top:104px;bottom:0;width:310px;max-width:92vw}
@@ -241,7 +241,7 @@ body.v40-scene-active #csWorkspaceContent{background:var(--pro-bg)}
 @media(max-width:1080px) and (min-width:781px){.cs-pro-inspector{left:calc(100vw - 310px)!important;right:auto!important;width:310px!important}}
 @media(max-width:780px){.cs-pro-inspector{left:auto!important;right:0!important;width:min(92vw,330px)!important}}
 
-/* v4.1.0 — Machinima Studio Elite hardening */
+/* v4.1.1 — Machinima Studio Elite hardening */
 :root{--v41-cyan:#55d8ff;--v41-green:#52d39b;--v41-amber:#f2b84b;--v41-red:#ef6b76;--v41-violet:#a78bfa}
 .v41-tool-cluster{display:flex;align-items:center;gap:4px;padding-left:6px;border-left:1px solid #2b3541}
 .cs-pro-btn.v41-follow.on,.cs-pro-btn.v41-fit.on{color:#dff9ff;border-color:#2c89a6;background:#123b4b}
@@ -267,6 +267,34 @@ body.v40-scene-active #csWorkspaceContent{background:var(--pro-bg)}
 @media(max-width:1320px){.v41-move-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 
+/* ═══════════ v4.1.1 — Character Studio visual-system unification ═══════════ */
+header .character-save-btn{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:filter .14s,opacity .14s}
+header .character-save-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+header .character-save-btn.ready{background:var(--bluesel);border-color:#1e4477;color:#fff;box-shadow:inset 0 1px 0 #ffffff45,inset 0 -1px 0 #00336655,0 1px 3px #0008}
+header .character-save-btn:disabled{opacity:.42;cursor:not-allowed;filter:saturate(.35)}
+:root{--pro-bg:#1b1d21;--pro-panel:#1e2024;--pro-panel2:#26282d;--pro-panel3:#2c2f35;--pro-line:#0c0d0f;--pro-line2:#3a3e45;--pro-text:#d6d9de;--pro-muted:#8d919a;--pro-accent:#5b96e6;--pro-accent2:#3f7fd4;--pro-good:#7dbb63;--pro-warn:#c99a5a;--pro-bad:#d66a5f;--v41-cyan:#7eb0eb;--v41-green:#7dbb63;--v41-amber:#c99a5a;--v41-red:#d66a5f;--v41-violet:#a68ad6}
+body.v40-scene-active .cs-workspace-head{height:66px;padding:10px 16px;background:linear-gradient(180deg,#2c3037,#22252b),var(--noise);border-bottom:1px solid #08090b;box-shadow:inset 0 1px 0 #ffffff10,0 3px 12px #0008}
+body.v40-scene-active .cs-workspace-mark{width:38px;height:38px;border-radius:8px;background:linear-gradient(145deg,#3d4652,#252a31);color:#9fc3ec}
+body.v40-scene-active .cs-workspace-heading h2{font-size:17px}body.v40-scene-active .cs-workspace-heading p{margin-top:4px;font-size:11px}
+body.v40-scene-active #csWorkspaceContent,.cs-pro-shell{background:linear-gradient(180deg,#202227,#181a1e),var(--noise);color:var(--text)}
+.cs-pro-assets,.cs-pro-inspector{background:linear-gradient(180deg,#25272c,#1c1e22 30%,#1b1d21),var(--noise);border-color:#0a0b0c}
+.cs-pro-stage{background:#111318;border-color:#0a0b0c}.cs-pro-timeline{background:#17191d}
+.cs-pro-panel-head,.cs-pro-stage-tools,.cs-pro-transport,.cs-pro-tabs,.cs-pro-timeline-head{background:linear-gradient(180deg,#30343b,#25282e);border-color:#0a0b0c;color:#d6d9de;box-shadow:inset 0 1px 0 #ffffff10}
+.cs-pro-panel-head strong,.cs-pro-timeline-head strong{letter-spacing:.1em;color:#d9dce1}
+.cs-pro-iconbtn,.cs-pro-btn,.cs-pro-primary,.cs-pro-danger{border:1px solid var(--border);border-radius:3px;background:var(--metal);color:var(--text);box-shadow:inset 0 1px 0 #ffffff22,inset 0 -1px 0 #00000055,0 1px 2px #00000070;text-shadow:0 1px 1px #0009;font-weight:600}
+.cs-pro-iconbtn:hover,.cs-pro-btn:hover{background:var(--metalh);color:#fff}.cs-pro-primary{background:var(--bluesel);border-color:#1e4477}.cs-pro-btn.on,.cs-pro-iconbtn.on,.cs-pro-filterbar button.on{background:var(--bluesel);border-color:#1e4477;color:#fff}
+.cs-pro-assets-tools,.cs-pro-assets-foot{background:#1d2025;border-color:#0a0b0c}.cs-pro-search input,.cs-pro-stage-tools select,.cs-pro-timeline-tools select,.cs-pro-input,.cs-pro-field input[type=number],.cs-pro-field input[type=text],.cs-pro-field select,.cs-pro-vector label,.cs-pro-inspector input:not([type=range]):not([type=checkbox]),.cs-pro-inspector select,.v41-modal input,.v41-modal select,.v41-modal textarea{background:var(--well);border-color:#0a0b0c;color:#d6d9de;border-radius:3px}
+.cs-pro-search input:focus,.cs-pro-inspector input:focus,.cs-pro-inspector select:focus,.v41-modal input:focus,.v41-modal select:focus,.v41-modal textarea:focus{outline:1px solid #5b96e6;border-color:#1e4477}
+.cs-pro-asset{border-color:#111318;border-radius:4px;background:linear-gradient(180deg,#25282e,#1d2025);box-shadow:inset 0 1px 0 #ffffff0c}.cs-pro-asset:hover{border-color:#46505c;background:linear-gradient(180deg,#2d3138,#22252b)}.cs-pro-asset-thumb{background:linear-gradient(145deg,#3d4652,#252a31);color:#9fc3ec}
+.cs-pro-tabs button{color:#8d919a}.cs-pro-tabs button.on{color:#fff;background:#222831;box-shadow:inset 0 -2px 0 #5b96e6}.cs-pro-section{border-color:#101216;background:#202329;border-radius:4px}.cs-pro-section>h3{background:linear-gradient(180deg,#2d3036,#25282d);border-color:#101216;color:#d5d9de}.cs-pro-note{border-left-color:#3f7fd4;background:#151b23;color:#8d919a}
+.cs-pro-timecode{background:var(--well);border-color:#0a0b0c;color:#9fc3ec}.cs-pro-stage .cs-canvas-dock{background:radial-gradient(ellipse at 50% 30%,#343942,#111318 68%)}
+.cs-pro-track-head{background:linear-gradient(180deg,#24272c,#1c1f23);border-color:#0a0b0c}.cs-pro-track-lane,.cs-pro-ruler{background:#15171b;border-color:#0a0b0c}.cs-pro-track-row:nth-child(even) .cs-pro-track-lane{background:#181a1f}.cs-pro-playhead{background:#8fb4e4;box-shadow:0 0 6px #3f7fd499}.cs-pro-playhead:before{border-top-color:#8fb4e4}.cs-pro-loop-range{background:#3f7fd40a;border-color:#3f7fd444}
+.v41-statusline{background:#141619;border-color:#0a0b0c;color:#7f8791}.v41-statusline .ok{color:#7dbb63}.v41-tool-cluster{border-left-color:#3a3e45}.v41-modal-card{border-color:#101216;border-radius:6px;background:linear-gradient(180deg,#25282e,#1b1d21),var(--noise);color:#d6d9de}.v41-modal-head,.v41-modal-foot{border-color:#101216}.v41-render-progress{border-color:#1e4477;border-radius:5px;background:#1b1d21ee}.v41-progress-bar i{background:linear-gradient(90deg,#3f7fd4,#7dbb63);box-shadow:none}
+.cs-pro-context{border-color:#101216;background:#25282e}.cs-pro-context button:hover{background:#363a41}.cs-pro-toast{border-color:#1e4477;border-radius:4px;background:#1b2735;color:#dfeafb}.cs-pro-toast.bad{border-color:#67312d;background:#351e1d;color:#ffd5d1}
+@media(max-width:1250px){header .character-save-btn span{display:none}header .character-save-btn{padding:6px 8px}}
+@media(max-width:1080px){body.v40-scene-active header .ver,body.v40-scene-active header #animSel,body.v40-scene-active header #btnPlay,body.v40-scene-active header #btnSources,body.v40-scene-active header #status,body.v40-scene-active header #btnRandom,body.v40-scene-active header #btnReset,body.v40-scene-active header #btnExport{display:none}body.v40-scene-active header{gap:5px;overflow:hidden}header button,header select{white-space:nowrap}}
+@media(max-width:780px){body.v40-scene-active header #btnSaveCharacterLibrary{display:inline-flex}.cs-pro-inspector{top:100px}}
+
 </style>
 </head>
 <body>
@@ -284,6 +312,9 @@ body.v40-scene-active #csWorkspaceContent{background:var(--pro-bg)}
     <select id="animSel" title="Animation"><option value="">— animations —</option></select>
     <button type="button" id="btnPlay">Play</button>
     <button type="button" id="btnSources" title="Configure objectcomponents and texturecomponents libraries">Asset Sources</button>
+    <button type="button" class="character-save-btn" id="btnSaveCharacterLibrary" title="Save the loaded character, textures and all current settings to the Asset Library (Ctrl+Alt+S)" aria-keyshortcuts="Control+Alt+S" disabled>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h12l2 2v14H5z"/><path d="M8 4v6h8V4M8 20v-6h8v6"/><path d="M12 11v3m-1.5-1.5h3"/></svg><span>Save Character</span>
+    </button>
 
     <nav class="top-workspaces" aria-label="Workspace tabs">
       <button type="button" class="workspace-tab" id="btnLibraryWorkspace" title="Open the full Asset Library">
@@ -336,7 +367,7 @@ body.v40-scene-active #csWorkspaceContent{background:var(--pro-bg)}
 </div>
 <script type="module">
 /**
- * Character Studio v4.1.0 — pure WebGL2 + Machinima Studio Pro
+ * Character Studio v4.1.1 — pure WebGL2 + Machinima Studio Pro
  * - Load GLB/GLTF (+ .bj if glTF magic)
  * - Geoset visibility toggles (all mesh nodes)
  * - Head sculpt + gear-safe body sculpt
@@ -1689,7 +1720,9 @@ const slotTexChoice={};
 let sculptSel='head:skull';
 let viewMode='tex';
 const secState={};
-let gearsets=[]; try{ gearsets=JSON.parse(localStorage.getItem('cs_gearsets')||'[]'); }catch{}
+function csStorageGet(key,fallback=null){try{const value=localStorage.getItem(key);return value===null?fallback:value;}catch{return fallback;}}
+function csStorageSet(key,value){try{localStorage.setItem(key,value);return true;}catch{return false;}}
+let gearsets=[]; try{ gearsets=JSON.parse(csStorageGet('cs_gearsets','[]')||'[]'); }catch{}
 function persistGearsets(){ try{ localStorage.setItem('cs_gearsets',JSON.stringify(gearsets)); }catch{} }
 
 const CUSTOM_ROWS=[
@@ -2042,7 +2075,7 @@ function renderRight(){
     const br=document.createElement('div'); br.className='btnrow';
     br.innerHTML=`<button type="button" id="gsExp">Export JSON</button><button type="button" id="gsImp">Import JSON</button>`;
     c.appendChild(br);
-    br.querySelector('#gsExp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({version:1,engine:'character-studio_v4.1.0',gearsets},null,2)],{type:'application/json'}));a.download='gearsets.json';a.click();};
+    br.querySelector('#gsExp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({version:1,engine:'character-studio_v4.1.1',gearsets},null,2)],{type:'application/json'}));a.download='gearsets.json';a.click();};
     br.querySelector('#gsImp').onclick=()=>fileGearset.click();
     c.insertAdjacentHTML('beforeend','<div class="hint">Gearsets store slot variants + texture names. Textures resolve from the loaded texture library. Saved locally and exportable as JSON for game wiring.</div>');
   }
@@ -2061,7 +2094,7 @@ function body_appendSlotStatus(card,group){
 }
 function getAppearance(){
   const geosetVisibility={}; if(model) model.geosets.forEach(g=>geosetVisibility[g.name]=g.visible);
-  return {version:2,engine:'character-studio_v4.1.0',model:model?.fileName||null,
+  return {version:2,engine:'character-studio_v4.1.1',model:model?.fileName||null,
     headMorphs:{...headVals},bodyMorphs:{...bodyVals},geosetVisibility,colors:{...colors},
     equippedTextures:{...slotTexChoice},baseTexture:baseTextureName,textureFolder:texFolderName||null,viewMode,
     geosetTextureTransforms:compactUvTransforms(),
@@ -2216,7 +2249,7 @@ renderRight=function(){ _renderRightV15(); appendPackSection(); };
 
 // ── StudioAPI: scriptable surface for agents / automation / headless ──
 const StudioAPI={
-  version:'4.1.0',
+  version:'4.1.1',
   brand:'CHARACTER STUDIO - made by AEiOU',
   loadFile:f=>loadModelFromFile(f),
   loadPack:f=>loadPackFromZip(f),
@@ -2246,7 +2279,7 @@ window.StudioAPI=StudioAPI;
 // ── headless mode: ?headless=1 hides all chrome, StudioAPI drives everything ──
 if(new URLSearchParams(location.search).get('headless')==='1') document.body.classList.add('headless');
 
-document.dispatchEvent(new CustomEvent('studio:ready',{detail:{version:'4.1.0',brand:StudioAPI.brand,headless:document.body.classList.contains('headless')}}));
+document.dispatchEvent(new CustomEvent('studio:ready',{detail:{version:'4.1.1',brand:StudioAPI.brand,headless:document.body.classList.contains('headless')}}));
 window.__studioReady=true;
 
 renderLeft(); renderRight();
@@ -2316,7 +2349,7 @@ Object.assign(window.StudioAPI,{
     boneCount:(model&&model.skin)?model.skin.joints.length:0,
     poseHash:(model&&model.skin)?Array.from(model.skin.boneMats.slice(0,128)).reduce((h,x)=>(h*31+Math.round(x*1000))|0,0):0 }),
 });
-window.StudioAPI.version='4.1.0';
+window.StudioAPI.version='4.1.1';
 
 
 /* ═══════════ v3.0 Tier 2 — undo/redo · projects · profiles · texture layers · pack authoring ═══════════ */
@@ -2495,7 +2528,7 @@ function idb(){
   });
 }
 function projectRecord(name){
-  return { name, savedAt:new Date().toISOString(), engine:'character-studio_v4.1.0',
+  return { name, savedAt:new Date().toISOString(), engine:'character-studio_v4.1.1',
     appearance:(model?getAppearance():null), gearsets:JSON.parse(JSON.stringify(gearsets)),
     settings:{...settings}, texLayers:JSON.parse(JSON.stringify(texLayers)),
     modelName:(window._modelFileRef&&window._modelFileRef.name)||null,
@@ -2636,7 +2669,7 @@ async function bitmapPng(bmp){
   return canvasPng(cv);
 }
 function genManifest(name,version){
-  return { name, version, generated:new Date().toISOString(), engine:'character-studio_v4.1.0', profile:activeProfile.id,
+  return { name, version, generated:new Date().toISOString(), engine:'character-studio_v4.1.1', profile:activeProfile.id,
     model: model?{ name:(window._modelFileRef&&window._modelFileRef.name)||null, geosets:model.geosets.length,
       bones:model.skin?model.skin.joints.length:0, animations:model.animations.length }:null,
     geosetGroups: model?[...new Set(model.geosets.map(g=>g.group))]:[],
@@ -2650,7 +2683,7 @@ async function buildPack(opts){
   const enc=new TextEncoder();
   const files=[];
   const add=(n,data)=>files.push({name:`${base}/${n}`,data});
-  add('version.txt',enc.encode(`${base}\nengine: character-studio_v4.1.0\ngenerated: ${new Date().toISOString()}\n`));
+  add('version.txt',enc.encode(`${base}\nengine: character-studio_v4.1.1\ngenerated: ${new Date().toISOString()}\n`));
   const manifest=genManifest(name,version);
   const v=validateManifest(manifest);
   if(!v.ok) throw new Error('generated manifest invalid: '+v.errors.join('; '));
@@ -2660,6 +2693,11 @@ async function buildPack(opts){
     add('geoset_list.txt',enc.encode(model.geosets.map(g=>`${g.name}\t${g.group}\t${g.visible?'on':'off'}`).join('\n')+'\n'));
   }
   add('gearsets.json',enc.encode(JSON.stringify(gearsets,null,2)));
+  add('studio/character_state.json',enc.encode(JSON.stringify({
+    version:1,engine:'character-studio_v4.1.1',savedAt:new Date().toISOString(),
+    appearance:model?getAppearance():null,settings:{...settings},gearsets:JSON.parse(JSON.stringify(gearsets)),
+    animation:{index:animIndex,time:animTime,playing,speed:animSpeed},view:{yaw,pitch,dist,targetY}
+  },null,2)));
   if(opts&&opts.includeTextures!==false){
     for(const [k,e] of texLib){
       if(!e.bmp) continue;
@@ -2681,7 +2719,7 @@ async function buildPack(opts){
     add('preview/preview.png',u8);
   }
   add('docs/integration_notes.txt',enc.encode(
-`${base}\nAuthored with CHARACTER STUDIO - made by AEiOU (v4.1.0).\n\nLayout:\n  customization/customization_manifest.json  machine-readable manifest (validated)\n  appearance.json                             portable appearance state\n  geoset_list.txt                             geoset name / group / default visibility\n  textures/                                   texture library + baked atlases (PNG)\n  models/                                     source model (optional)\n  preview/preview.png                         viewport render\n  SHA256SUMS.txt                              integrity (sha256sum -c compatible)\n`));
+`${base}\nAuthored with CHARACTER STUDIO - made by AEiOU (v4.1.1).\n\nLayout:\n  customization/customization_manifest.json  machine-readable manifest (validated)\n  appearance.json                             portable appearance state\n  geoset_list.txt                             geoset name / group / default visibility\n  textures/                                   texture library + baked atlases (PNG)\n  models/                                     source model (optional)\n  preview/preview.png                         viewport render\n  SHA256SUMS.txt                              integrity (sha256sum -c compatible)\n`));
   const sums=[];
   for(const f of files) sums.push(`${await sha256Hex(f.data)}  ${f.name}`);
   files.push({name:`${base}/SHA256SUMS.txt`,data:enc.encode(sums.join('\n')+'\n')});
@@ -2787,14 +2825,14 @@ function exportGlbBytes(opts={}){
   }
   const uvMeta=compactUvTransforms();
   for(const [name,cfg] of Object.entries(uvMeta)){const g=model.geosets.find(x=>x.name===name);if(!g)continue;const nd=json.nodes[g.nodeIndex];nd.extras={...(nd.extras||{}),characterStudioTextureTransform:cfg};}
-  json.asset=json.asset||{};json.asset.extras={...(json.asset.extras||{}),characterStudio:{version:'4.1.0',geosetTextureTransforms:uvMeta}};
+  json.asset=json.asset||{};json.asset.extras={...(json.asset.extras||{}),characterStudio:{version:'4.1.1',geosetTextureTransforms:uvMeta}};
   if(!includeHidden){
     for(const g of model.geosets){
       if(!g.visible&&json.nodes[g.nodeIndex]&&json.nodes[g.nodeIndex].mesh!=null){ delete json.nodes[g.nodeIndex].mesh; strippedNodes++; }
     }
   }
   json.asset=json.asset||{};
-  json.asset.generator='CHARACTER STUDIO - made by AEiOU (v4.1.0)';
+  json.asset.generator='CHARACTER STUDIO - made by AEiOU (v4.1.1)';
   const enc=new TextEncoder();
   let jbytes=enc.encode(JSON.stringify(json));
   const jpad=(4-(jbytes.length%4))%4;
@@ -3412,7 +3450,7 @@ function openHelp(){ document.getElementById('helpModal').style.display='block';
     document.getElementById('btnHelp').onclick=openHelp; }
 }
 // auto-start once for real users; never for automation (webdriver) or headless embeds
-if(!navigator.webdriver&&!/headless=1/.test(location.search)&&!localStorage.getItem('cs_tour_done')){
+if(!navigator.webdriver&&!/headless=1/.test(location.search)&&!csStorageGet('cs_tour_done')){
   window.__tourAutoStarted=true; setTimeout(()=>{ try{ startTour(); }catch(e){ console.error(e); } },800);
 }
 
@@ -3441,8 +3479,8 @@ async function refreshSourceBridge(){
     const r=await fetch('/api/source-presets',{cache:'no-store'}); if(!r.ok)throw new Error('preset API unavailable');
     sourceState=await r.json(); sourceBridgeOnline=true; persistSourceState(); renderRight();
     const p=activeSourcePreset();
-    if(!p.objectcomponents.path&&!p.texturecomponents.path&&!localStorage.getItem('cs_source_setup_seen')){
-      localStorage.setItem('cs_source_setup_seen','1');
+    if(!p.objectcomponents.path&&!p.texturecomponents.path&&!csStorageGet('cs_source_setup_seen')){
+      csStorageSet('cs_source_setup_seen','1');
       setStatus('Set the objectcomponents and texturecomponents source folders');
       setTimeout(openAssetSources,350);
     }
@@ -3556,7 +3594,7 @@ Object.assign(window.StudioAPI,{
 });
 
 
-/* ═══════════ v4.1.0 — Backdrop & Chroma system · Post FX (rasterize/posterize/outline) · Capture suite · Scene Studio · Asset Library ═══════════ */
+/* ═══════════ v4.1.1 — Backdrop & Chroma system · Post FX (rasterize/posterize/outline) · Capture suite · Scene Studio · Asset Library ═══════════ */
 
 /* ── pure helpers (unit-tested from the shipped HTML) ── */
 function csChromaPresetColor(mode){
@@ -3635,7 +3673,7 @@ function csNormalizeScene(s){
 }
 function validateLibraryRecord(rec){
   const errors=[];
-  const TYPES=['appearance','scene','gearset','machinima','audio','video','screenshot','spritesheet','turntable','pack','texture','json','file'];
+  const TYPES=['character','appearance','scene','gearset','machinima','audio','video','screenshot','spritesheet','turntable','pack','texture','json','file'];
   if(!rec||typeof rec!=='object'){ errors.push('record must be an object'); return {ok:false,errors}; }
   if(typeof rec.id!=='string'||rec.id.length<4) errors.push('id must be a string of at least 4 chars');
   if(!TYPES.includes(rec.type)) errors.push('type must be one of: '+TYPES.join(', '));
@@ -3988,7 +4026,7 @@ function csRenderSpriteSheet(opts={}){
     canvas.width=prev.w; canvas.height=prev.h;
     csRenderFrame(performance.now());
   }
-  const meta={version:1,engine:'character-studio_v4.1.0',directions:dirs,cell:{w:cell,h:cell},cols,rows,
+  const meta={version:1,engine:'character-studio_v4.1.1',directions:dirs,cell:{w:cell,h:cell},cols,rows,
     order:'row-major, clockwise turnaround starting at the current camera yaw',
     yawRadians:yaws.map(v=>Number(v.toFixed(6))),transparent,
     projection:settings.ortho?'orthographic':'perspective',fov:settings.fov,generated:new Date().toISOString()};
@@ -4023,12 +4061,15 @@ function csLibExt(rec){
 }
 function csSafeFileName(s){ return String(s||'asset').replace(/[^\w.\- ]+/g,'_').replace(/\s+/g,'_').slice(0,80)||'asset'; }
 async function libSave(type,name,payload,meta={}){
-  const rec={id:csLibId(),type,name:String(name||type),createdAt:new Date().toISOString(),meta,engine:'character-studio_v4.1.0'};
+  const rec={id:csLibId(),type,name:String(name||type),createdAt:new Date().toISOString(),meta,engine:'character-studio_v4.1.1'};
   if(typeof payload==='string') rec.json=payload;
   else if(payload&&typeof payload.json==='string'){
     rec.json=payload.json;
     if(payload.previewBlob instanceof Blob){ rec.previewBlob=payload.previewBlob; rec.previewMime=payload.previewBlob.type||'image/png'; rec.previewSize=payload.previewBlob.size; }
-  } else if(payload&&payload.blob){ rec.blob=payload.blob; rec.mime=payload.blob.type||payload.mime||'application/octet-stream'; rec.size=payload.blob.size; }
+  } else if(payload&&payload.blob){
+    rec.blob=payload.blob; rec.mime=payload.mime||payload.blob.type||'application/octet-stream'; rec.size=payload.blob.size;
+    if(payload.previewBlob instanceof Blob){ rec.previewBlob=payload.previewBlob; rec.previewMime=payload.previewBlob.type||'image/png'; rec.previewSize=payload.previewBlob.size; }
+  }
   else rec.json=JSON.stringify(payload??null);
   const v=validateLibraryRecord(rec);
   if(!v.ok) throw new Error('Library record invalid: '+v.errors.join('; '));
@@ -4064,7 +4105,7 @@ async function libExportAll(){
     if(rec.previewBlob){ preview='library/'+rec.type+'/'+csSafeFileName(rec.name)+'_'+rec.id.slice(0,8)+'_preview.png'; files.push({name:preview,data:new Uint8Array(await rec.previewBlob.arrayBuffer())}); }
     manifest.push({id:rec.id,type:rec.type,name:rec.name,createdAt:rec.createdAt,file:rel,preview,bytes:data.length,meta:rec.meta||{}});
   }
-  files.push({name:'library/library_manifest.json',data:enc.encode(JSON.stringify({version:1,engine:'character-studio_v4.1.0',exported:new Date().toISOString(),items:manifest},null,2))});
+  files.push({name:'library/library_manifest.json',data:enc.encode(JSON.stringify({version:1,engine:'character-studio_v4.1.1',exported:new Date().toISOString(),items:manifest},null,2))});
   const sums=[];
   for(const f of files) sums.push(`${await sha256Hex(f.data)}  ${f.name}`);
   files.push({name:'SHA256SUMS.txt',data:enc.encode(sums.join('\n')+'\n')});
@@ -4343,16 +4384,12 @@ function appendLibrarySection(){
       const row=document.createElement('div'); row.className='cs-librow';
       const kb=it.size>0?` · ${(it.size/1024).toFixed(it.size>1048576?0:1)} KB`:'';
       row.innerHTML=`<span class="cs-libtype">${it.type}</span><span class="cs-libname" title="${it.name}">${it.name}</span><span class="hint">${String(it.createdAt).slice(0,10)}${kb}</span>`+
-        `<button data-a="apply" title="Apply"${['appearance','scene','gearset','machinima'].includes(it.type)?'':' disabled'}>↩</button><button data-a="export" title="Export">⬇</button><button data-a="del" title="Delete">✕</button>`;
+        `<button data-a="apply" title="Apply"${['character','appearance','scene','gearset','machinima'].includes(it.type)?'':' disabled'}>↩</button><button data-a="export" title="Export">⬇</button><button data-a="del" title="Delete">✕</button>`;
       row.querySelector('[data-a=export]').onclick=()=>libExportOne(it.id).then(f=>setStatus('Exported '+f)).catch(e=>setStatus('Export failed: '+e.message));
       row.querySelector('[data-a=del]').onclick=()=>{ if(confirm(`Delete “${it.name}” from the library?`)) libDelete(it.id); };
       row.querySelector('[data-a=apply]').onclick=async()=>{
-        const rec=await libGet(it.id); if(!rec||rec.json==null) return;
-        try{
-          if(it.type==='appearance'){ window.StudioAPI.applyAppearance(rec.json); setStatus(`Applied appearance “${it.name}”`); }
-          else if(it.type==='scene'){ sceneState=csNormalizeScene(JSON.parse(rec.json)); csPersistScene(); renderRight(); setStatus(`Applied scene “${it.name}”`); }
-          else if(it.type==='gearset'){ const g=JSON.parse(rec.json); if(Array.isArray(g.gearsets)){ for(const gs of g.gearsets) if(!gearsets.some(x=>x.name===gs.name)) gearsets.push(gs); persistGearsets(); renderRight(); setStatus(`Imported ${g.gearsets.length} gearset(s) from library`); } }
-        }catch(e){ setStatus('Apply failed: '+e.message); }
+        const rec=await libGet(it.id); if(!rec)return;
+        try{await csApplyLibraryRecord(rec);}catch(e){setStatus('Apply failed: '+e.message);}
       };
       list.appendChild(row);
     }
@@ -4386,14 +4423,14 @@ Object.assign(window.StudioAPI,{
     setMarkers:(on)=>{ sceneState.markers=!!on; csPersistScene(); renderRight(); return sceneState.markers; },
     setFaceMedia:(face,media)=>{ if(!CS_FACE_KEYS.includes(face)) throw new Error('Unknown face: '+face+' (use '+CS_FACE_KEYS.join('/')+')'); sceneState.faces[face].media=['chroma','image','video','off'].includes(media)?media:'chroma'; csPersistScene(); renderRight(); return cloneJson(sceneState.faces[face]); },
   },
-  library:{ list:libList, get:libGet, save:libSave, remove:libDelete, exportOne:libExportOne, exportAll:libExportAll },
+  library:{ list:libList, get:libGet, save:libSave, saveCharacter:csSaveCurrentCharacterAsset, openCharacter:csLoadCharacterLibraryRecord, remove:libDelete, exportOne:libExportOne, exportAll:libExportAll },
 });
 
 
-/* ═══════════ v4.1.0 — full Library + Scene Studio workspaces ═══════════ */
+/* ═══════════ v4.1.1 — full Library + Scene Studio workspaces ═══════════ */
 const csWorkspaceState={
   active:null,
-  library:{query:'',type:'all',sort:'newest',view:localStorage.getItem('cs_library_view')||'grid',selected:null},
+  library:{query:'',type:'all',sort:'newest',view:csStorageGet('cs_library_view','grid')||'grid',selected:null},
   scene:{query:''},
 };
 let csWorkspaceUrls=[];
@@ -4424,6 +4461,7 @@ function csIcon(name){
     image:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m4 18 5-5 4 4 2-2 5 4"/>',
     gear:'<circle cx="12" cy="12" r="3"/><path d="M19 13.5v-3l-2-.7-.7-1.7.9-1.9-2.1-2.1-1.9.9-1.7-.7L10.5 2h-3l-.7 2-1.7.7-1.9-.9-2.1 2.1.9 1.9-.7 1.7-2 .7v3l2 .7.7 1.7-.9 1.9 2.1 2.1 1.9-.9 1.7.7.7 2h3l.7-2 1.7-.7 1.9.9 2.1-2.1-.9-1.9.7-1.7z" transform="scale(.8) translate(3 3)"/>',
     appearance:'<circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/>',
+    character:'<circle cx="12" cy="7.5" r="3.5"/><path d="M6 20a6 6 0 0 1 12 0"/><path d="M4 4h4M4 4v4M20 4h-4M20 4v4M4 20h4M4 20v-4M20 20h-4M20 20v-4"/>',
     close:'<path d="M6 6l12 12M18 6 6 18"/>',
     camera:'<path d="M4 8h4l2-3h4l2 3h4v11H4z"/><circle cx="12" cy="13" r="4"/>',
     reset:'<path d="M4 8V4h4"/><path d="M5.5 5.5A8 8 0 1 1 4 12"/>',
@@ -4455,12 +4493,78 @@ async function csSaveCurrentAppearance(){
   await libSave('appearance',name,{json:JSON.stringify(getAppearance(),null,2),previewBlob},{model:model?.fileName||null});
   setStatus(`Appearance “${name}” saved to Asset Library`); return name;
 }
+let csCharacterSaveBusy=false;
+function csUpdateCharacterSaveButton(){
+  const btn=document.getElementById('btnSaveCharacterLibrary'); if(!btn)return;
+  btn.disabled=!model||csCharacterSaveBusy;
+  btn.classList.toggle('ready',!!model&&!csCharacterSaveBusy);
+  const label=btn.querySelector('span'); if(label)label.textContent=csCharacterSaveBusy?'Saving…':'Save Character';
+  btn.title=model?'Save this character, model, textures and every current setting to the Asset Library':'Load a character model before saving';
+}
+async function csSaveCurrentCharacterAsset(){
+  if(!model){ setStatus('Load a character model before saving it to the Library'); csUpdateCharacterSaveButton(); return null; }
+  if(!window._modelFileRef){ throw new Error('The source model is no longer available in this browser session. Re-open the model or bundle, then save again.'); }
+  const base=(model.fileName||window._modelFileRef.name||'Character').replace(/\.(glb|gltf|bj)$/i,'');
+  const typed=prompt('Character asset name',base+' Character');
+  if(typed===null)return null;
+  const name=typed.trim()||base||'Character';
+  csCharacterSaveBusy=true; csUpdateCharacterSaveButton();
+  setStatus(`Building reusable character asset “${name}”…`);
+  try{
+    const previewBlob=await csCanvasBlob();
+    const packName=csSafeFileName(name).replace(/_+$/,'')||'character_asset';
+    const built=await buildPack({name:packName,version:'1.0.0',includeModel:true,includeTextures:true,includePreview:true});
+    const blob=new Blob([built.bytes],{type:'application/zip'});
+    const saved=await libSave('character',name,{blob,previewBlob,mime:'application/zip'},{
+      model:model.fileName||window._modelFileRef.name||null,format:'character-studio/content-pack',packVersion:'1.0.0',
+      geosets:model.geosets?.length||0,animations:model.animations?.length||0,textures:texLib.size,gearsets:gearsets.length,
+      bytes:blob.size,files:built.files.length,restorable:true
+    });
+    setStatus(`Character “${name}” saved to Asset Library · ${built.files.length} files · ${(blob.size/1048576).toFixed(1)} MB`);
+    if(csWorkspaceState.active==='library'){csWorkspaceState.library.selected=saved.id;await csRenderLibraryWorkspace();}
+    return saved;
+  }finally{csCharacterSaveBusy=false;csUpdateCharacterSaveButton();}
+}
+async function csLoadCharacterLibraryRecord(rec){
+  if(!rec?.blob)throw new Error('Saved character payload is missing');
+  const file=new File([rec.blob],csSafeFileName(rec.name)+'.zip',{type:rec.mime||'application/zip'});
+  setStatus(`Opening saved character “${rec.name}”…`);
+  const entries=(await readZipEntries(file)).filter(e=>!e.dir);
+  const findEntry=(rx)=>entries.find(e=>rx.test(e.name));
+  const stateEntry=findEntry(/(?:^|\/)studio\/character_state\.json$/i);
+  const appearanceEntry=findEntry(/(?:^|\/)appearance\.json$/i);
+  const gearEntry=findEntry(/(?:^|\/)gearsets\.json$/i);
+  let state=null,appearance=null,savedGearsets=null;
+  const td=new TextDecoder();
+  if(stateEntry){try{state=JSON.parse(td.decode(await readZipEntryData(file,stateEntry)));}catch{}}
+  if(appearanceEntry){try{appearance=JSON.parse(td.decode(await readZipEntryData(file,appearanceEntry)));}catch{}}
+  if(gearEntry){try{savedGearsets=JSON.parse(td.decode(await readZipEntryData(file,gearEntry)));}catch{}}
+  await loadInputBundle([file]);
+  const app=state?.appearance||appearance;
+  if(app&&model)window.StudioAPI.applyAppearance(JSON.stringify(app));
+  if(state?.settings&&typeof state.settings==='object'){Object.assign(settings,state.settings);persistSettings();}
+  const gs=Array.isArray(state?.gearsets)?state.gearsets:(Array.isArray(savedGearsets)?savedGearsets:[]);
+  for(const item of gs)if(item&&item.name&&!gearsets.some(x=>x.name===item.name))gearsets.push(item);
+  if(gs.length)persistGearsets();
+  if(state?.animation&&model){
+    animSpeed=Math.max(.01,Number(state.animation.speed)||1);
+    const idx=Number.isInteger(state.animation.index)?state.animation.index:-1;
+    if(idx>=0&&idx<model.animations.length){animIndex=idx;animTime=Math.max(0,Number(state.animation.time)||0);playing=!!state.animation.playing;}
+  }
+  if(state?.view){
+    if(Number.isFinite(+state.view.yaw))yaw=+state.view.yaw;if(Number.isFinite(+state.view.pitch))pitch=+state.view.pitch;
+    if(Number.isFinite(+state.view.dist))dist=Math.max(.05,+state.view.dist);if(Number.isFinite(+state.view.targetY))targetY=+state.view.targetY;
+  }
+  dirtyMorph=true;renderLeft();renderRight();renderTimeline();csUpdateCharacterSaveButton();
+  setStatus(`Character “${rec.name}” restored from Asset Library`);
+  return true;
+}
 async function csSaveCurrentGearsets(){
   if(!gearsets.length){ setStatus('No gearsets to save'); return null; }
   const typed=prompt('Gearset collection name','Gearsets '+new Date().toLocaleDateString());
   if(typed===null) return null;
   const name=typed.trim()||'Gearsets';
-  await libSave('gearset',name,JSON.stringify({version:1,engine:'character-studio_v4.1.0',gearsets},null,2),{count:gearsets.length});
+  await libSave('gearset',name,JSON.stringify({version:1,engine:'character-studio_v4.1.1',gearsets},null,2),{count:gearsets.length});
   setStatus(`${gearsets.length} gearset(s) saved to Asset Library`); return name;
 }
 async function csImportLibraryFiles(files){
@@ -4482,7 +4586,9 @@ async function libRename(id,name){
   try{ renderRight(); }catch{} window.__csWorkspaceRefresh?.(); return rec;
 }
 async function csApplyLibraryRecord(rec){
-  if(!rec||rec.json==null) return false;
+  if(!rec)return false;
+  if(rec.type==='character'){await csLoadCharacterLibraryRecord(rec);return true;}
+  if(rec.json==null)return false;
   if(rec.type==='appearance'){ window.StudioAPI.applyAppearance(rec.json); setStatus(`Applied appearance “${rec.name}”`); return true; }
   if(rec.type==='scene'){ sceneState=csNormalizeScene(JSON.parse(rec.json)); csPersistScene(); renderRight(); if(csWorkspaceState.active==='scene') csRenderSceneWorkspace(); setStatus(`Applied scene “${rec.name}”`); return true; }
   if(rec.type==='gearset'){
@@ -4490,11 +4596,11 @@ async function csApplyLibraryRecord(rec){
   }
   return false;
 }
-function csCanApply(type){ return ['appearance','scene','gearset'].includes(type); }
+function csCanApply(type){ return ['character','appearance','scene','gearset'].includes(type); }
 function csSceneSwatch(scene){
   const s=csNormalizeScene(scene); const el=document.createElement('div'); el.className='cs-scene-swatch '+(s.chroma==='blue'?'blue ':'')+(s.markers?'markers':''); el.innerHTML='<span class="room-lines"></span>'; return el;
 }
-function csTypeIcon(type){ return type==='scene'?'scene':type==='appearance'?'appearance':type==='gearset'?'gear':['screenshot','spritesheet','texture'].includes(type)?'image':'file'; }
+function csTypeIcon(type){ return type==='character'?'character':type==='scene'?'scene':type==='appearance'?'appearance':type==='gearset'?'gear':['screenshot','spritesheet','texture'].includes(type)?'image':'file'; }
 function csRecordPreview(rec,detail=false){
   const wrap=document.createElement('div'); wrap.className=detail?'cs-detail-preview':'cs-asset-thumb';
   const preview=rec.previewBlob || (rec.blob&&String(rec.mime||rec.blob.type||'').startsWith('image/')?rec.blob:null);
@@ -4549,10 +4655,11 @@ async function csRenderLibraryWorkspace(){
   csWorkspaceContent.innerHTML=`<div class="cs-library-shell">
     <div class="cs-library-toolbar">
       <div class="cs-search">${csIcon('search')}<input id="csLibQuery" type="text" placeholder="Search names, types and metadata…" value="${csEscape(st.query)}"></div>
-      <select id="csLibType" aria-label="Filter by asset type"><option value="all">All asset types</option>${['appearance','scene','gearset','machinima','audio','video','screenshot','spritesheet','turntable','texture','pack','json','file'].map(t=>`<option value="${t}"${st.type===t?' selected':''}>${t[0].toUpperCase()+t.slice(1)}</option>`).join('')}</select>
+      <select id="csLibType" aria-label="Filter by asset type"><option value="all">All asset types</option>${['character','appearance','scene','gearset','machinima','audio','video','screenshot','spritesheet','turntable','texture','pack','json','file'].map(t=>`<option value="${t}"${st.type===t?' selected':''}>${t[0].toUpperCase()+t.slice(1)}</option>`).join('')}</select>
       <select id="csLibSort" aria-label="Sort library"><option value="newest"${st.sort==='newest'?' selected':''}>Newest first</option><option value="oldest"${st.sort==='oldest'?' selected':''}>Oldest first</option><option value="name"${st.sort==='name'?' selected':''}>Name A–Z</option><option value="type"${st.sort==='type'?' selected':''}>Group by type</option></select>
       <div class="cs-toolbar-actions">
         <button class="cs-toolbtn" id="csLibAdd">${csIcon('plus')}Add files</button><input id="csLibAddInput" type="file" multiple hidden>
+        <button class="cs-primarybtn" id="csLibSaveCharacter" title="Save the loaded model, textures and current settings">${csIcon('character')}Save character</button>
         <button class="cs-toolbtn" id="csLibSaveAppearance">${csIcon('appearance')}Save appearance</button>
         <button class="cs-toolbtn" id="csLibSaveScene">${csIcon('scene')}Save scene</button>
         <button class="cs-primarybtn" id="csLibExportAllTop">${csIcon('download')}Export all</button>
@@ -4571,9 +4678,10 @@ async function csRenderLibraryWorkspace(){
   };
   document.getElementById('csLibType').onchange=e=>{ st.type=e.target.value; csRenderLibraryWorkspace(); };
   document.getElementById('csLibSort').onchange=e=>{ st.sort=e.target.value; csRenderLibraryWorkspace(); };
-  csWorkspaceContent.querySelectorAll('[data-view]').forEach(b=>{ b.classList.toggle('on',b.dataset.view===st.view); b.onclick=()=>{st.view=b.dataset.view;localStorage.setItem('cs_library_view',st.view);csRenderLibraryWorkspace();}; });
+  csWorkspaceContent.querySelectorAll('[data-view]').forEach(b=>{ b.classList.toggle('on',b.dataset.view===st.view); b.onclick=()=>{st.view=b.dataset.view;csStorageSet('cs_library_view',st.view);csRenderLibraryWorkspace();}; });
   document.getElementById('csLibAdd').onclick=()=>document.getElementById('csLibAddInput').click();
   document.getElementById('csLibAddInput').onchange=async e=>{await csImportLibraryFiles(e.target.files);csRenderLibraryWorkspace();};
+  const saveCharacter=document.getElementById('csLibSaveCharacter');saveCharacter.disabled=!model;saveCharacter.onclick=()=>csSaveCurrentCharacterAsset().catch(e=>setStatus('Save failed: '+e.message));
   document.getElementById('csLibSaveAppearance').onclick=()=>csSaveCurrentAppearance().catch(e=>setStatus('Save failed: '+e.message));
   document.getElementById('csLibSaveScene').onclick=()=>csSaveCurrentScene().catch(e=>setStatus('Save failed: '+e.message));
   document.getElementById('csLibExportAllTop').onclick=()=>libExportAll().catch(e=>setStatus('Export failed: '+e.message));
@@ -4593,7 +4701,7 @@ async function csRenderLibraryWorkspace(){
     const card=document.createElement('article'); card.className='cs-asset-card'+(rec.id===st.selected?' selected':''); card.tabIndex=0;
     const thumb=csRecordPreview(rec); const badge=document.createElement('span'); badge.className='cs-card-type'; badge.textContent=rec.type; thumb.appendChild(badge); card.appendChild(thumb);
     const size=rec.size||(rec.json?.length||0);
-    card.insertAdjacentHTML('beforeend',`<div class="cs-card-body"><div class="cs-card-name" title="${csEscape(rec.name)}">${csEscape(rec.name)}</div><div class="cs-card-meta"><span>${csDate(rec.createdAt).split(',')[0]}</span><span>${csBytes(size)}</span></div></div><div class="cs-card-actions">${csCanApply(rec.type)?'<button class="cs-toolbtn" data-action="apply">Apply</button>':''}<button class="cs-toolbtn" data-action="export">Export</button></div>`);
+    card.insertAdjacentHTML('beforeend',`<div class="cs-card-body"><div class="cs-card-name" title="${csEscape(rec.name)}">${csEscape(rec.name)}</div><div class="cs-card-meta"><span>${csDate(rec.createdAt).split(',')[0]}</span><span>${csBytes(size)}</span></div></div><div class="cs-card-actions">${csCanApply(rec.type)?`<button class="cs-toolbtn" data-action="apply">${rec.type==='character'?'Open':'Apply'}</button>`:''}<button class="cs-toolbtn" data-action="export">Export</button></div>`);
     const select=()=>{st.selected=rec.id;csRenderLibraryWorkspace();}; card.onclick=e=>{if(!e.target.closest('button'))select();}; card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select();}};
     card.querySelector('[data-action=apply]')?.addEventListener('click',e=>{e.stopPropagation();csApplyLibraryRecord(rec).catch(x=>setStatus('Apply failed: '+x.message));});
     card.querySelector('[data-action=export]').onclick=e=>{e.stopPropagation();libExportOne(rec.id).then(f=>setStatus('Exported '+f)).catch(x=>setStatus('Export failed: '+x.message));};
@@ -4606,7 +4714,7 @@ function csRenderLibraryDetail(rec){
   if(!rec){ detail.innerHTML=`<div class="cs-detail-empty">${csIcon('library')}<b>Select an asset</b><span>Its preview and file actions will appear here.</span></div>`; return; }
   detail.innerHTML='<div class="cs-detail-inner"></div>'; const inner=detail.firstElementChild; inner.appendChild(csRecordPreview(rec,true));
   const size=rec.size||(rec.json?.length||0); const meta=rec.meta&&Object.keys(rec.meta).length?JSON.stringify(rec.meta,null,2):'No custom metadata';
-  inner.insertAdjacentHTML('beforeend',`<div class="cs-detail-kind">${csEscape(rec.type)}</div><h3 class="cs-detail-title">${csEscape(rec.name)}</h3><div class="cs-detail-actions">${csCanApply(rec.type)?`<button class="cs-primarybtn" data-detail="apply">${csIcon('apply')}Apply</button>`:''}<button class="cs-toolbtn" data-detail="export">${csIcon('download')}Export</button><button class="cs-toolbtn" data-detail="rename">${csIcon('edit')}Rename</button><button class="cs-dangerbtn" data-detail="delete">${csIcon('trash')}Delete</button></div><dl class="cs-meta-grid"><dt>Created</dt><dd>${csDate(rec.createdAt)}</dd><dt>File size</dt><dd>${csBytes(size)}</dd><dt>Engine</dt><dd>${csEscape(rec.engine||'—')}</dd><dt>Identifier</dt><dd>${csEscape(rec.id)}</dd><dt>Metadata</dt><dd><pre style="margin:0;white-space:pre-wrap;font:inherit">${csEscape(meta)}</pre></dd></dl>${rec.json?`<pre class="cs-json-preview">${csEscape(rec.json.slice(0,7000))}${rec.json.length>7000?'\n…':''}</pre>`:''}`);
+  inner.insertAdjacentHTML('beforeend',`<div class="cs-detail-kind">${csEscape(rec.type)}</div><h3 class="cs-detail-title">${csEscape(rec.name)}</h3><div class="cs-detail-actions">${csCanApply(rec.type)?`<button class="cs-primarybtn" data-detail="apply">${csIcon(rec.type==='character'?'character':'apply')}${rec.type==='character'?'Open character':'Apply'}</button>`:''}<button class="cs-toolbtn" data-detail="export">${csIcon('download')}Export</button><button class="cs-toolbtn" data-detail="rename">${csIcon('edit')}Rename</button><button class="cs-dangerbtn" data-detail="delete">${csIcon('trash')}Delete</button></div><dl class="cs-meta-grid"><dt>Created</dt><dd>${csDate(rec.createdAt)}</dd><dt>File size</dt><dd>${csBytes(size)}</dd><dt>Engine</dt><dd>${csEscape(rec.engine||'—')}</dd><dt>Identifier</dt><dd>${csEscape(rec.id)}</dd><dt>Metadata</dt><dd><pre style="margin:0;white-space:pre-wrap;font:inherit">${csEscape(meta)}</pre></dd></dl>${rec.json?`<pre class="cs-json-preview">${csEscape(rec.json.slice(0,7000))}${rec.json.length>7000?'\n…':''}</pre>`:''}`);
   inner.querySelector('[data-detail=apply]')?.addEventListener('click',()=>csApplyLibraryRecord(rec).catch(e=>setStatus('Apply failed: '+e.message)));
   inner.querySelector('[data-detail=export]').onclick=()=>libExportOne(rec.id).then(f=>setStatus('Exported '+f)).catch(e=>setStatus('Export failed: '+e.message));
   inner.querySelector('[data-detail=rename]').onclick=async()=>{ const name=prompt('Rename library item',rec.name); if(name&&name.trim()&&name.trim()!==rec.name){await libRename(rec.id,name);csWorkspaceState.library.selected=rec.id;csRenderLibraryWorkspace();} };
@@ -4655,15 +4763,23 @@ async function csRenderSceneWorkspace(){
 window.__csWorkspaceRefresh=()=>{ if(csWorkspaceState.active==='library') csRenderLibraryWorkspace(); else if(csWorkspaceState.active==='scene') csRenderSceneWorkspace(); };
 document.getElementById('btnLibraryWorkspace').onclick=()=>csWorkspaceState.active==='library'?csCloseWorkspace():csOpenWorkspace('library');
 document.getElementById('btnSceneStudioWorkspace').onclick=()=>csWorkspaceState.active==='scene'?csCloseWorkspace():csOpenWorkspace('scene');
+document.getElementById('btnSaveCharacterLibrary').onclick=()=>csSaveCurrentCharacterAsset().catch(e=>{setStatus('Character save failed: '+e.message);csCharacterSaveBusy=false;csUpdateCharacterSaveButton();});
+document.addEventListener('keydown',e=>{
+  const tag=e.target?.tagName?.toLowerCase(); const editing=tag==='input'||tag==='textarea'||tag==='select'||e.target?.isContentEditable;
+  if(!editing&&(e.ctrlKey||e.metaKey)&&e.altKey&&String(e.key).toLowerCase()==='s'){e.preventDefault();document.getElementById('btnSaveCharacterLibrary')?.click();}
+});
+document.addEventListener('studio:modelloaded',csUpdateCharacterSaveButton);
+document.addEventListener('studio:packloaded',csUpdateCharacterSaveButton);
+setTimeout(csUpdateCharacterSaveButton,0);
 document.getElementById('csWorkspaceClose').onclick=csCloseWorkspace;
 csWorkspaceEl.querySelectorAll('[data-workspace]').forEach(b=>b.onclick=()=>csOpenWorkspace(b.dataset.workspace));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&csWorkspaceState.active)csCloseWorkspace();});
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   v4.1.0 — MACHINIMA STUDIO PRO
+   v4.1.1 — MACHINIMA STUDIO PRO
    Professional offline nonlinear scene, camera, animation and audio editor.
    ═══════════════════════════════════════════════════════════════════════════ */
-const CS_V4_VERSION='4.1.0';
+const CS_V4_VERSION='4.1.1';
 const CS_V4_PROJECT_KEY='cs_machinima_project_v1';
 const CS_V4_UI_KEY='cs_machinima_ui_v1';
 const CS_V4_TRACK_TYPES={
@@ -4682,7 +4798,7 @@ function csV4DefaultTrack(type,index=0){
 }
 function csV4DefaultProject(){
   const camera=csV4DefaultTrack('camera'); camera.name='Main Camera'; camera.keyframes=[{id:csV4Id('key'),time:0,camera:csV4CameraSnapshot()}];
-  return {version:1,engine:'character-studio_v4.1.0',id:csV4Id('project'),name:'Untitled Machinima',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),fps:30,duration:30,playhead:0,zoom:76,loop:false,loopStart:0,loopEnd:30,snap:true,snapMode:'all',safeFrame:true,
+  return {version:1,engine:'character-studio_v4.1.1',id:csV4Id('project'),name:'Untitled Machinima',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),fps:30,duration:30,playhead:0,zoom:76,loop:false,loopStart:0,loopEnd:30,snap:true,snapMode:'all',safeFrame:true,
     tracks:[camera,csV4DefaultTrack('scene'),csV4DefaultTrack('animation'),csV4DefaultTrack('video'),csV4DefaultTrack('effect'),csV4DefaultTrack('music'),csV4DefaultTrack('dialogue'),csV4DefaultTrack('sfx')],markers:[],baseScene:csV4Clone(csNormalizeScene(sceneState))};
 }
 function csV4NormalizeClip(c,type){
@@ -4690,7 +4806,7 @@ function csV4NormalizeClip(c,type){
 }
 function csV4NormalizeProject(raw){
   const base=csV4DefaultProject(),p=raw&&typeof raw==='object'?raw:{};
-  const out={...base,...p}; out.version=1; out.engine='character-studio_v4.1.0'; out.id=String(p.id||base.id); out.name=String(p.name||base.name).slice(0,120); out.fps=[24,25,30,50,60].includes(+p.fps)?+p.fps:30; out.duration=csV4Clamp(p.duration||30,1,7200); out.playhead=csV4Clamp(p.playhead||0,0,out.duration); out.zoom=csV4Clamp(p.zoom||76,24,260); out.loop=!!p.loop; out.loopStart=csV4Clamp(p.loopStart||0,0,out.duration); out.loopEnd=csV4Clamp(p.loopEnd||out.duration,out.loopStart+1/out.fps,out.duration); out.snap=p.snap!==false; out.snapMode=['all','frames','markers','edges','scenes'].includes(p.snapMode)?p.snapMode:'all'; out.safeFrame=p.safeFrame!==false; out.markers=Array.isArray(p.markers)?p.markers.map(m=>({id:String(m.id||csV4Id('marker')),time:csV4Clamp(m.time,0,out.duration),name:String(m.name||'Marker').slice(0,80),color:m.color||'amber'})).sort((a,b)=>a.time-b.time):[];
+  const out={...base,...p}; out.version=1; out.engine='character-studio_v4.1.1'; out.id=String(p.id||base.id); out.name=String(p.name||base.name).slice(0,120); out.fps=[24,25,30,50,60].includes(+p.fps)?+p.fps:30; out.duration=csV4Clamp(p.duration||30,1,7200); out.playhead=csV4Clamp(p.playhead||0,0,out.duration); out.zoom=csV4Clamp(p.zoom||76,24,260); out.loop=!!p.loop; out.loopStart=csV4Clamp(p.loopStart||0,0,out.duration); out.loopEnd=csV4Clamp(p.loopEnd||out.duration,out.loopStart+1/out.fps,out.duration); out.snap=p.snap!==false; out.snapMode=['all','frames','markers','edges','scenes'].includes(p.snapMode)?p.snapMode:'all'; out.safeFrame=p.safeFrame!==false; out.markers=Array.isArray(p.markers)?p.markers.map(m=>({id:String(m.id||csV4Id('marker')),time:csV4Clamp(m.time,0,out.duration),name:String(m.name||'Marker').slice(0,80),color:m.color||'amber'})).sort((a,b)=>a.time-b.time):[];
   out.tracks=(Array.isArray(p.tracks)&&p.tracks.length?p.tracks:base.tracks).map((t,i)=>{const type=CS_V4_TRACK_TYPES[t.type]?t.type:'animation';const n={...csV4DefaultTrack(type,i),...t,type};n.id=String(t.id||csV4Id('track'));n.name=String(t.name||CS_V4_TRACK_TYPES[type].label).slice(0,80);n.muted=!!t.muted;n.solo=!!t.solo;n.locked=!!t.locked;n.hidden=!!t.hidden;n.volume=csV4Clamp(t.volume??1,0,2);n.handheld=csV4Clamp(t.handheld??0,0,1);n.clips=Array.isArray(t.clips)?t.clips.map(c=>csV4NormalizeClip(c,type)):[];n.keyframes=Array.isArray(t.keyframes)?t.keyframes.map(k=>({id:String(k.id||csV4Id('key')),time:csV4Clamp(k.time,0,out.duration),camera:{...csV4CameraSnapshot(),...(k.camera||{})}})).sort((a,b)=>a.time-b.time):[];return n;});
   if(!out.tracks.some(t=>t.type==='camera')){const c=csV4DefaultTrack('camera');c.keyframes=[{id:csV4Id('key'),time:0,camera:csV4CameraSnapshot()}];out.tracks.unshift(c);} out.baseScene=csNormalizeScene(p.baseScene||base.baseScene); return out;
 }
@@ -4856,7 +4972,7 @@ const _csV4OpenWorkspace=csOpenWorkspace;csOpenWorkspace=function(which){documen
 const _csV4CloseWorkspace=csCloseWorkspace;csCloseWorkspace=function(){csV4Pause();document.body.classList.remove('v40-scene-active');return _csV4CloseWorkspace();};
 const _csV4SetWorkspaceHead=csSetWorkspaceHead;csSetWorkspaceHead=function(which){_csV4SetWorkspaceHead(which);if(which==='scene'){csWorkspaceTitle.textContent='Machinima Studio';csWorkspaceSubtitle.textContent='Nonlinear scene, camera, animation, dialogue, music and effects production.';}};
 const _csV4ApplyLibraryRecord=csApplyLibraryRecord;csApplyLibraryRecord=async function(rec){if(rec?.type==='machinima')return csV4LoadProjectRecord(rec);return _csV4ApplyLibraryRecord(rec);};
-csCanApply=function(type){return ['appearance','scene','gearset','machinima'].includes(type);};
+csCanApply=function(type){return ['character','appearance','scene','gearset','machinima'].includes(type);};
 const _csV4TypeIcon=csTypeIcon;csTypeIcon=function(type){if(type==='machinima')return'scene';if(type==='audio')return'file';if(type==='video')return'image';return _csV4TypeIcon(type);};
 const _csV4RecordPreview=csRecordPreview;csRecordPreview=function(rec,detail=false){if(rec?.type==='audio'&&rec.blob){const wrap=document.createElement('div');wrap.className=detail?'cs-detail-preview':'cs-asset-thumb';const art=document.createElement('div');art.className='cs-type-art';art.innerHTML=csV4Icon('music')+`<span>audio</span>`;wrap.appendChild(art);if(detail){const audio=document.createElement('audio');audio.controls=true;audio.preload='metadata';audio.src=csObjectUrl(rec.blob);audio.style='position:absolute;left:10px;right:10px;bottom:12px;width:calc(100% - 20px)';wrap.style.position='relative';wrap.appendChild(audio);}return wrap;}return _csV4RecordPreview(rec,detail);};
 const _csV4LibExt=csLibExt;csLibExt=function(rec){const m=String(rec?.mime||'').toLowerCase();if(m.includes('mpeg'))return'.mp3';if(m.includes('wav'))return'.wav';if(m.includes('ogg'))return'.ogg';if(m.includes('aac'))return'.aac';if(m.includes('flac'))return'.flac';return _csV4LibExt(rec);};
@@ -4866,11 +4982,11 @@ Object.assign(window.StudioAPI,{version:CS_V4_VERSION,machinima:{getProject:()=>
 window.addEventListener('beforeunload',()=>{csV4Persist();for(const p of csV4MediaCache.values())Promise.resolve(p).then(n=>URL.revokeObjectURL(n.url)).catch(()=>{});});
 document.addEventListener('keydown',e=>{if(csWorkspaceState.active!=='scene')return;const tag=(e.target?.tagName||'').toLowerCase();if(['input','select','textarea'].includes(tag)||e.target?.isContentEditable)return;if(e.code==='Space'){e.preventDefault();csV4TogglePlay();}else if(e.key==='m'||e.key==='M'){e.preventDefault();csV4AddMarker();}else if(e.key==='k'||e.key==='K'){e.preventDefault();csV4AddCameraKey();}else if(e.key==='s'||e.key==='S'){e.preventDefault();csV4SplitSelected();}else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();csV4DeleteSelection();}else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='d'){e.preventDefault();csV4DuplicateSelection();}else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();csV4SaveProjectToLibrary();}else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?csV4Redo():csV4Undo();}else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){e.preventDefault();csV4Redo();}else if(e.key==='i'||e.key==='I'){e.preventDefault();csV4.project.loopStart=Math.min(csV4.project.playhead,csV4.project.loopEnd-1/csV4.project.fps);csV4Persist();csRenderSceneWorkspace();}else if(e.key==='o'||e.key==='O'){e.preventDefault();csV4.project.loopEnd=Math.max(csV4.project.playhead,csV4.project.loopStart+1/csV4.project.fps);csV4Persist();csRenderSceneWorkspace();}else if(e.key==='ArrowLeft'){e.preventDefault();if(e.altKey)csV4NudgeSelection(e.shiftKey?-10:-1);else csV4Step(e.shiftKey?-csV4.project.fps:-1);}else if(e.key==='ArrowRight'){e.preventDefault();if(e.altKey)csV4NudgeSelection(e.shiftKey?10:1);else csV4Step(e.shiftKey?csV4.project.fps:1);}else if(e.key==='Home'){e.preventDefault();csV4SetPlayhead(0);}else if(e.key==='End'){e.preventDefault();csV4SetPlayhead(csV4.project.duration);}},true);
 /* ═══════════════════════════════════════════════════════════════════════════
-   v4.1.0 — MACHINIMA STUDIO ELITE
+   v4.1.1 — MACHINIMA STUDIO ELITE
    Portable projects, exact 3D camera rigs, audio mixing, professional timeline
    ergonomics, hardened media lifecycle, configurable renders and shortcuts.
    ═══════════════════════════════════════════════════════════════════════════ */
-const CS_V41_VERSION='4.1.0';
+const CS_V41_VERSION='4.1.1';
 const CS_V41_BUNDLE_FORMAT='character-studio/machinima-bundle';
 const CS_V41_MARKER_COLORS={amber:'#f3b34c',cyan:'#55d8ff',green:'#52d39b',red:'#ef6b76',violet:'#a78bfa',white:'#d9e5ef'};
 const csV41={clipboard:null,follow:true,fit:false,dragAsset:null,markerDrag:null,exportStream:null,exportRange:null,renderStart:0,renderEnd:0,renderWallStart:0,sceneHydrateToken:0,helpOpen:false};
@@ -4885,7 +5001,7 @@ function csV41ApplyCamera(cam){if(!cam)return;yaw=csV41Num(cam.yaw,yaw);pitch=cs
 csV4CameraSnapshot=function(){return {yaw:csV41Num(yaw),pitch:csV41Num(pitch),dist:Math.max(.05,csV41Num(dist,2.2)),panX:csV41Num(panX),panY:csV41Num(panY),panZ:csV41Num(panZ),fov:csV4Clamp(settings.fov||40,10,120),ease:'smooth',shake:0};};
 csV4NormalizeClip=function(c,type){const min=1/120;return {id:String(c?.id||csV4Id('clip')),name:String(c?.name||CS_V4_TRACK_TYPES[type]?.label||'Clip').slice(0,160),start:Math.max(0,csV41Num(c?.start)),duration:Math.max(min,csV41Num(c?.duration,1)),sourceIn:Math.max(0,csV41Num(c?.sourceIn)),speed:csV4Clamp(c?.speed??1,.05,8),volume:csV4Clamp(c?.volume??1,0,2),pan:csV4Clamp(c?.pan??0,-1,1),fadeIn:Math.max(0,csV41Num(c?.fadeIn)),fadeOut:Math.max(0,csV41Num(c?.fadeOut)),sourceId:c?.sourceId||null,sourceDuration:Math.max(0,csV41Num(c?.sourceDuration)),linkGroup:c?.linkGroup||null,color:c?.color||null,data:c?.data&&typeof c.data==='object'?c.data:{},type};};
 const _csV41NormalizeProjectBase=csV4NormalizeProject;
-csV4NormalizeProject=function(raw){const out=_csV41NormalizeProjectBase(raw);out.engine='character-studio_v4.1.0';out.version=2;out.autoFollow=raw?.autoFollow!==false;out.motionDuration=csV4Clamp(raw?.motionDuration??2,.1,60);out.motionEase=['smooth','linear','easeIn','easeOut','hold','cut'].includes(raw?.motionEase)?raw.motionEase:'smooth';out.export={resolution:raw?.export?.resolution||'1080p',width:csV4Clamp(raw?.export?.width||1920,320,7680),height:csV4Clamp(raw?.export?.height||1080,180,4320),bitrateMbps:csV4Clamp(raw?.export?.bitrateMbps||18,2,120),range:['project','loop'].includes(raw?.export?.range)?raw.export.range:'project'};out.markers=(out.markers||[]).map((m,i)=>({...m,color:CS_V41_MARKER_COLORS[m.color]?m.color:['amber','cyan','green','violet'][i%4],note:String(raw?.markers?.find?.(x=>x.id===m.id)?.note||m.note||'').slice(0,500)}));out.tracks=out.tracks.map(t=>({...t,pan:csV4Clamp(t.pan??0,-1,1),clips:(t.clips||[]).map(c=>csV4NormalizeClip(c,t.type)),keyframes:(t.keyframes||[]).map(k=>({...k,camera:{...csV4CameraSnapshot(),...(k.camera||{}),panX:csV41Num(k.camera?.panX),panZ:csV41Num(k.camera?.panZ)}}))}));out.duration=Math.max(out.duration,Math.ceil(csV41ProjectEnd(out)||out.duration));return out;};
+csV4NormalizeProject=function(raw){const out=_csV41NormalizeProjectBase(raw);out.engine='character-studio_v4.1.1';out.version=2;out.autoFollow=raw?.autoFollow!==false;out.motionDuration=csV4Clamp(raw?.motionDuration??2,.1,60);out.motionEase=['smooth','linear','easeIn','easeOut','hold','cut'].includes(raw?.motionEase)?raw.motionEase:'smooth';out.export={resolution:raw?.export?.resolution||'1080p',width:csV4Clamp(raw?.export?.width||1920,320,7680),height:csV4Clamp(raw?.export?.height||1080,180,4320),bitrateMbps:csV4Clamp(raw?.export?.bitrateMbps||18,2,120),range:['project','loop'].includes(raw?.export?.range)?raw.export.range:'project'};out.markers=(out.markers||[]).map((m,i)=>({...m,color:CS_V41_MARKER_COLORS[m.color]?m.color:['amber','cyan','green','violet'][i%4],note:String(raw?.markers?.find?.(x=>x.id===m.id)?.note||m.note||'').slice(0,500)}));out.tracks=out.tracks.map(t=>({...t,pan:csV4Clamp(t.pan??0,-1,1),clips:(t.clips||[]).map(c=>csV4NormalizeClip(c,t.type)),keyframes:(t.keyframes||[]).map(k=>({...k,camera:{...csV4CameraSnapshot(),...(k.camera||{}),panX:csV41Num(k.camera?.panX),panZ:csV41Num(k.camera?.panZ)}}))}));out.duration=Math.max(out.duration,Math.ceil(csV41ProjectEnd(out)||out.duration));return out;};
 csV4.project=csV4NormalizeProject(csV4.project);csV41.follow=csV4.project.autoFollow;
 
 csV4CameraAt=function(track,time){const ks=[...(track.keyframes||[])].sort((a,b)=>a.time-b.time);if(!ks.length)return null;if(time<=ks[0].time)return {...csV4CameraSnapshot(),...ks[0].camera};if(time>=ks.at(-1).time)return {...csV4CameraSnapshot(),...ks.at(-1).camera};let a=ks[0],b=ks[1];for(let i=0;i<ks.length-1;i++)if(time>=ks[i].time&&time<=ks[i+1].time){a=ks[i];b=ks[i+1];break;}const span=Math.max(.0001,b.time-a.time),u=csV4Ease((time-a.time)/span,b.camera.ease||a.camera.ease||'smooth'),lerp=(x,y)=>csV41Num(x)+(csV41Num(y)-csV41Num(x))*u;return {yaw:csV4AngleLerp(csV41Num(a.camera.yaw),csV41Num(b.camera.yaw),u),pitch:lerp(a.camera.pitch,b.camera.pitch),dist:lerp(a.camera.dist,b.camera.dist),panX:lerp(a.camera.panX,b.camera.panX),panY:lerp(a.camera.panY,b.camera.panY),panZ:lerp(a.camera.panZ,b.camera.panZ),fov:lerp(a.camera.fov,b.camera.fov),shake:lerp(a.camera.shake,b.camera.shake),ease:b.camera.ease||a.camera.ease||'smooth'};};
@@ -4956,7 +5072,7 @@ const _csV41TickBase=csV4Tick;
 csV4Tick=function(now){if(csV4.exporting&&csV4.playing){const dt=Math.min(.1,Math.max(0,(now-csV4.lastTick)/1000));csV4.lastTick=now;let next=csV4.project.playhead+dt;if(next>=csV41.renderEnd){csV4.project.playhead=csV41.renderEnd;csV4ApplyAtTime(csV4.project.playhead,true);csV4SyncDom();csV4FinishExport();return;}csV4.project.playhead=next;csV4ApplyAtTime(next,true);csV4SyncDom();return;}_csV41TickBase(now);};
 
 async function csV41ProjectMediaRecords(project=csV4.project){const ids=new Set();for(const t of project.tracks)for(const c of t.clips||[])if(c.sourceId)ids.add(c.sourceId);const collectScene=s=>{if(!s)return;if(s.sky?.sourceId)ids.add(s.sky.sourceId);for(const f of Object.values(s.faces||{}))if(f?.sourceId)ids.add(f.sourceId);};collectScene(project.baseScene);for(const t of project.tracks.filter(t=>t.type==='scene'))for(const c of t.clips)collectScene(c.data?.scene);const rows=[];for(const id of ids){const r=await libGet(id);if(r?.blob)rows.push(r);}return rows;}
-async function csV41DownloadBundle(){try{const enc=new TextEncoder(),project=csV4Clone(csV4.project),media=await csV41ProjectMediaRecords(project),files=[],manifest=[];for(const r of media){const ext=csLibExt(r),path=`media/${csSafeFileName(r.name)}_${r.id.slice(0,8)}${ext}`,data=new Uint8Array(await r.blob.arrayBuffer());files.push({name:path,data});manifest.push({oldId:r.id,name:r.name,type:r.type,mime:r.mime||r.blob.type,path,meta:r.meta||{}});}const bundle={format:CS_V41_BUNDLE_FORMAT,version:1,engine:'character-studio_v4.1.0',createdAt:new Date().toISOString(),project,media:manifest};files.push({name:'project.json',data:enc.encode(JSON.stringify(bundle,null,2))});const sums=[];for(const f of files)sums.push(`${await sha256Hex(f.data)}  ${f.name}`);files.push({name:'SHA256SUMS.txt',data:enc.encode(sums.join('\n')+'\n')});downloadBlob(new Blob([zipStore(files)],{type:'application/zip'}),`${csSafeFileName(project.name)}_portable_machinima.zip`);csV4Toast(`Portable project exported with ${media.length} media asset${media.length===1?'':'s'}.`);}catch(e){csV4Toast('Portable export failed: '+e.message,true);}}
+async function csV41DownloadBundle(){try{const enc=new TextEncoder(),project=csV4Clone(csV4.project),media=await csV41ProjectMediaRecords(project),files=[],manifest=[];for(const r of media){const ext=csLibExt(r),path=`media/${csSafeFileName(r.name)}_${r.id.slice(0,8)}${ext}`,data=new Uint8Array(await r.blob.arrayBuffer());files.push({name:path,data});manifest.push({oldId:r.id,name:r.name,type:r.type,mime:r.mime||r.blob.type,path,meta:r.meta||{}});}const bundle={format:CS_V41_BUNDLE_FORMAT,version:1,engine:'character-studio_v4.1.1',createdAt:new Date().toISOString(),project,media:manifest};files.push({name:'project.json',data:enc.encode(JSON.stringify(bundle,null,2))});const sums=[];for(const f of files)sums.push(`${await sha256Hex(f.data)}  ${f.name}`);files.push({name:'SHA256SUMS.txt',data:enc.encode(sums.join('\n')+'\n')});downloadBlob(new Blob([zipStore(files)],{type:'application/zip'}),`${csSafeFileName(project.name)}_portable_machinima.zip`);csV4Toast(`Portable project exported with ${media.length} media asset${media.length===1?'':'s'}.`);}catch(e){csV4Toast('Portable export failed: '+e.message,true);}}
 csV4DownloadProject=csV41DownloadBundle;
 csV4ImportProjectFile=async function(file){try{if(/\.zip$/i.test(file.name)||file.type.includes('zip')){const entries=(await readZipEntries(file)).filter(e=>!e.dir),pj=entries.find(e=>e.name==='project.json'||/\/project\.json$/i.test(e.name));if(!pj)throw new Error('Portable project is missing project.json');const bundle=JSON.parse(new TextDecoder().decode(await readZipEntryData(file,pj)));if(bundle.format!==CS_V41_BUNDLE_FORMAT)throw new Error('Unsupported project bundle format');const remap=new Map();for(const item of bundle.media||[]){const ent=entries.find(e=>e.name===item.path);if(!ent)continue;const data=await readZipEntryData(file,ent),blob=new Blob([data],{type:item.mime||'application/octet-stream'}),saved=await libSave(item.type||'file',item.name,{blob},{...(item.meta||{}),importedFrom:file.name});remap.set(item.oldId,saved.id);}const project=csV4Clone(bundle.project);for(const t of project.tracks||[])for(const c of t.clips||[])if(remap.has(c.sourceId))c.sourceId=remap.get(c.sourceId);const remapScene=s=>{if(!s)return;if(remap.has(s.sky?.sourceId))s.sky.sourceId=remap.get(s.sky.sourceId);for(const f of Object.values(s.faces||{}))if(remap.has(f.sourceId))f.sourceId=remap.get(f.sourceId);};remapScene(project.baseScene);for(const t of (project.tracks||[]).filter(t=>t.type==='scene'))for(const c of t.clips||[])remapScene(c.data?.scene);csV4PushHistory();csV4.project=csV4NormalizeProject(project);csV4.selection=null;csV4.selectedTrackId=csV4.project.tracks[0]?.id;csV4Persist();await csRenderSceneWorkspace();csV4Toast(`Portable project imported · ${remap.size} media assets restored.`);return;}const data=csV4NormalizeProject(JSON.parse(await file.text()));csV4PushHistory();csV4.project=data;csV4.selection=null;csV4.selectedTrackId=data.tracks[0]?.id;csV4Persist();await csRenderSceneWorkspace();csV4Toast('Machinima project imported.');}catch(e){csV4Toast('Project import failed: '+e.message,true);}};
 
@@ -4968,7 +5084,7 @@ csRenderSceneWorkspace=async function(){await _csV41RenderSceneWorkspaceFinal();
 
 const _csV41OpenWorkspaceBase=csOpenWorkspace;csOpenWorkspace=function(which){const out=_csV41OpenWorkspaceBase(which);if(which==='scene')setTimeout(()=>csRenderSceneWorkspace(),0);return out;};
 const _csV41DeleteSelectionBase=csV4DeleteSelection;csV4DeleteSelection=function(){_csV41DeleteSelectionBase();csV41GarbageCollectMedia();};
-const _csV41PersistBase=csV4Persist;csV4Persist=function(){csV4.project.engine='character-studio_v4.1.0';csV4.project.autoFollow=csV41.follow;_csV41PersistBase();};
+const _csV41PersistBase=csV4Persist;csV4Persist=function(){csV4.project.engine='character-studio_v4.1.1';csV4.project.autoFollow=csV41.follow;_csV41PersistBase();};
 
 window.StudioAPI.version=CS_V41_VERSION;window.StudioAPI.machinima={...window.StudioAPI.machinima,copy:()=>csV41CopySelection(false),cut:()=>csV41CopySelection(true),paste:csV41PasteSelection,fitTimeline:csV41FitTimeline,exportPortable:csV41DownloadBundle,getCamera:()=>({...csV4CameraSnapshot(),position:csV41CameraPosition()}),setCamera:(camera)=>{csV41ApplyCamera(camera);return csV4CameraSnapshot();},renderWebM:(options)=>{if(options)csV4.project.export={...csV4.project.export,...options};return csV4StartExport();}};
 window.StudioAPI.getCamera=()=>({...csV4CameraSnapshot(),position:csV41CameraPosition()});
@@ -4979,7 +5095,7 @@ csV4Persist();
 document.dispatchEvent(new CustomEvent('studio:machinima-elite-ready',{detail:{version:CS_V41_VERSION,features:['portable-projects','world-space-camera','timeline-dnd','clip-slip','audio-pan','render-profiles']}}));
 
 
-document.querySelector('.ver').textContent='— made by AEiOU · v4.1.0';
+document.querySelector('.ver').textContent='— made by AEiOU · v4.1.1';
 document.dispatchEvent(new CustomEvent('studio:machinima-ready',{detail:{version:CS_V4_VERSION,project:csV4.project.name,tracks:csV4.project.tracks.length}}));
 
 

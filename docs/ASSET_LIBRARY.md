@@ -1,8 +1,10 @@
-# Asset Library — v4.1.0
+# Asset Library — v4.1.1
 
 The Asset Library is the IndexedDB-backed media and preset collection shared by Character Studio, Scene Studio, and Machinima Studio Elite.
 
 ## Record types
+
+- `character` — restorable full-character content pack with source model, textures, current settings, preview, manifest, and checksums
 
 - `appearance` — complete character state and preview
 - `scene` — normalized stage state and preview
@@ -19,7 +21,7 @@ The Asset Library is the IndexedDB-backed media and preset collection shared by 
 - Filter and sort by newest, oldest, name, or type.
 - Grid, List, and Compact layouts.
 - Preview images, video, audio, scene schematics, JSON, and live thumbnails.
-- Apply/open compatible appearances, scenes, gearsets, and machinima projects.
+- Open full Character assets or apply compatible appearances, scenes, gearsets, and machinima projects.
 - Rename, inspect, export, or delete records.
 - Add multiple files in one selection.
 - Export the complete Library with manifest, previews, and checksums.
@@ -53,6 +55,8 @@ The bundle includes `SHA256SUMS.txt` for payload verification.
 await StudioAPI.library.list()
 await StudioAPI.library.get(id)
 await StudioAPI.library.save(kind, name, data)
+await StudioAPI.library.saveCharacter()
+await StudioAPI.library.openCharacter(record)
 await StudioAPI.library.remove(id)
 await StudioAPI.library.exportOne(id)
 await StudioAPI.library.exportAll()

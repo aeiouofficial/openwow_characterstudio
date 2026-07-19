@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.1.1 — 2026-07-19
+
+- Added a dedicated top-bar Save Character action and full `character` Library record type.
+- Character saves now package the model, textures, complete current state, gearsets, preview, manifest, and SHA-256 checksums.
+- Added one-click Character restoration and public Library API methods.
+- Unified Machinima Studio with the main Character Studio visual system across desktop and responsive layouts.
+- Added the Character Library filter, `Ctrl+Alt+S` shortcut, restricted-storage fallbacks, compact header cleanup, release assertions, and documentation for the new workflows.
+
 ## 4.1.0 — 2026-07-19
 
 ### Machinima Studio Elite

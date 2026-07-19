@@ -1,0 +1,48 @@
+{
+  "version": "4.1.1",
+  "title": "CHARACTER STUDIO - made by AEiOU",
+  "webgl2": true,
+  "characterSave": {
+    "modelLoaded": true,
+    "topButtonEnabled": true,
+    "packagedFiles": 10,
+    "status": "saved to Asset Library",
+    "libraryType": "character",
+    "cardActions": [
+      "Open",
+      "Export"
+    ],
+    "restored": true
+  },
+  "library": {
+    "filterIncludesCharacter": true,
+    "saveCharacterAction": true,
+    "detailOpenCharacter": true
+  },
+  "machinima": {
+    "tracks": 8,
+    "workspaceHeaderHeight": "66px",
+    "accent": "#5b96e6",
+    "font": "Segoe UI",
+    "buttonRadius": "3px"
+  },
+  "desktop": {
+    "viewport": [
+      1600,
+      861
+    ],
+    "pageOverflowX": 0
+  },
+  "compact": {
+    "viewport": [
+      960,
+      760
+    ],
+    "pageOverflowX": 0,
+    "headerOverflowX": 0,
+    "saveCharacterVisible": true,
+    "saveCharacterLabelCollapsed": true
+  },
+  "relevantErrors": [],
+  "browserPath": "Chromium CDP + Xvfb + software WebGL2; QA-only storage/digest shims because managed policy blocks local navigation"
+}

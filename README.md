@@ -1,8 +1,20 @@
 # CHARACTER STUDIO — Machinima Studio Elite
 
-**v4.1.0** turns the existing offline-first WebGL2 character editor into a production-oriented browser machinima workstation. It keeps the real Character Studio renderer, scene state, animation state, Asset Library, capture system, and IndexedDB data model while adding a frame-accurate nonlinear editor rather than a disconnected mock timeline.
+**v4.1.1** turns the existing offline-first WebGL2 character editor into a production-oriented browser machinima workstation. It keeps the real Character Studio renderer, scene state, animation state, Asset Library, capture system, and IndexedDB data model while adding a frame-accurate nonlinear editor rather than a disconnected mock timeline.
 
-## What ships in v4.1.0
+## What ships in v4.1.1
+
+### Full-character Library workflow
+
+- A dedicated **Save Character** action is always visible in the top toolbar, becomes available after a model or bundle loads, and is also available with `Ctrl+Alt+S`.
+- It stores a restorable Character asset containing the model, current textures, complete appearance/settings state, gearsets, preview, manifest, and integrity hashes.
+- Library Character cards can be previewed, exported, renamed, deleted, or opened to restore the complete character.
+- Appearance presets remain available for lightweight customization-only reuse.
+
+### One Character Studio design system
+
+- Machinima Studio now uses the same metal surfaces, blue selected states, Segoe UI/mono typography, button construction, inputs, tabs, borders, radii, shadows, and responsive header behavior as the main editor and Library. Restricted browser storage is handled with safe preference fallbacks so workspace initialization cannot be blocked.
+
 
 ### Professional nonlinear timeline
 
@@ -97,7 +109,7 @@ The in-app **?** panel contains the complete context-aware shortcut list.
 
 ```bash
 npm test             # 27 passed + 1 optional fixture skip
-npm run qa:v410      # v4.1.0 release-surface assertions
+npm run qa:v411      # v4.1.1 character-save + UI-fidelity assertions
 npm run qa:release   # unit + release checks
 ```
 
@@ -118,7 +130,7 @@ Rendered QA validates application identity, WebGL2 startup, no framework overlay
 - [`docs/ASSET_LIBRARY.md`](docs/ASSET_LIBRARY.md)
 - [`docs/SCENE_AND_CAPTURE.md`](docs/SCENE_AND_CAPTURE.md)
 - [`docs/API.md`](docs/API.md)
-- [`RELEASE_NOTES_v4.1.0.md`](RELEASE_NOTES_v4.1.0.md)
+- [`RELEASE_NOTES_v4.1.1.md`](RELEASE_NOTES_v4.1.1.md)
 
 ## License
 

@@ -1,9 +1,9 @@
 {
   "product": "CHARACTER STUDIO - made by AEiOU",
-  "version": "4.1.0",
-  "releaseName": "Machinima Studio Elite",
+  "version": "4.1.1",
+  "releaseName": "Character Library & UI Fidelity",
   "releaseDate": "2026-07-19",
-  "baseVersion": "4.0.0",
+  "baseVersion": "4.1.0",
   "entrypoint": "demo/character-studio.html",
   "runtime": "Offline WebGL2 / ES modules / IndexedDB / Web Audio / MediaRecorder",
   "machinimaTracks": [
@@ -21,18 +21,20 @@
     "editing": "Move, trim, split, razor, slip, ripple, snap, markers, clipboard, track reorder",
     "audio": "Music, dialogue, SFX, waveform decode, fades, gain, stereo pan, voice recording",
     "portability": "Project JSON and portable ZIP with media remapping and SHA256SUMS",
-    "render": "Project/loop range, 1080p/1440p/4K/custom, bitrate, progress, cancellation"
+    "render": "Project/loop range, 1080p/1440p/4K/custom, bitrate, progress, cancellation",
+    "library": "Top-bar full-character saves with model, textures, current state, preview, checksums, and one-click restoration",
+    "ui": "Machinima Studio chrome unified with Character Studio metals, controls, typography, borders, and selected states"
   },
   "qa": {
     "unitTests": 28,
     "passed": 27,
     "skippedOptionalFixture": 1,
     "failed": 0,
-    "releaseSurfaceChecks": 41,
+    "releaseSurfaceChecks": 57,
     "renderedDesktop": true,
     "renderedCompact": true,
     "webgl2Runtime": true,
     "consoleErrors": 0,
-    "browserPath": "Playwright Chromium under Xvfb with software WebGL2; Browser plugin unavailable"
+    "browserPath": "Chromium DevTools Protocol under Xvfb with software WebGL2; Browser plugin unavailable and local navigation blocked by policy"
   }
 }
