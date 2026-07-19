@@ -94,7 +94,7 @@ async function handle(line){
   let msg; try{ msg=JSON.parse(line); }catch{ return send({jsonrpc:'2.0',id:null,error:{code:-32700,message:'parse error'}}); }
   const {id,method,params}=msg;
   try{
-    if(method==='initialize') return send({jsonrpc:'2.0',id,result:{protocolVersion:(params&&params.protocolVersion)||'2024-11-05',capabilities:{tools:{}},serverInfo:{name:'character-studio',version:'4.1.1'}}});
+    if(method==='initialize') return send({jsonrpc:'2.0',id,result:{protocolVersion:(params&&params.protocolVersion)||'2024-11-05',capabilities:{tools:{}},serverInfo:{name:'character-studio',version:'4.2.0'}}});
     if(method&&method.startsWith('notifications/')) return;
     if(method==='ping') return send({jsonrpc:'2.0',id,result:{}});
     if(method==='tools/list') return send({jsonrpc:'2.0',id,result:{tools:TOOLS}});

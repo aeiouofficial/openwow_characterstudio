@@ -1,8 +1,29 @@
 # CHARACTER STUDIO — Machinima Studio Elite
 
-**v4.1.1** turns the existing offline-first WebGL2 character editor into a production-oriented browser machinima workstation. It keeps the real Character Studio renderer, scene state, animation state, Asset Library, capture system, and IndexedDB data model while adding a frame-accurate nonlinear editor rather than a disconnected mock timeline.
+**v4.2.0** turns the existing offline-first WebGL2 character editor into a production-oriented browser machinima workstation. It keeps the real Character Studio renderer, scene state, animation state, Asset Library, capture system, and IndexedDB data model while adding a frame-accurate nonlinear editor rather than a disconnected mock timeline.
 
-## What ships in v4.1.1
+## What ships in v4.2.0
+
+
+### Unified docked workspace UX
+
+- Five one-click layouts—**Edit, Animate, Camera, Audio, and Review**—show the controls needed for the current job instead of presenting every subpanel at equal weight.
+- Production Browser, Properties, timeline, and stage areas can be collapsed or resized; sizes and open states persist locally.
+- The Properties inspector supports search, keyboard-accessible accordions, and remembered section states.
+- `Ctrl+K` opens a command palette for tools, panels, saving, Library access, markers, camera keys, and workspace switching.
+- Compact widths use one dock overlay at a time with click-away dismissal, so panels no longer cover one another or render off-screen.
+
+### Main editor panel navigation
+
+- Character and Materials & Output docks now have sticky headers, setting search, **All / Core / Advanced** scopes, visible-section counts, and expand/collapse-all controls.
+- Both side docks are collapsible and resizable on desktop, while narrow screens default to compact rails.
+- Section cards use clearer open states, stronger metal hierarchy, better spacing, and reduced visual clutter.
+
+### Animation workflow improvements
+
+- The Animate layout filters directly to model clips and the animation track.
+- Animation assets show duration and drag status, include direct viewport preview, and expose loop-versus-hold behavior for selected clips.
+- Empty workspaces now teach the load → performance → camera workflow instead of showing disconnected blank panels.
 
 ### Full-character Library workflow
 
@@ -130,6 +151,7 @@ Rendered QA validates application identity, WebGL2 startup, no framework overlay
 - [`docs/ASSET_LIBRARY.md`](docs/ASSET_LIBRARY.md)
 - [`docs/SCENE_AND_CAPTURE.md`](docs/SCENE_AND_CAPTURE.md)
 - [`docs/API.md`](docs/API.md)
+- [`RELEASE_NOTES_v4.2.0.md`](RELEASE_NOTES_v4.2.0.md)
 - [`RELEASE_NOTES_v4.1.1.md`](RELEASE_NOTES_v4.1.1.md)
 
 ## License

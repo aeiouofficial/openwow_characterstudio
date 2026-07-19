@@ -1,4 +1,4 @@
-# CHARACTER STUDIO API — v4.1.1
+# CHARACTER STUDIO API — v4.2.0
 
 The browser API is available on `window.StudioAPI` in `demo/character-studio.html`. The app also exposes automation events and the existing MCP bridge.
 
@@ -61,7 +61,7 @@ StudioAPI.machinima.renderWebM(options)
 
 ## Project schema
 
-Projects normalize to `engine: "character-studio_v4.1.1"`, `version: 2` and contain FPS, duration, playhead, zoom, loop range, snap state, auto-follow state, motion-preset defaults, export settings, markers, a base scene, and ordered tracks.
+Projects normalize to `engine: "character-studio_v4.2.0"`, `version: 2` and contain FPS, duration, playhead, zoom, loop range, snap state, auto-follow state, motion-preset defaults, export settings, markers, a base scene, and ordered tracks.
 
 Track types:
 
@@ -151,3 +151,7 @@ await StudioAPI.library.openCharacter(record)
 ```
 
 `saveCharacter()` opens the normal naming prompt and saves the active model, textures, full appearance/settings state, gearsets, preview, manifest, and checksums as a `character` ZIP record. `openCharacter(record)` restores that bundle and reapplies its saved state.
+
+## v4.2 workspace and panel API
+
+`StudioAPI.machinima.setWorkspace('edit'|'animation'|'camera'|'audio'|'review')` selects a task layout. `StudioAPI.machinima.getWorkspace()` returns the persisted workspace UI state. `StudioAPI.machinima.showCommands()` opens the command palette. `StudioAPI.panels` exposes main-editor dock state plus left/right toggles and Core filtering.

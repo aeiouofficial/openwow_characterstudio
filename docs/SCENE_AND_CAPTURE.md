@@ -1,4 +1,4 @@
-# Scene Studio, Stage, and Capture — v4.1.1
+# Scene Studio, Stage, and Capture — v4.2.0
 
 Scene Studio combines the real Character Studio WebGL2 stage with the Machinima Studio Elite timeline. The canvas is reparented into the production workspace and restored when closed, so scene edits, camera changes, model animation, and captures operate on one renderer.
 

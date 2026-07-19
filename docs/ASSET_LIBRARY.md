@@ -1,4 +1,4 @@
-# Asset Library — v4.1.1
+# Asset Library — v4.2.0
 
 The Asset Library is the IndexedDB-backed media and preset collection shared by Character Studio, Scene Studio, and Machinima Studio Elite.
 
@@ -61,3 +61,7 @@ await StudioAPI.library.remove(id)
 await StudioAPI.library.exportOne(id)
 await StudioAPI.library.exportAll()
 ```
+
+## Animation workflow in v4.2
+
+When a model contains animation clips, the Animate workspace shows draggable animation assets with duration badges and a viewport-preview action. Added animation clips expose loop or play-once/hold-last behavior in the Properties inspector.

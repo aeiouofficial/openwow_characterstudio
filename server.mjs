@@ -268,6 +268,6 @@ const server=http.createServer(async(req,res)=>{
   }catch(err){ console.error(err); if(!res.headersSent) json(res,500,{ok:false,error:String(err.message||err)}); else res.destroy(); }
 });
 server.listen(PORT,HOST,()=>{
-  console.log(`CHARACTER STUDIO v4.1.1 local workspace: http://${HOST}:${PORT}/`);
+  console.log(`CHARACTER STUDIO v4.2.0 local workspace: http://${HOST}:${PORT}/`);
   console.log(`Workspace: ${WORKSPACE}`);
 });

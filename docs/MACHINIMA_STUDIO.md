@@ -1,4 +1,4 @@
-# Machinima Studio Elite — v4.1.1
+# Machinima Studio Elite — v4.2.0
 
 Machinima Studio Elite is the nonlinear production workspace inside Character Studio. It drives the existing live WebGL2 renderer, loaded model, animation system, Scene Studio state, post effects, Asset Library, Web Audio graph, and capture path. Opening or closing the workspace reparents the same canvas; it does not create a second renderer or fork character state.
 
@@ -181,3 +181,7 @@ StudioAPI.machinima.renderWebM(options)
 5. Save a Library milestone and export a portable ZIP.
 6. Render a short loop proof at final dimensions and bitrate.
 7. Render the full master and verify duration, audio, cuts, and final frame.
+
+## v4.2 workspace layouts
+
+Machinima Studio now exposes Edit, Animate, Camera, Audio, and Review layouts. The browser, properties inspector, timeline, and stage are independently collapsible and resizable. `Ctrl+K` opens the command palette; number keys 1–5 switch layouts when an input is not focused. Inspector sections are searchable accordions and compact widths use one overlay dock at a time.

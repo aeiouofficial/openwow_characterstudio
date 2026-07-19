@@ -295,6 +295,199 @@ body.v40-scene-active #csWorkspaceContent,.cs-pro-shell{background:linear-gradie
 @media(max-width:1080px){body.v40-scene-active header .ver,body.v40-scene-active header #animSel,body.v40-scene-active header #btnPlay,body.v40-scene-active header #btnSources,body.v40-scene-active header #status,body.v40-scene-active header #btnRandom,body.v40-scene-active header #btnReset,body.v40-scene-active header #btnExport{display:none}body.v40-scene-active header{gap:5px;overflow:hidden}header button,header select{white-space:nowrap}}
 @media(max-width:780px){body.v40-scene-active header #btnSaveCharacterLibrary{display:inline-flex}.cs-pro-inspector{top:100px}}
 
+/* ═══════════ v4.2.0 — Unified Workspace UX & Metal Panel System ═══════════ */
+:root{
+  --ux-assets-w:268px;
+  --ux-inspector-w:344px;
+  --ux-stage-h:44%;
+  --ux-command-h:42px;
+  --ux-radius:5px;
+  --ux-bevel:inset 0 1px 0 #ffffff18,inset 0 -1px 0 #0008,0 2px 5px #0007;
+  --ux-deep:linear-gradient(180deg,#17191d,#111317);
+  --ux-panel:linear-gradient(180deg,#2b2e34,#202328 38%,#1b1d21),var(--noise);
+  --ux-header:linear-gradient(180deg,#3b3f47,#2d3037 50%,#26292f),var(--noise);
+  --ux-blue:linear-gradient(180deg,#629de9,#3f7fd4 55%,#2f65b2);
+}
+body.v40-scene-active #csWorkspaceContent{display:flex;flex-direction:column;min-height:0;background:#17191d}
+.cs-ux-commandbar{height:var(--ux-command-h);flex:none;display:flex;align-items:center;gap:5px;padding:5px 9px;border-bottom:1px solid #090a0c;background:var(--ux-header);box-shadow:inset 0 1px 0 #ffffff12,0 2px 8px #0008;position:relative;z-index:9}
+.cs-ux-commandbar .label{font:700 9px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#8f969f;margin:0 3px 0 2px}
+.cs-ux-commandbar .divider{width:1px;height:24px;background:linear-gradient(180deg,transparent,#4a4e56,transparent);margin:0 4px}
+.cs-ux-commandbar .push{margin-left:auto}
+.cs-ux-commandbar button{min-height:30px;display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid #0b0c0e;border-radius:4px;background:var(--metal);color:#c7cbd2;font:650 10px/1 Segoe UI,system-ui,sans-serif;box-shadow:var(--ux-bevel);cursor:pointer;white-space:nowrap;transition:transform .12s ease,filter .12s ease,background .12s ease,color .12s ease}
+.cs-ux-commandbar button:hover{background:var(--metalh);color:#fff;transform:translateY(-1px)}
+.cs-ux-commandbar button:active{transform:translateY(0);box-shadow:inset 0 2px 4px #000b}
+.cs-ux-commandbar button.on{background:var(--ux-blue);border-color:#1d4777;color:#fff;box-shadow:inset 0 1px 0 #ffffff40,inset 0 -1px 0 #123c70,0 2px 5px #0008}
+.cs-ux-commandbar button svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cs-ux-commandbar kbd{padding:2px 5px;border:1px solid #101216;border-bottom-color:#090a0c;border-radius:3px;background:#191b20;color:#9fa6b0;font:700 8px/1 var(--mono);box-shadow:inset 0 1px 0 #ffffff12}
+.cs-pro-shell{flex:1;height:auto!important;min-height:0;position:relative;grid-template-columns:var(--ux-assets-w) minmax(360px,1fr) var(--ux-inspector-w);grid-template-rows:minmax(210px,var(--ux-stage-h)) minmax(220px,1fr);transition:grid-template-columns .22s cubic-bezier(.2,.8,.2,1),grid-template-rows .22s cubic-bezier(.2,.8,.2,1)}
+.cs-pro-shell.cs-ux-resizing{transition:none!important;user-select:none;cursor:col-resize}
+.cs-pro-shell.assets-collapsed{--ux-assets-w:44px}
+.cs-pro-shell.inspector-collapsed{--ux-inspector-w:44px}
+.cs-pro-shell.timeline-focus{--ux-stage-h:235px}
+.cs-pro-shell.stage-focus{--ux-stage-h:calc(100% - 168px)}
+.cs-pro-assets,.cs-pro-inspector,.cs-pro-stage,.cs-pro-timeline{transition:opacity .16s ease,filter .16s ease}
+.cs-pro-assets{background:var(--ux-panel);box-shadow:inset -1px 0 0 #ffffff08,4px 0 12px -8px #000}
+.cs-pro-inspector{background:var(--ux-panel);box-shadow:inset 1px 0 0 #ffffff08,-4px 0 12px -8px #000}
+.cs-pro-stage{box-shadow:inset 0 -1px 0 #000,0 5px 14px -10px #000}
+.cs-pro-panel-head,.cs-ux-inspector-head{height:42px;min-height:42px;background:var(--ux-header);border-bottom:1px solid #0a0b0c;box-shadow:inset 0 1px 0 #ffffff14,0 2px 7px #0006}
+.cs-pro-panel-head{padding:0 8px;gap:7px}
+.cs-pro-panel-head strong,.cs-ux-inspector-head strong{font-size:10px;letter-spacing:.09em;color:#e1e4e8;text-shadow:0 1px 1px #000}
+.cs-pro-panel-head .cs-ux-panel-sub{display:block;margin-top:3px;font:8.5px/1 var(--mono);letter-spacing:0;text-transform:none;color:#858c96}
+.cs-ux-panel-title{min-width:0;display:flex;flex-direction:column;line-height:1}
+.cs-ux-collapse{flex:none}
+.assets-collapsed .cs-pro-assets-tools,.assets-collapsed .cs-pro-asset-list,.assets-collapsed .cs-pro-assets-foot{display:none}
+.assets-collapsed .cs-pro-assets .cs-pro-panel-head{height:100%;padding:7px 5px;flex-direction:column;border-bottom:0}
+.assets-collapsed .cs-pro-assets .cs-ux-panel-title,.assets-collapsed .cs-pro-assets #csProOpenLibrary{display:none}
+.assets-collapsed .cs-pro-assets .push{display:none}
+.assets-collapsed .cs-pro-assets .cs-ux-collapse{margin:0;width:32px}
+.inspector-collapsed .cs-pro-tabs,.inspector-collapsed .cs-pro-inspector-scroll,.inspector-collapsed .cs-ux-inspector-search{display:none}
+.inspector-collapsed .cs-pro-inspector{align-items:center}
+.inspector-collapsed .cs-ux-inspector-head{height:100%;padding:7px 5px;flex-direction:column;border-bottom:0}
+.inspector-collapsed .cs-ux-inspector-head .cs-ux-panel-title,.inspector-collapsed .cs-ux-inspector-head .push{display:none}
+.cs-ux-inspector-head{display:flex;align-items:center;gap:8px;padding:0 9px;flex:none}
+.cs-ux-inspector-head .push{flex:1}
+.cs-ux-inspector-search{height:38px;flex:none;padding:5px 8px;border-bottom:1px solid #0b0c0e;background:#1b1e23;position:relative}
+.cs-ux-inspector-search svg{position:absolute;left:17px;top:13px;width:12px;height:12px;stroke:#777f89;fill:none;stroke-width:1.8}
+.cs-ux-inspector-search input{width:100%;height:27px;padding:5px 8px 5px 27px;background:var(--well);border:1px solid #0a0b0c;border-radius:3px;color:#d7dbe0;font-size:10px;box-shadow:inset 0 1px 3px #000a}
+.cs-pro-tabs{height:39px;background:linear-gradient(180deg,#282b31,#22252a)}
+.cs-pro-tabs button{position:relative;font-size:9.5px;letter-spacing:.025em;transition:background .14s ease,color .14s ease}
+.cs-pro-tabs button.on:after{content:'';position:absolute;left:16%;right:16%;bottom:0;height:2px;border-radius:2px 2px 0 0;background:#6ea8ef;box-shadow:0 0 7px #3f7fd488}
+.cs-pro-inspector-scroll{padding:9px 9px 48px;background:linear-gradient(180deg,#1c1f23,#181a1e)}
+.cs-pro-section{margin-bottom:8px;border-color:#101216;background:linear-gradient(180deg,#25282d,#202328);box-shadow:inset 0 1px 0 #ffffff0a,0 2px 6px #0005;overflow:hidden;transition:border-color .15s ease,box-shadow .15s ease}
+.cs-pro-section:hover{border-color:#2d323a}
+.cs-pro-section>h3{min-height:34px;display:flex;align-items:center;gap:7px;padding:8px 10px;cursor:pointer;user-select:none;position:relative;background:linear-gradient(180deg,#32363d,#272a30);transition:background .14s ease,color .14s ease}
+.cs-pro-section>h3:hover{background:linear-gradient(180deg,#3b4048,#2d3138);color:#fff}
+.cs-pro-section>h3:before{content:'';width:6px;height:6px;border-right:1.5px solid #aeb5be;border-bottom:1.5px solid #aeb5be;transform:rotate(45deg) translateY(-1px);transition:transform .16s ease;flex:none}
+.cs-pro-section.collapsed>h3:before{transform:rotate(-45deg) translate(-1px,1px)}
+.cs-pro-section.collapsed .cs-pro-section-body{display:none}
+.cs-pro-section.filtered-out{display:none}
+.cs-pro-section-body{padding:9px 10px 10px;animation:csUxReveal .16s ease-out}
+@keyframes csUxReveal{from{opacity:.25;transform:translateY(-3px)}to{opacity:1;transform:none}}
+.cs-pro-field{grid-template-columns:minmax(92px,42%) minmax(0,1fr);gap:9px;min-height:34px;padding:2px 0;border-bottom:1px solid #ffffff06}
+.cs-pro-field:last-child{border-bottom:0}
+.cs-pro-field>label{font-size:9.5px;color:#9ca2ab;line-height:1.25}
+.cs-pro-field input[type=number],.cs-pro-field input[type=text],.cs-pro-field select{height:29px}
+.cs-pro-vector{gap:5px}.cs-pro-vector label{min-height:29px;background:linear-gradient(180deg,#14161a,#1a1c20);border-color:#0b0c0e}
+.cs-pro-note{border-left:3px solid #4c83c6;border-radius:0 3px 3px 0;background:linear-gradient(90deg,#182333,#171a1e);color:#9ca5b0;padding:9px 10px;line-height:1.5}
+.cs-pro-row{gap:6px;flex-wrap:wrap}.cs-pro-row button{min-height:29px}
+.cs-pro-stage-tools,.cs-pro-transport,.cs-pro-timeline-head{min-height:42px;height:auto;padding:6px 8px;gap:5px;background:var(--ux-header)}
+.cs-ux-toolgroup{display:inline-flex;align-items:center;gap:4px;padding-right:7px;margin-right:2px;border-right:1px solid #4a4e5538}
+.cs-ux-toolgroup:last-child{border-right:0;padding-right:0}
+.cs-pro-stage-tools .cs-ux-toolgroup.right{margin-left:auto}
+.cs-pro-stage-tools>.push,.cs-pro-transport>.push{display:none}
+.cs-pro-stage .cs-canvas-dock{background:radial-gradient(ellipse at 50% 30%,#39404a,#15181d 65%,#0b0c0f);box-shadow:inset 0 0 0 1px #08090b,inset 0 0 70px #0009}
+.cs-pro-stage .cs-canvas-dock:before{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;background:linear-gradient(90deg,#ffffff0250 1px,transparent 1px),linear-gradient(#ffffff0250 1px,transparent 1px);background-size:32px 32px;mask-image:radial-gradient(circle at center,#000 15%,transparent 75%);opacity:.3}
+.cs-pro-stage-label{z-index:3;border-color:#090a0c;background:linear-gradient(180deg,#24282edb,#15181ddb);color:#b8c0ca;box-shadow:inset 0 1px 0 #ffffff10,0 2px 7px #0008}
+.cs-pro-transport{border-top-color:#08090b;box-shadow:inset 0 1px 0 #ffffff0d}
+.cs-pro-timecode{min-width:100px;height:30px;display:grid;place-items:center;font-size:10.5px;letter-spacing:.035em}
+.cs-pro-primary,.cs-pro-btn,.cs-pro-iconbtn,.cs-pro-danger{transition:transform .1s ease,filter .12s ease,background .12s ease,color .12s ease}
+.cs-pro-primary:hover,.cs-pro-btn:hover,.cs-pro-iconbtn:hover{transform:translateY(-1px)}
+.cs-pro-primary:active,.cs-pro-btn:active,.cs-pro-iconbtn:active{transform:none}
+.cs-pro-assets-tools{padding:9px 8px 8px;background:linear-gradient(180deg,#202328,#1b1e22)}
+.cs-pro-filterbar{gap:3px;margin-top:6px}.cs-pro-filterbar button{min-height:27px;border-radius:3px}
+.cs-pro-asset-list{padding:8px;gap:6px}.cs-pro-asset-group{position:sticky;top:-8px;z-index:2;margin:5px -2px 2px;padding:7px 6px 5px;background:linear-gradient(180deg,#202328 75%,transparent);color:#a6adb6}
+.cs-pro-asset{min-height:56px;padding:6px;border-radius:5px;background:linear-gradient(180deg,#2a2e34,#22252a);border-color:#101216;box-shadow:inset 0 1px 0 #ffffff10,0 2px 5px #0005;transition:transform .13s ease,border-color .13s ease,background .13s ease,box-shadow .13s ease}
+.cs-pro-asset:hover{transform:translateY(-1px);border-color:#5279a6;background:linear-gradient(180deg,#333944,#272c33);box-shadow:inset 0 1px 0 #ffffff14,0 5px 11px #0008}
+.cs-pro-asset.dragging{opacity:.55;transform:scale(.98)}
+.cs-pro-asset-thumb{height:42px;border-radius:4px;box-shadow:inset 0 1px 0 #ffffff14,inset 0 -10px 22px #0005}
+.cs-pro-asset-copy b{font-size:11px}.cs-pro-asset-copy span{font-size:9px}
+.cs-ux-asset-badge{display:inline-flex;align-items:center;margin-top:4px;padding:2px 5px;border:1px solid #171a1f;border-radius:8px;background:#15191e;color:#90a9c7;font:700 7.5px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase}
+.cs-ux-preview-anim{width:27px!important;margin-right:3px;color:#9fc3ec}
+.cs-pro-assets-foot{padding:8px;grid-template-columns:1fr 1fr;gap:5px;background:linear-gradient(180deg,#22252a,#191b1f)}
+.cs-ux-foot-title{grid-column:1/-1;display:flex;align-items:center;gap:7px;margin-bottom:1px;color:#9da4ad;font:700 8.5px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase}
+.cs-ux-foot-title:after{content:'';height:1px;flex:1;background:#ffffff0d}
+.cs-pro-timeline{background:#141619;box-shadow:inset 0 1px 0 #ffffff08}
+.cs-pro-timeline-head{border-bottom:1px solid #08090b;flex-wrap:wrap}
+.cs-pro-timeline-head>strong{margin-right:4px}.cs-pro-timeline-head>.push{flex:1}
+.cs-pro-timeline-scroll{background:#111317}
+.cs-pro-track-row{--pro-row-h:52px}
+.cs-pro-track-head{padding:5px 7px;background:linear-gradient(180deg,#282b31,#202328);box-shadow:inset 0 1px 0 #ffffff09}
+.cs-pro-track-head.selected{background:linear-gradient(90deg,#315f9255,#272b31 42%,#202328);box-shadow:inset 3px 0 0 #5b96e6,inset 0 1px 0 #ffffff0c}
+.cs-pro-track-kind{width:27px;height:27px;border:1px solid #111318;border-radius:4px;background:linear-gradient(145deg,#414751,#292d34);box-shadow:inset 0 1px 0 #ffffff16;display:grid;place-items:center}
+.cs-pro-track-copy b{font-size:10px}.cs-pro-track-copy span{font-size:7.8px;color:#7f8791}
+.cs-pro-track-controls button{width:20px;height:21px;border-radius:3px;background:#15181c;border-color:#090a0c;color:#747c86}
+.cs-pro-track-controls button:hover{color:#fff;background:#343840}
+.cs-pro-track-lane{background-color:#15171b;background-image:linear-gradient(90deg,#ffffff05 1px,transparent 1px);background-size:var(--pro-zoom-grid,76px) 100%}
+.cs-pro-track-row:nth-child(even) .cs-pro-track-lane{background-color:#181a1e}
+.cs-pro-empty-track{font-size:9px;color:#626b75;padding-left:10px}
+.cs-pro-clip{border-radius:4px;box-shadow:inset 0 1px 0 #ffffff22,0 2px 4px #0008;transition:filter .1s ease,box-shadow .1s ease,transform .1s ease}
+.cs-pro-clip:hover{filter:brightness(1.08);box-shadow:inset 0 1px 0 #ffffff28,0 3px 7px #0009;transform:translateY(-1px)}
+.cs-pro-clip.selected{box-shadow:inset 0 0 0 1px #dcecff,0 0 0 1px #4d8bdb,0 0 12px #3f7fd477}
+.cs-pro-playhead{width:2px;background:#9fc3ec;box-shadow:0 0 8px #5b96e6}
+.cs-pro-playhead-handle{filter:drop-shadow(0 1px 2px #000)}
+.cs-pro-marker-label{border-radius:3px;background:#2b3037;color:#e2e5e9;box-shadow:0 2px 5px #0008}
+.v41-statusline{min-height:24px;padding:4px 8px;background:linear-gradient(180deg,#191b1f,#111317);border-top:1px solid #08090b}
+.cs-ux-resizer{position:absolute;z-index:20;background:transparent;touch-action:none}
+.cs-ux-resizer:after{content:'';position:absolute;background:#5b96e6;opacity:0;transition:opacity .12s ease}
+.cs-ux-resizer:hover:after,.cs-pro-shell.cs-ux-resizing .cs-ux-resizer.active:after{opacity:.7}
+.cs-ux-resizer.left{top:0;bottom:0;left:calc(var(--ux-assets-w) - 3px);width:6px;cursor:col-resize}.cs-ux-resizer.left:after{top:0;bottom:0;left:2px;width:1px}
+.cs-ux-resizer.right{top:0;bottom:0;right:calc(var(--ux-inspector-w) - 3px);width:6px;cursor:col-resize}.cs-ux-resizer.right:after{top:0;bottom:0;left:3px;width:1px}
+.cs-ux-resizer.horizontal{left:var(--ux-assets-w);right:var(--ux-inspector-w);top:calc(var(--ux-stage-h) - 3px);height:6px;cursor:row-resize}.cs-ux-resizer.horizontal:after{left:0;right:0;top:2px;height:1px}
+.assets-collapsed .cs-ux-resizer.left,.inspector-collapsed .cs-ux-resizer.right,.timeline-focus .cs-ux-resizer.horizontal,.stage-focus .cs-ux-resizer.horizontal{display:none}
+.cs-ux-empty-stage{max-width:470px;padding:24px;text-align:center;pointer-events:auto;border:1px solid #343942;border-radius:8px;background:linear-gradient(180deg,#262b32dd,#171a1edd),var(--noise);box-shadow:inset 0 1px 0 #ffffff12,0 12px 32px #000b}
+.cs-ux-empty-stage svg{width:38px;height:38px;stroke:#9fc3ec;fill:none;stroke-width:1.4}.cs-ux-empty-stage h3{margin:10px 0 5px;color:#edf0f3;font-size:16px}.cs-ux-empty-stage p{margin:0 auto 15px;max-width:360px;color:#939ba5;font-size:10.5px;line-height:1.55}.cs-ux-empty-actions{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
+.cs-ux-start-card{display:grid;grid-template-columns:30px minmax(0,1fr);gap:9px;text-align:left;padding:8px;border:1px solid #252a31;border-radius:5px;background:#1c1f24}.cs-ux-start-card .num{width:25px;height:25px;border-radius:50%;display:grid;place-items:center;background:#2f68ae;color:#fff;font:700 9px var(--mono)}.cs-ux-start-card b{font-size:10px;color:#dce0e5}.cs-ux-start-card span{display:block;margin-top:3px;font-size:9px;line-height:1.35;color:#858d97}
+.cs-ux-animation-settings{margin:8px 0;padding:8px;border:1px solid #182a40;border-radius:4px;background:linear-gradient(180deg,#1d2937,#18212c)}
+.cs-ux-animation-settings .cs-pro-field{border-bottom:0}.cs-ux-animation-settings .cs-pro-row{margin-top:7px}
+.cs-ux-command-palette{position:fixed;inset:0;z-index:10020;display:grid;place-items:start center;padding-top:min(12vh,110px);background:#05060899;backdrop-filter:blur(4px)}
+.cs-ux-command-card{width:min(620px,calc(100vw - 30px));max-height:min(620px,76vh);display:flex;flex-direction:column;border:1px solid #101216;border-radius:7px;background:linear-gradient(180deg,#2a2d33,#1b1e22),var(--noise);box-shadow:inset 0 1px 0 #ffffff16,0 24px 70px #000d;overflow:hidden}
+.cs-ux-command-search{display:flex;align-items:center;gap:9px;padding:12px;border-bottom:1px solid #101216}.cs-ux-command-search svg{width:17px;height:17px;stroke:#9fc3ec;fill:none;stroke-width:1.8}.cs-ux-command-search input{flex:1;height:36px;border:0!important;background:transparent!important;box-shadow:none!important;color:#f1f3f5;font-size:14px;outline:0}.cs-ux-command-list{overflow:auto;padding:7px}.cs-ux-command-item{width:100%;display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:9px;align-items:center;padding:9px;border:1px solid transparent;border-radius:5px;background:transparent;color:#d7dbe0;text-align:left;cursor:pointer}.cs-ux-command-item:hover,.cs-ux-command-item.active{border-color:#304967;background:#26303c}.cs-ux-command-item svg{width:16px;height:16px;stroke:#9fc3ec;fill:none;stroke-width:1.8}.cs-ux-command-item b{display:block;font-size:11px}.cs-ux-command-item span{display:block;margin-top:3px;color:#8c949e;font-size:9px}.cs-ux-command-item kbd{padding:3px 6px;border:1px solid #111318;border-radius:3px;background:#17191d;color:#9ba3ad;font:700 8px var(--mono)}
+.cs-ux-command-foot{padding:8px 12px;border-top:1px solid #101216;color:#7f8791;font-size:9px}
+.cs-ux-tooltip{position:fixed;z-index:10100;max-width:260px;padding:6px 8px;border:1px solid #111318;border-radius:4px;background:#171a1eee;color:#d8dce1;font:9.5px/1.35 Segoe UI,system-ui,sans-serif;box-shadow:0 5px 16px #000b;pointer-events:none;opacity:0;transform:translateY(3px);transition:opacity .1s ease,transform .1s ease}.cs-ux-tooltip.on{opacity:1;transform:none}
+@media(max-width:1180px){:root{--ux-assets-w:230px;--ux-inspector-w:310px}.cs-ux-commandbar .label,.cs-ux-commandbar kbd{display:none}.cs-ux-commandbar button{padding:6px 8px}.cs-pro-shell{grid-template-columns:var(--ux-assets-w) minmax(330px,1fr) var(--ux-inspector-w)}}
+@media(max-width:980px){body.v40-scene-active #csWorkspaceContent{overflow:hidden}.cs-ux-commandbar{overflow-x:auto;scrollbar-width:none}.cs-ux-commandbar::-webkit-scrollbar{display:none}.cs-pro-shell{display:grid;grid-template-columns:46px minmax(0,1fr);grid-template-rows:minmax(330px,52%) minmax(270px,1fr);--ux-assets-w:46px;--ux-inspector-w:0px}.cs-pro-assets{grid-column:1;grid-row:1/3}.cs-pro-stage{grid-column:2;grid-row:1}.cs-pro-timeline{grid-column:2;grid-row:2}.cs-pro-inspector{position:absolute;right:0;top:0;bottom:0;width:min(360px,88vw);z-index:30;transform:translateX(102%);box-shadow:-10px 0 28px #000c}.cs-pro-shell:not(.inspector-collapsed) .cs-pro-inspector{transform:none}.cs-pro-shell.inspector-collapsed .cs-pro-inspector{transform:translateX(102%)}.cs-pro-shell:not(.assets-collapsed) .cs-pro-assets{position:absolute;left:0;top:0;bottom:0;width:min(290px,84vw);z-index:31}.assets-collapsed .cs-pro-assets{position:relative;width:auto}.cs-ux-resizer{display:none!important}.cs-pro-stage-tools,.cs-pro-transport,.cs-pro-timeline-head{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}.cs-pro-stage-tools::-webkit-scrollbar,.cs-pro-transport::-webkit-scrollbar,.cs-pro-timeline-head::-webkit-scrollbar{display:none}.cs-ux-toolgroup{flex:none}.cs-pro-shell.timeline-focus{grid-template-rows:190px minmax(360px,1fr)}.cs-pro-shell.stage-focus{grid-template-rows:minmax(420px,1fr) 155px}}
+@media(max-width:680px){.cs-ux-commandbar button span{display:none}.cs-ux-commandbar{padding-inline:5px}.cs-pro-shell{grid-template-columns:42px minmax(0,1fr)}.cs-pro-timecode{min-width:88px}.cs-pro-track-row{--pro-row-h:48px}.cs-pro-field{grid-template-columns:1fr}.cs-pro-field>label{padding-top:4px}.cs-ux-empty-stage{margin:12px;padding:18px}.cs-ux-panel-sub{display:none!important}}
+@media(prefers-reduced-motion:reduce){.cs-pro-shell,.cs-pro-asset,.cs-pro-clip,.cs-pro-section-body,.cs-ux-commandbar button,.cs-pro-primary,.cs-pro-btn,.cs-pro-iconbtn,.cs-ux-tooltip{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+
+/* v4.2.0 compact overlay correction */
+@media(max-width:980px){
+  .cs-pro-inspector{grid-column:auto!important;grid-row:auto!important;left:auto!important;right:0!important;top:0!important;bottom:0!important}
+  .cs-pro-shell:not(.inspector-collapsed) .cs-pro-inspector{transform:translateX(0)!important}
+  .cs-pro-shell.inspector-collapsed .cs-pro-inspector{transform:translateX(102%)!important}
+  .cs-ux-dock-scrim{position:absolute;inset:0;z-index:29;background:#0506088c;backdrop-filter:blur(1px);display:none}
+  .cs-pro-shell.mobile-panel-open .cs-ux-dock-scrim{display:block}
+  .cs-pro-shell.mobile-panel-open .cs-pro-stage,.cs-pro-shell.mobile-panel-open .cs-pro-timeline{filter:saturate(.75) brightness(.7)}
+}
+
+/* v4.2.0 panel typography correction */
+.cs-ux-panel-sub{display:block;margin-top:3px;color:#858c96;font:8.5px/1 var(--mono);letter-spacing:0;text-transform:none;text-shadow:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cs-ux-inspector-head .cs-ux-panel-title{min-width:0;line-height:1}.cs-ux-inspector-head strong{display:block;font:700 10px/1 Segoe UI,system-ui,sans-serif;letter-spacing:.09em;text-transform:uppercase}
+
+/* ═══════════ v4.2.0 — Main editor dock & section polish ═══════════ */
+#app{--main-left-w:330px;--main-right-w:350px;position:relative;grid-template-columns:var(--main-left-w) minmax(0,1fr) var(--main-right-w);transition:grid-template-columns .2s cubic-bezier(.2,.8,.2,1)}
+#app.main-left-collapsed{--main-left-w:44px}
+#app.main-right-collapsed{--main-right-w:44px}
+.side{scrollbar-gutter:stable}
+.side .pad{padding:0 10px 48px}
+.cs-main-panel-head{position:sticky;top:0;z-index:12;margin:0 -10px 10px;padding:8px 9px 7px;border-bottom:1px solid #090a0c;background:linear-gradient(180deg,#353941,#292c32 55%,#24272c),var(--noise);box-shadow:inset 0 1px 0 #ffffff13,0 4px 12px #0008}
+.cs-main-head-row{display:flex;align-items:center;gap:7px;min-height:31px}
+.cs-main-title{min-width:0;display:flex;flex-direction:column;line-height:1}.cs-main-title strong{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:#e0e3e7}.cs-main-title span{margin-top:3px;font:8.5px/1 var(--mono);color:#858c95;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cs-main-head-row .push{flex:1}.cs-main-head-row button{width:29px;height:28px;padding:0;display:grid;place-items:center;border:1px solid #0b0c0e;border-radius:3px;background:var(--metal);color:#bfc5cd;box-shadow:var(--ux-bevel);cursor:pointer}.cs-main-head-row button:hover{background:var(--metalh);color:#fff}.cs-main-head-row svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cs-main-search{position:relative;margin-top:6px}.cs-main-search svg{position:absolute;left:9px;top:8px;width:12px;height:12px;stroke:#7f8791;fill:none;stroke-width:1.8}.cs-main-search input{width:100%;height:29px;padding:5px 7px 5px 27px;background:var(--well);border:1px solid #0a0b0c;border-radius:3px;color:#d5d9de;font-size:10px;box-shadow:inset 0 1px 3px #000a}
+.cs-main-scope{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:6px}.cs-main-scope button{min-width:0;height:26px;padding:4px;border:1px solid #0b0c0e;border-radius:3px;background:linear-gradient(180deg,#33373e,#272a30);color:#9da4ad;font:700 8.5px/1 var(--mono);cursor:pointer;box-shadow:inset 0 1px 0 #ffffff10}.cs-main-scope button:hover{color:#fff;background:var(--metalh)}.cs-main-scope button.on{background:var(--bluesel);border-color:#1e4477;color:#fff}
+.cs-main-section-count{display:flex;align-items:center;justify-content:space-between;margin-top:6px;color:#747c86;font:8.5px/1 var(--mono)}
+.side .sec{min-height:34px;margin:6px 0 3px;padding:8px 8px;border:1px solid #101216;border-radius:4px;background:linear-gradient(180deg,#2a2d33,#22252a);box-shadow:inset 0 1px 0 #ffffff0d,0 2px 5px #0004;transition:background .13s ease,border-color .13s ease,color .13s ease,transform .13s ease}
+.side .sec:hover{transform:translateY(-1px);border-color:#3b4654;background:linear-gradient(180deg,#343841,#292d34)}
+.side .sec.cs-main-open{border-color:#294b73;background:linear-gradient(90deg,#315f9255,#292d34 40%,#23262b);box-shadow:inset 3px 0 0 #5b96e6,inset 0 1px 0 #ffffff10,0 2px 6px #0005;color:#f0f2f4}
+.side .sec .chev{display:grid;place-items:center;width:13px;height:13px;border-radius:2px;color:#9fa7b1;transition:transform .13s ease}
+.side .sec.cs-main-open .chev{color:#9fc3ec}
+.side .secbody{margin:0 0 8px;padding:9px;background:linear-gradient(180deg,#25282d,#202328);border-color:#111318;border-radius:4px;box-shadow:inset 0 1px 0 #ffffff0a,0 2px 6px #0005;animation:csUxReveal .14s ease-out}
+.side .secbody .grp:first-child{margin-top:2px}
+.cs-main-filtered{display:none!important}
+.cs-main-empty-filter{padding:20px 12px;text-align:center;color:#7e8690;font-size:10px;line-height:1.5;border:1px dashed #343942;border-radius:5px;background:#ffffff02}
+#app.main-left-collapsed #leftBody>:not(.cs-main-panel-head),#app.main-right-collapsed #rightBody>:not(.cs-main-panel-head){display:none!important}
+#app.main-left-collapsed #leftBody,#app.main-right-collapsed #rightBody{padding:0}
+#app.main-left-collapsed .cs-main-panel-head,#app.main-right-collapsed .cs-main-panel-head{height:100%;margin:0;padding:7px 5px;display:flex;align-items:flex-start;justify-content:center;border-bottom:0}
+#app.main-left-collapsed .cs-main-panel-head>:not(.cs-main-head-row),#app.main-right-collapsed .cs-main-panel-head>:not(.cs-main-head-row){display:none}
+#app.main-left-collapsed .cs-main-head-row,#app.main-right-collapsed .cs-main-head-row{flex-direction:column;width:100%}
+#app.main-left-collapsed .cs-main-title,#app.main-right-collapsed .cs-main-title,#app.main-left-collapsed .cs-main-head-row .push,#app.main-right-collapsed .cs-main-head-row .push,#app.main-left-collapsed .cs-main-head-row button:not(.cs-main-collapse),#app.main-right-collapsed .cs-main-head-row button:not(.cs-main-collapse){display:none}
+#app.main-left-collapsed .cs-main-collapse,#app.main-right-collapsed .cs-main-collapse{display:grid;width:31px}
+.cs-main-resizer{position:absolute;top:46px;bottom:0;width:7px;z-index:18;cursor:col-resize;touch-action:none;background:transparent}.cs-main-resizer:after{content:'';position:absolute;top:0;bottom:0;width:1px;background:#5b96e6;opacity:0;transition:opacity .12s}.cs-main-resizer:hover:after,.cs-main-resizer.active:after{opacity:.7}.cs-main-resizer.left{left:calc(var(--main-left-w) - 4px)}.cs-main-resizer.left:after{left:3px}.cs-main-resizer.right{right:calc(var(--main-right-w) - 4px)}.cs-main-resizer.right:after{right:3px}.workspace-open .cs-main-resizer,#app.main-left-collapsed .cs-main-resizer.left,#app.main-right-collapsed .cs-main-resizer.right{display:none}
+@media(max-width:1250px){#app{--main-left-w:290px;--main-right-w:310px;grid-template-columns:var(--main-left-w) minmax(0,1fr) var(--main-right-w)}}
+@media(max-width:980px){#app{--main-left-w:250px;--main-right-w:270px;grid-template-columns:var(--main-left-w) minmax(0,1fr) var(--main-right-w)}.cs-main-resizer{display:none}.cs-main-title span{display:none}}
+@media(max-width:760px){#app{--main-left-w:44px;--main-right-w:44px}.cs-main-panel-head{height:100%;margin:0;padding:7px 5px}.cs-main-panel-head>:not(.cs-main-head-row){display:none}.cs-main-head-row{flex-direction:column}.cs-main-title,.cs-main-head-row .push,.cs-main-head-row button:not(.cs-main-collapse){display:none}.cs-main-collapse{display:grid!important}}
+@media(max-width:980px){header{gap:5px;overflow:hidden}header .ver,header #animSel,header #btnPlay,header #btnSources,header #status,header #btnRandom,header #btnReset,header #btnExport{display:none!important}header .spacer{min-width:0}header #btnOpen{white-space:nowrap}.top-workspaces{margin-left:0}}
+
 </style>
 </head>
 <body>
@@ -367,7 +560,7 @@ body.v40-scene-active #csWorkspaceContent,.cs-pro-shell{background:linear-gradie
 </div>
 <script type="module">
 /**
- * Character Studio v4.1.1 — pure WebGL2 + Machinima Studio Pro
+ * Character Studio v4.2.0 — pure WebGL2 + Machinima Studio Pro
  * - Load GLB/GLTF (+ .bj if glTF magic)
  * - Geoset visibility toggles (all mesh nodes)
  * - Head sculpt + gear-safe body sculpt
@@ -2075,7 +2268,7 @@ function renderRight(){
     const br=document.createElement('div'); br.className='btnrow';
     br.innerHTML=`<button type="button" id="gsExp">Export JSON</button><button type="button" id="gsImp">Import JSON</button>`;
     c.appendChild(br);
-    br.querySelector('#gsExp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({version:1,engine:'character-studio_v4.1.1',gearsets},null,2)],{type:'application/json'}));a.download='gearsets.json';a.click();};
+    br.querySelector('#gsExp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({version:1,engine:'character-studio_v4.2.0',gearsets},null,2)],{type:'application/json'}));a.download='gearsets.json';a.click();};
     br.querySelector('#gsImp').onclick=()=>fileGearset.click();
     c.insertAdjacentHTML('beforeend','<div class="hint">Gearsets store slot variants + texture names. Textures resolve from the loaded texture library. Saved locally and exportable as JSON for game wiring.</div>');
   }
@@ -2094,7 +2287,7 @@ function body_appendSlotStatus(card,group){
 }
 function getAppearance(){
   const geosetVisibility={}; if(model) model.geosets.forEach(g=>geosetVisibility[g.name]=g.visible);
-  return {version:2,engine:'character-studio_v4.1.1',model:model?.fileName||null,
+  return {version:2,engine:'character-studio_v4.2.0',model:model?.fileName||null,
     headMorphs:{...headVals},bodyMorphs:{...bodyVals},geosetVisibility,colors:{...colors},
     equippedTextures:{...slotTexChoice},baseTexture:baseTextureName,textureFolder:texFolderName||null,viewMode,
     geosetTextureTransforms:compactUvTransforms(),
@@ -2249,7 +2442,7 @@ renderRight=function(){ _renderRightV15(); appendPackSection(); };
 
 // ── StudioAPI: scriptable surface for agents / automation / headless ──
 const StudioAPI={
-  version:'4.1.1',
+  version:'4.2.0',
   brand:'CHARACTER STUDIO - made by AEiOU',
   loadFile:f=>loadModelFromFile(f),
   loadPack:f=>loadPackFromZip(f),
@@ -2279,7 +2472,7 @@ window.StudioAPI=StudioAPI;
 // ── headless mode: ?headless=1 hides all chrome, StudioAPI drives everything ──
 if(new URLSearchParams(location.search).get('headless')==='1') document.body.classList.add('headless');
 
-document.dispatchEvent(new CustomEvent('studio:ready',{detail:{version:'4.1.1',brand:StudioAPI.brand,headless:document.body.classList.contains('headless')}}));
+document.dispatchEvent(new CustomEvent('studio:ready',{detail:{version:'4.2.0',brand:StudioAPI.brand,headless:document.body.classList.contains('headless')}}));
 window.__studioReady=true;
 
 renderLeft(); renderRight();
@@ -2349,7 +2542,7 @@ Object.assign(window.StudioAPI,{
     boneCount:(model&&model.skin)?model.skin.joints.length:0,
     poseHash:(model&&model.skin)?Array.from(model.skin.boneMats.slice(0,128)).reduce((h,x)=>(h*31+Math.round(x*1000))|0,0):0 }),
 });
-window.StudioAPI.version='4.1.1';
+window.StudioAPI.version='4.2.0';
 
 
 /* ═══════════ v3.0 Tier 2 — undo/redo · projects · profiles · texture layers · pack authoring ═══════════ */
@@ -2528,7 +2721,7 @@ function idb(){
   });
 }
 function projectRecord(name){
-  return { name, savedAt:new Date().toISOString(), engine:'character-studio_v4.1.1',
+  return { name, savedAt:new Date().toISOString(), engine:'character-studio_v4.2.0',
     appearance:(model?getAppearance():null), gearsets:JSON.parse(JSON.stringify(gearsets)),
     settings:{...settings}, texLayers:JSON.parse(JSON.stringify(texLayers)),
     modelName:(window._modelFileRef&&window._modelFileRef.name)||null,
@@ -2669,7 +2862,7 @@ async function bitmapPng(bmp){
   return canvasPng(cv);
 }
 function genManifest(name,version){
-  return { name, version, generated:new Date().toISOString(), engine:'character-studio_v4.1.1', profile:activeProfile.id,
+  return { name, version, generated:new Date().toISOString(), engine:'character-studio_v4.2.0', profile:activeProfile.id,
     model: model?{ name:(window._modelFileRef&&window._modelFileRef.name)||null, geosets:model.geosets.length,
       bones:model.skin?model.skin.joints.length:0, animations:model.animations.length }:null,
     geosetGroups: model?[...new Set(model.geosets.map(g=>g.group))]:[],
@@ -2683,7 +2876,7 @@ async function buildPack(opts){
   const enc=new TextEncoder();
   const files=[];
   const add=(n,data)=>files.push({name:`${base}/${n}`,data});
-  add('version.txt',enc.encode(`${base}\nengine: character-studio_v4.1.1\ngenerated: ${new Date().toISOString()}\n`));
+  add('version.txt',enc.encode(`${base}\nengine: character-studio_v4.2.0\ngenerated: ${new Date().toISOString()}\n`));
   const manifest=genManifest(name,version);
   const v=validateManifest(manifest);
   if(!v.ok) throw new Error('generated manifest invalid: '+v.errors.join('; '));
@@ -2694,7 +2887,7 @@ async function buildPack(opts){
   }
   add('gearsets.json',enc.encode(JSON.stringify(gearsets,null,2)));
   add('studio/character_state.json',enc.encode(JSON.stringify({
-    version:1,engine:'character-studio_v4.1.1',savedAt:new Date().toISOString(),
+    version:1,engine:'character-studio_v4.2.0',savedAt:new Date().toISOString(),
     appearance:model?getAppearance():null,settings:{...settings},gearsets:JSON.parse(JSON.stringify(gearsets)),
     animation:{index:animIndex,time:animTime,playing,speed:animSpeed},view:{yaw,pitch,dist,targetY}
   },null,2)));
@@ -2719,7 +2912,7 @@ async function buildPack(opts){
     add('preview/preview.png',u8);
   }
   add('docs/integration_notes.txt',enc.encode(
-`${base}\nAuthored with CHARACTER STUDIO - made by AEiOU (v4.1.1).\n\nLayout:\n  customization/customization_manifest.json  machine-readable manifest (validated)\n  appearance.json                             portable appearance state\n  geoset_list.txt                             geoset name / group / default visibility\n  textures/                                   texture library + baked atlases (PNG)\n  models/                                     source model (optional)\n  preview/preview.png                         viewport render\n  SHA256SUMS.txt                              integrity (sha256sum -c compatible)\n`));
+`${base}\nAuthored with CHARACTER STUDIO - made by AEiOU (v4.2.0).\n\nLayout:\n  customization/customization_manifest.json  machine-readable manifest (validated)\n  appearance.json                             portable appearance state\n  geoset_list.txt                             geoset name / group / default visibility\n  textures/                                   texture library + baked atlases (PNG)\n  models/                                     source model (optional)\n  preview/preview.png                         viewport render\n  SHA256SUMS.txt                              integrity (sha256sum -c compatible)\n`));
   const sums=[];
   for(const f of files) sums.push(`${await sha256Hex(f.data)}  ${f.name}`);
   files.push({name:`${base}/SHA256SUMS.txt`,data:enc.encode(sums.join('\n')+'\n')});
@@ -2825,14 +3018,14 @@ function exportGlbBytes(opts={}){
   }
   const uvMeta=compactUvTransforms();
   for(const [name,cfg] of Object.entries(uvMeta)){const g=model.geosets.find(x=>x.name===name);if(!g)continue;const nd=json.nodes[g.nodeIndex];nd.extras={...(nd.extras||{}),characterStudioTextureTransform:cfg};}
-  json.asset=json.asset||{};json.asset.extras={...(json.asset.extras||{}),characterStudio:{version:'4.1.1',geosetTextureTransforms:uvMeta}};
+  json.asset=json.asset||{};json.asset.extras={...(json.asset.extras||{}),characterStudio:{version:'4.2.0',geosetTextureTransforms:uvMeta}};
   if(!includeHidden){
     for(const g of model.geosets){
       if(!g.visible&&json.nodes[g.nodeIndex]&&json.nodes[g.nodeIndex].mesh!=null){ delete json.nodes[g.nodeIndex].mesh; strippedNodes++; }
     }
   }
   json.asset=json.asset||{};
-  json.asset.generator='CHARACTER STUDIO - made by AEiOU (v4.1.1)';
+  json.asset.generator='CHARACTER STUDIO - made by AEiOU (v4.2.0)';
   const enc=new TextEncoder();
   let jbytes=enc.encode(JSON.stringify(json));
   const jpad=(4-(jbytes.length%4))%4;
@@ -4026,7 +4219,7 @@ function csRenderSpriteSheet(opts={}){
     canvas.width=prev.w; canvas.height=prev.h;
     csRenderFrame(performance.now());
   }
-  const meta={version:1,engine:'character-studio_v4.1.1',directions:dirs,cell:{w:cell,h:cell},cols,rows,
+  const meta={version:1,engine:'character-studio_v4.2.0',directions:dirs,cell:{w:cell,h:cell},cols,rows,
     order:'row-major, clockwise turnaround starting at the current camera yaw',
     yawRadians:yaws.map(v=>Number(v.toFixed(6))),transparent,
     projection:settings.ortho?'orthographic':'perspective',fov:settings.fov,generated:new Date().toISOString()};
@@ -4061,7 +4254,7 @@ function csLibExt(rec){
 }
 function csSafeFileName(s){ return String(s||'asset').replace(/[^\w.\- ]+/g,'_').replace(/\s+/g,'_').slice(0,80)||'asset'; }
 async function libSave(type,name,payload,meta={}){
-  const rec={id:csLibId(),type,name:String(name||type),createdAt:new Date().toISOString(),meta,engine:'character-studio_v4.1.1'};
+  const rec={id:csLibId(),type,name:String(name||type),createdAt:new Date().toISOString(),meta,engine:'character-studio_v4.2.0'};
   if(typeof payload==='string') rec.json=payload;
   else if(payload&&typeof payload.json==='string'){
     rec.json=payload.json;
@@ -4105,7 +4298,7 @@ async function libExportAll(){
     if(rec.previewBlob){ preview='library/'+rec.type+'/'+csSafeFileName(rec.name)+'_'+rec.id.slice(0,8)+'_preview.png'; files.push({name:preview,data:new Uint8Array(await rec.previewBlob.arrayBuffer())}); }
     manifest.push({id:rec.id,type:rec.type,name:rec.name,createdAt:rec.createdAt,file:rel,preview,bytes:data.length,meta:rec.meta||{}});
   }
-  files.push({name:'library/library_manifest.json',data:enc.encode(JSON.stringify({version:1,engine:'character-studio_v4.1.1',exported:new Date().toISOString(),items:manifest},null,2))});
+  files.push({name:'library/library_manifest.json',data:enc.encode(JSON.stringify({version:1,engine:'character-studio_v4.2.0',exported:new Date().toISOString(),items:manifest},null,2))});
   const sums=[];
   for(const f of files) sums.push(`${await sha256Hex(f.data)}  ${f.name}`);
   files.push({name:'SHA256SUMS.txt',data:enc.encode(sums.join('\n')+'\n')});
@@ -4564,7 +4757,7 @@ async function csSaveCurrentGearsets(){
   const typed=prompt('Gearset collection name','Gearsets '+new Date().toLocaleDateString());
   if(typed===null) return null;
   const name=typed.trim()||'Gearsets';
-  await libSave('gearset',name,JSON.stringify({version:1,engine:'character-studio_v4.1.1',gearsets},null,2),{count:gearsets.length});
+  await libSave('gearset',name,JSON.stringify({version:1,engine:'character-studio_v4.2.0',gearsets},null,2),{count:gearsets.length});
   setStatus(`${gearsets.length} gearset(s) saved to Asset Library`); return name;
 }
 async function csImportLibraryFiles(files){
@@ -4779,7 +4972,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&csWorkspaceState.ac
    v4.1.1 — MACHINIMA STUDIO PRO
    Professional offline nonlinear scene, camera, animation and audio editor.
    ═══════════════════════════════════════════════════════════════════════════ */
-const CS_V4_VERSION='4.1.1';
+const CS_V4_VERSION='4.2.0';
 const CS_V4_PROJECT_KEY='cs_machinima_project_v1';
 const CS_V4_UI_KEY='cs_machinima_ui_v1';
 const CS_V4_TRACK_TYPES={
@@ -4798,7 +4991,7 @@ function csV4DefaultTrack(type,index=0){
 }
 function csV4DefaultProject(){
   const camera=csV4DefaultTrack('camera'); camera.name='Main Camera'; camera.keyframes=[{id:csV4Id('key'),time:0,camera:csV4CameraSnapshot()}];
-  return {version:1,engine:'character-studio_v4.1.1',id:csV4Id('project'),name:'Untitled Machinima',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),fps:30,duration:30,playhead:0,zoom:76,loop:false,loopStart:0,loopEnd:30,snap:true,snapMode:'all',safeFrame:true,
+  return {version:1,engine:'character-studio_v4.2.0',id:csV4Id('project'),name:'Untitled Machinima',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),fps:30,duration:30,playhead:0,zoom:76,loop:false,loopStart:0,loopEnd:30,snap:true,snapMode:'all',safeFrame:true,
     tracks:[camera,csV4DefaultTrack('scene'),csV4DefaultTrack('animation'),csV4DefaultTrack('video'),csV4DefaultTrack('effect'),csV4DefaultTrack('music'),csV4DefaultTrack('dialogue'),csV4DefaultTrack('sfx')],markers:[],baseScene:csV4Clone(csNormalizeScene(sceneState))};
 }
 function csV4NormalizeClip(c,type){
@@ -4806,7 +4999,7 @@ function csV4NormalizeClip(c,type){
 }
 function csV4NormalizeProject(raw){
   const base=csV4DefaultProject(),p=raw&&typeof raw==='object'?raw:{};
-  const out={...base,...p}; out.version=1; out.engine='character-studio_v4.1.1'; out.id=String(p.id||base.id); out.name=String(p.name||base.name).slice(0,120); out.fps=[24,25,30,50,60].includes(+p.fps)?+p.fps:30; out.duration=csV4Clamp(p.duration||30,1,7200); out.playhead=csV4Clamp(p.playhead||0,0,out.duration); out.zoom=csV4Clamp(p.zoom||76,24,260); out.loop=!!p.loop; out.loopStart=csV4Clamp(p.loopStart||0,0,out.duration); out.loopEnd=csV4Clamp(p.loopEnd||out.duration,out.loopStart+1/out.fps,out.duration); out.snap=p.snap!==false; out.snapMode=['all','frames','markers','edges','scenes'].includes(p.snapMode)?p.snapMode:'all'; out.safeFrame=p.safeFrame!==false; out.markers=Array.isArray(p.markers)?p.markers.map(m=>({id:String(m.id||csV4Id('marker')),time:csV4Clamp(m.time,0,out.duration),name:String(m.name||'Marker').slice(0,80),color:m.color||'amber'})).sort((a,b)=>a.time-b.time):[];
+  const out={...base,...p}; out.version=1; out.engine='character-studio_v4.2.0'; out.id=String(p.id||base.id); out.name=String(p.name||base.name).slice(0,120); out.fps=[24,25,30,50,60].includes(+p.fps)?+p.fps:30; out.duration=csV4Clamp(p.duration||30,1,7200); out.playhead=csV4Clamp(p.playhead||0,0,out.duration); out.zoom=csV4Clamp(p.zoom||76,24,260); out.loop=!!p.loop; out.loopStart=csV4Clamp(p.loopStart||0,0,out.duration); out.loopEnd=csV4Clamp(p.loopEnd||out.duration,out.loopStart+1/out.fps,out.duration); out.snap=p.snap!==false; out.snapMode=['all','frames','markers','edges','scenes'].includes(p.snapMode)?p.snapMode:'all'; out.safeFrame=p.safeFrame!==false; out.markers=Array.isArray(p.markers)?p.markers.map(m=>({id:String(m.id||csV4Id('marker')),time:csV4Clamp(m.time,0,out.duration),name:String(m.name||'Marker').slice(0,80),color:m.color||'amber'})).sort((a,b)=>a.time-b.time):[];
   out.tracks=(Array.isArray(p.tracks)&&p.tracks.length?p.tracks:base.tracks).map((t,i)=>{const type=CS_V4_TRACK_TYPES[t.type]?t.type:'animation';const n={...csV4DefaultTrack(type,i),...t,type};n.id=String(t.id||csV4Id('track'));n.name=String(t.name||CS_V4_TRACK_TYPES[type].label).slice(0,80);n.muted=!!t.muted;n.solo=!!t.solo;n.locked=!!t.locked;n.hidden=!!t.hidden;n.volume=csV4Clamp(t.volume??1,0,2);n.handheld=csV4Clamp(t.handheld??0,0,1);n.clips=Array.isArray(t.clips)?t.clips.map(c=>csV4NormalizeClip(c,type)):[];n.keyframes=Array.isArray(t.keyframes)?t.keyframes.map(k=>({id:String(k.id||csV4Id('key')),time:csV4Clamp(k.time,0,out.duration),camera:{...csV4CameraSnapshot(),...(k.camera||{})}})).sort((a,b)=>a.time-b.time):[];return n;});
   if(!out.tracks.some(t=>t.type==='camera')){const c=csV4DefaultTrack('camera');c.keyframes=[{id:csV4Id('key'),time:0,camera:csV4CameraSnapshot()}];out.tracks.unshift(c);} out.baseScene=csNormalizeScene(p.baseScene||base.baseScene); return out;
 }
@@ -4814,7 +5007,7 @@ function csV4LoadProject(){try{return csV4NormalizeProject(JSON.parse(localStora
 const csV4={project:csV4LoadProject(),playing:false,exporting:false,selection:null,selectedTrackId:null,tool:'select',inspectorTab:'camera',assetFilter:'all',assetQuery:'',history:[],future:[],drag:null,lastTick:performance.now(),scrollLeft:0,scrollTop:0,activeSceneClip:null,activeEffectClip:null,voiceRecorder:null,voiceStream:null,saveTimer:null,renderToken:0,inspectorOpen:false};
 csV4.selectedTrackId=csV4.project.tracks.find(t=>t.type==='animation')?.id||csV4.project.tracks[0].id;
 const csV4MediaCache=new Map(),csV4WaveCache=new Map(); let csV4AudioCtx=null,csV4MixDest=null,csV4ExportRecorder=null,csV4ExportChunks=[],csV4ExportPrevious=null,csV4ExportCanceled=false;
-function csV4Persist(){csV4.project.updatedAt=new Date().toISOString();try{localStorage.setItem(CS_V4_PROJECT_KEY,JSON.stringify(csV4.project));localStorage.setItem(CS_V4_UI_KEY,JSON.stringify({tool:csV4.tool,inspectorTab:csV4.inspectorTab,assetFilter:csV4.assetFilter,selectedTrackId:csV4.selectedTrackId}));}catch(e){console.warn('Machinima autosave failed',e);} }
+function csV4Persist(){csV4.project.updatedAt=new Date().toISOString();csStorageSet(CS_V4_PROJECT_KEY,JSON.stringify(csV4.project));csStorageSet(CS_V4_UI_KEY,JSON.stringify({tool:csV4.tool,inspectorTab:csV4.inspectorTab,assetFilter:csV4.assetFilter,selectedTrackId:csV4.selectedTrackId}));}
 function csV4SchedulePersist(){clearTimeout(csV4.saveTimer);csV4.saveTimer=setTimeout(csV4Persist,120);}
 function csV4PushHistory(){csV4.history.push(JSON.stringify(csV4.project));if(csV4.history.length>80)csV4.history.shift();csV4.future.length=0;}
 function csV4Undo(){if(!csV4.history.length)return;csV4.future.push(JSON.stringify(csV4.project));csV4.project=csV4NormalizeProject(JSON.parse(csV4.history.pop()));csV4.selection=null;csV4Persist();csRenderSceneWorkspace();}
@@ -4986,7 +5179,7 @@ document.addEventListener('keydown',e=>{if(csWorkspaceState.active!=='scene')ret
    Portable projects, exact 3D camera rigs, audio mixing, professional timeline
    ergonomics, hardened media lifecycle, configurable renders and shortcuts.
    ═══════════════════════════════════════════════════════════════════════════ */
-const CS_V41_VERSION='4.1.1';
+const CS_V41_VERSION='4.2.0';
 const CS_V41_BUNDLE_FORMAT='character-studio/machinima-bundle';
 const CS_V41_MARKER_COLORS={amber:'#f3b34c',cyan:'#55d8ff',green:'#52d39b',red:'#ef6b76',violet:'#a78bfa',white:'#d9e5ef'};
 const csV41={clipboard:null,follow:true,fit:false,dragAsset:null,markerDrag:null,exportStream:null,exportRange:null,renderStart:0,renderEnd:0,renderWallStart:0,sceneHydrateToken:0,helpOpen:false};
@@ -5001,7 +5194,7 @@ function csV41ApplyCamera(cam){if(!cam)return;yaw=csV41Num(cam.yaw,yaw);pitch=cs
 csV4CameraSnapshot=function(){return {yaw:csV41Num(yaw),pitch:csV41Num(pitch),dist:Math.max(.05,csV41Num(dist,2.2)),panX:csV41Num(panX),panY:csV41Num(panY),panZ:csV41Num(panZ),fov:csV4Clamp(settings.fov||40,10,120),ease:'smooth',shake:0};};
 csV4NormalizeClip=function(c,type){const min=1/120;return {id:String(c?.id||csV4Id('clip')),name:String(c?.name||CS_V4_TRACK_TYPES[type]?.label||'Clip').slice(0,160),start:Math.max(0,csV41Num(c?.start)),duration:Math.max(min,csV41Num(c?.duration,1)),sourceIn:Math.max(0,csV41Num(c?.sourceIn)),speed:csV4Clamp(c?.speed??1,.05,8),volume:csV4Clamp(c?.volume??1,0,2),pan:csV4Clamp(c?.pan??0,-1,1),fadeIn:Math.max(0,csV41Num(c?.fadeIn)),fadeOut:Math.max(0,csV41Num(c?.fadeOut)),sourceId:c?.sourceId||null,sourceDuration:Math.max(0,csV41Num(c?.sourceDuration)),linkGroup:c?.linkGroup||null,color:c?.color||null,data:c?.data&&typeof c.data==='object'?c.data:{},type};};
 const _csV41NormalizeProjectBase=csV4NormalizeProject;
-csV4NormalizeProject=function(raw){const out=_csV41NormalizeProjectBase(raw);out.engine='character-studio_v4.1.1';out.version=2;out.autoFollow=raw?.autoFollow!==false;out.motionDuration=csV4Clamp(raw?.motionDuration??2,.1,60);out.motionEase=['smooth','linear','easeIn','easeOut','hold','cut'].includes(raw?.motionEase)?raw.motionEase:'smooth';out.export={resolution:raw?.export?.resolution||'1080p',width:csV4Clamp(raw?.export?.width||1920,320,7680),height:csV4Clamp(raw?.export?.height||1080,180,4320),bitrateMbps:csV4Clamp(raw?.export?.bitrateMbps||18,2,120),range:['project','loop'].includes(raw?.export?.range)?raw.export.range:'project'};out.markers=(out.markers||[]).map((m,i)=>({...m,color:CS_V41_MARKER_COLORS[m.color]?m.color:['amber','cyan','green','violet'][i%4],note:String(raw?.markers?.find?.(x=>x.id===m.id)?.note||m.note||'').slice(0,500)}));out.tracks=out.tracks.map(t=>({...t,pan:csV4Clamp(t.pan??0,-1,1),clips:(t.clips||[]).map(c=>csV4NormalizeClip(c,t.type)),keyframes:(t.keyframes||[]).map(k=>({...k,camera:{...csV4CameraSnapshot(),...(k.camera||{}),panX:csV41Num(k.camera?.panX),panZ:csV41Num(k.camera?.panZ)}}))}));out.duration=Math.max(out.duration,Math.ceil(csV41ProjectEnd(out)||out.duration));return out;};
+csV4NormalizeProject=function(raw){const out=_csV41NormalizeProjectBase(raw);out.engine='character-studio_v4.2.0';out.version=2;out.autoFollow=raw?.autoFollow!==false;out.motionDuration=csV4Clamp(raw?.motionDuration??2,.1,60);out.motionEase=['smooth','linear','easeIn','easeOut','hold','cut'].includes(raw?.motionEase)?raw.motionEase:'smooth';out.export={resolution:raw?.export?.resolution||'1080p',width:csV4Clamp(raw?.export?.width||1920,320,7680),height:csV4Clamp(raw?.export?.height||1080,180,4320),bitrateMbps:csV4Clamp(raw?.export?.bitrateMbps||18,2,120),range:['project','loop'].includes(raw?.export?.range)?raw.export.range:'project'};out.markers=(out.markers||[]).map((m,i)=>({...m,color:CS_V41_MARKER_COLORS[m.color]?m.color:['amber','cyan','green','violet'][i%4],note:String(raw?.markers?.find?.(x=>x.id===m.id)?.note||m.note||'').slice(0,500)}));out.tracks=out.tracks.map(t=>({...t,pan:csV4Clamp(t.pan??0,-1,1),clips:(t.clips||[]).map(c=>csV4NormalizeClip(c,t.type)),keyframes:(t.keyframes||[]).map(k=>({...k,camera:{...csV4CameraSnapshot(),...(k.camera||{}),panX:csV41Num(k.camera?.panX),panZ:csV41Num(k.camera?.panZ)}}))}));out.duration=Math.max(out.duration,Math.ceil(csV41ProjectEnd(out)||out.duration));return out;};
 csV4.project=csV4NormalizeProject(csV4.project);csV41.follow=csV4.project.autoFollow;
 
 csV4CameraAt=function(track,time){const ks=[...(track.keyframes||[])].sort((a,b)=>a.time-b.time);if(!ks.length)return null;if(time<=ks[0].time)return {...csV4CameraSnapshot(),...ks[0].camera};if(time>=ks.at(-1).time)return {...csV4CameraSnapshot(),...ks.at(-1).camera};let a=ks[0],b=ks[1];for(let i=0;i<ks.length-1;i++)if(time>=ks[i].time&&time<=ks[i+1].time){a=ks[i];b=ks[i+1];break;}const span=Math.max(.0001,b.time-a.time),u=csV4Ease((time-a.time)/span,b.camera.ease||a.camera.ease||'smooth'),lerp=(x,y)=>csV41Num(x)+(csV41Num(y)-csV41Num(x))*u;return {yaw:csV4AngleLerp(csV41Num(a.camera.yaw),csV41Num(b.camera.yaw),u),pitch:lerp(a.camera.pitch,b.camera.pitch),dist:lerp(a.camera.dist,b.camera.dist),panX:lerp(a.camera.panX,b.camera.panX),panY:lerp(a.camera.panY,b.camera.panY),panZ:lerp(a.camera.panZ,b.camera.panZ),fov:lerp(a.camera.fov,b.camera.fov),shake:lerp(a.camera.shake,b.camera.shake),ease:b.camera.ease||a.camera.ease||'smooth'};};
@@ -5055,7 +5248,7 @@ csV4DragEnd=function(){_csV41DragEndBase();csV41GarbageCollectMedia();};
 function csV41BeginMarkerDrag(e,id){const m=csV4.project.markers.find(x=>x.id===id);if(!m)return;e.preventDefault();e.stopPropagation();csV4PushHistory();csV4.selection={kind:'marker',id};csV41.markerDrag={m,startX:e.clientX,orig:m.time};const move=ev=>{const raw=csV41.markerDrag.orig+(ev.clientX-csV41.markerDrag.startX)/csV4.project.zoom,s=csV4SnapTime(raw);m.time=s.time;const el=document.querySelector(`[data-marker-id="${CSS.escape(id)}"]`);if(el)el.style.left=`calc(var(--pro-track-head) + ${m.time*csV4.project.zoom}px)`;csV4ShowSnap(s.hit);};const up=()=>{window.removeEventListener('pointermove',move);csV4ShowSnap(null);csV41.markerDrag=null;csV4.project.markers.sort((a,b)=>a.time-b.time);csV4Persist();csRenderSceneWorkspace();};window.addEventListener('pointermove',move);window.addEventListener('pointerup',up,{once:true});}
 
 function csV41EnhanceWorkspace(){if(csWorkspaceState.active!=='scene')return;const head=document.querySelector('.cs-pro-timeline-head');if(head&&!head.querySelector('.v41-tool-cluster')){const cluster=document.createElement('span');cluster.className='v41-tool-cluster';cluster.innerHTML=`<button class="cs-pro-btn v41-fit" id="v41FitTimeline" title="Fit entire project (F)">Fit</button><button class="cs-pro-btn v41-follow ${csV41.follow?'on':''}" id="v41Follow" title="Auto-follow playhead">Follow</button><button class="cs-pro-btn" id="v41Copy" title="Copy (Ctrl+C)">Copy</button><button class="cs-pro-btn" id="v41Paste" title="Paste (Ctrl+V)">Paste</button><button class="cs-pro-iconbtn" id="v41Help" title="Keyboard shortcuts">?</button>`;head.insertBefore(cluster,head.querySelector('.push'));document.getElementById('v41FitTimeline').onclick=csV41FitTimeline;document.getElementById('v41Follow').onclick=e=>{csV41.follow=!csV41.follow;csV4.project.autoFollow=csV41.follow;csV4Persist();e.currentTarget.classList.toggle('on',csV41.follow);};document.getElementById('v41Copy').onclick=()=>csV41CopySelection(false);document.getElementById('v41Paste').onclick=csV41PasteSelection;document.getElementById('v41Help').onclick=csV41ShowHelp;}
-const shell=document.getElementById('csProShell');if(shell&&!shell.querySelector('.v41-statusline')){const status=document.createElement('div');status.className='v41-statusline';status.innerHTML=`<span><b>v4.1 Elite</b></span><span>${csV4.project.tracks.length} tracks</span><span>${csV4.project.markers.length} markers</span><span>${csV4.project.fps} fps</span><span class="push"></span><span class="ok">IndexedDB autosave</span><span>${csV4FmtShort(csV4.project.duration)} project</span>`;document.querySelector('.cs-pro-timeline')?.appendChild(status);}
+const shell=document.getElementById('csProShell');if(shell&&!shell.querySelector('.v41-statusline')){const status=document.createElement('div');status.className='v41-statusline';status.innerHTML=`<span><b>v4.2 Studio</b></span><span>${csV4.project.tracks.length} tracks</span><span>${csV4.project.markers.length} markers</span><span>${csV4.project.fps} fps</span><span class="push"></span><span class="ok">IndexedDB autosave</span><span>${csV4FmtShort(csV4.project.duration)} project</span>`;document.querySelector('.cs-pro-timeline')?.appendChild(status);}
 document.getElementById('csProProjectInput')?.setAttribute('accept','.json,.zip,application/json,application/zip');document.querySelectorAll('[data-track-move]').forEach(b=>b.onclick=e=>{e.stopPropagation();const id=b.closest('[data-track-select]').dataset.trackSelect;csV41MoveTrack(id,b.dataset.trackMove==='up'?-1:1);});document.querySelectorAll('[data-track-lane]').forEach(lane=>{lane.ondragenter=e=>{e.preventDefault();lane.classList.add('v41-drop-target');};lane.ondragleave=e=>{if(!lane.contains(e.relatedTarget))lane.classList.remove('v41-drop-target');};lane.ondragover=e=>{e.preventDefault();e.dataTransfer.dropEffect='copy';};lane.ondrop=async e=>{e.preventDefault();lane.classList.remove('v41-drop-target');const track=csV4TrackById(lane.dataset.trackLane);if(!track||track.locked)return;let payload=csV41.dragAsset;try{payload=JSON.parse(e.dataTransfer.getData('application/x-character-studio-asset'))||payload;}catch{}const time=csV4SnapTime(csV4TimeFromEvent(e,lane)).time;if(payload){if(payload.type!==track.type&&!(CS_V4_AUDIO_TYPES.has(payload.type)&&CS_V4_AUDIO_TYPES.has(track.type)))return csV4Toast(`Drop ${CS_V4_TRACK_TYPES[payload.type]?.label||payload.type} onto a compatible track.`,true);payload={...payload,type:track.type};await csV41InsertAsset(payload,time,track);return;}const file=e.dataTransfer.files?.[0];if(file){if(track.type==='video'&&file.type.startsWith('video/'))await csV4ImportMedia(file,'video',time,track);else if(CS_V4_AUDIO_TYPES.has(track.type)&&file.type.startsWith('audio/'))await csV4ImportMedia(file,track.type,time,track);else csV4Toast('This file is not compatible with the target track.',true);}};});document.querySelectorAll('[data-marker-id]').forEach(el=>{el.onpointerdown=e=>csV41BeginMarkerDrag(e,el.dataset.markerId);});const renderBtn=document.getElementById('csProRenderWebm');if(renderBtn)renderBtn.title='Configure resolution, range and bitrate before rendering';csV41EnsureRenderProgress();}
 const _csV41RenderSceneBase=csRenderSceneWorkspace;
 csRenderSceneWorkspace=async function(){await _csV41RenderSceneBase();csV41EnhanceWorkspace();};
@@ -5072,7 +5265,7 @@ const _csV41TickBase=csV4Tick;
 csV4Tick=function(now){if(csV4.exporting&&csV4.playing){const dt=Math.min(.1,Math.max(0,(now-csV4.lastTick)/1000));csV4.lastTick=now;let next=csV4.project.playhead+dt;if(next>=csV41.renderEnd){csV4.project.playhead=csV41.renderEnd;csV4ApplyAtTime(csV4.project.playhead,true);csV4SyncDom();csV4FinishExport();return;}csV4.project.playhead=next;csV4ApplyAtTime(next,true);csV4SyncDom();return;}_csV41TickBase(now);};
 
 async function csV41ProjectMediaRecords(project=csV4.project){const ids=new Set();for(const t of project.tracks)for(const c of t.clips||[])if(c.sourceId)ids.add(c.sourceId);const collectScene=s=>{if(!s)return;if(s.sky?.sourceId)ids.add(s.sky.sourceId);for(const f of Object.values(s.faces||{}))if(f?.sourceId)ids.add(f.sourceId);};collectScene(project.baseScene);for(const t of project.tracks.filter(t=>t.type==='scene'))for(const c of t.clips)collectScene(c.data?.scene);const rows=[];for(const id of ids){const r=await libGet(id);if(r?.blob)rows.push(r);}return rows;}
-async function csV41DownloadBundle(){try{const enc=new TextEncoder(),project=csV4Clone(csV4.project),media=await csV41ProjectMediaRecords(project),files=[],manifest=[];for(const r of media){const ext=csLibExt(r),path=`media/${csSafeFileName(r.name)}_${r.id.slice(0,8)}${ext}`,data=new Uint8Array(await r.blob.arrayBuffer());files.push({name:path,data});manifest.push({oldId:r.id,name:r.name,type:r.type,mime:r.mime||r.blob.type,path,meta:r.meta||{}});}const bundle={format:CS_V41_BUNDLE_FORMAT,version:1,engine:'character-studio_v4.1.1',createdAt:new Date().toISOString(),project,media:manifest};files.push({name:'project.json',data:enc.encode(JSON.stringify(bundle,null,2))});const sums=[];for(const f of files)sums.push(`${await sha256Hex(f.data)}  ${f.name}`);files.push({name:'SHA256SUMS.txt',data:enc.encode(sums.join('\n')+'\n')});downloadBlob(new Blob([zipStore(files)],{type:'application/zip'}),`${csSafeFileName(project.name)}_portable_machinima.zip`);csV4Toast(`Portable project exported with ${media.length} media asset${media.length===1?'':'s'}.`);}catch(e){csV4Toast('Portable export failed: '+e.message,true);}}
+async function csV41DownloadBundle(){try{const enc=new TextEncoder(),project=csV4Clone(csV4.project),media=await csV41ProjectMediaRecords(project),files=[],manifest=[];for(const r of media){const ext=csLibExt(r),path=`media/${csSafeFileName(r.name)}_${r.id.slice(0,8)}${ext}`,data=new Uint8Array(await r.blob.arrayBuffer());files.push({name:path,data});manifest.push({oldId:r.id,name:r.name,type:r.type,mime:r.mime||r.blob.type,path,meta:r.meta||{}});}const bundle={format:CS_V41_BUNDLE_FORMAT,version:1,engine:'character-studio_v4.2.0',createdAt:new Date().toISOString(),project,media:manifest};files.push({name:'project.json',data:enc.encode(JSON.stringify(bundle,null,2))});const sums=[];for(const f of files)sums.push(`${await sha256Hex(f.data)}  ${f.name}`);files.push({name:'SHA256SUMS.txt',data:enc.encode(sums.join('\n')+'\n')});downloadBlob(new Blob([zipStore(files)],{type:'application/zip'}),`${csSafeFileName(project.name)}_portable_machinima.zip`);csV4Toast(`Portable project exported with ${media.length} media asset${media.length===1?'':'s'}.`);}catch(e){csV4Toast('Portable export failed: '+e.message,true);}}
 csV4DownloadProject=csV41DownloadBundle;
 csV4ImportProjectFile=async function(file){try{if(/\.zip$/i.test(file.name)||file.type.includes('zip')){const entries=(await readZipEntries(file)).filter(e=>!e.dir),pj=entries.find(e=>e.name==='project.json'||/\/project\.json$/i.test(e.name));if(!pj)throw new Error('Portable project is missing project.json');const bundle=JSON.parse(new TextDecoder().decode(await readZipEntryData(file,pj)));if(bundle.format!==CS_V41_BUNDLE_FORMAT)throw new Error('Unsupported project bundle format');const remap=new Map();for(const item of bundle.media||[]){const ent=entries.find(e=>e.name===item.path);if(!ent)continue;const data=await readZipEntryData(file,ent),blob=new Blob([data],{type:item.mime||'application/octet-stream'}),saved=await libSave(item.type||'file',item.name,{blob},{...(item.meta||{}),importedFrom:file.name});remap.set(item.oldId,saved.id);}const project=csV4Clone(bundle.project);for(const t of project.tracks||[])for(const c of t.clips||[])if(remap.has(c.sourceId))c.sourceId=remap.get(c.sourceId);const remapScene=s=>{if(!s)return;if(remap.has(s.sky?.sourceId))s.sky.sourceId=remap.get(s.sky.sourceId);for(const f of Object.values(s.faces||{}))if(remap.has(f.sourceId))f.sourceId=remap.get(f.sourceId);};remapScene(project.baseScene);for(const t of (project.tracks||[]).filter(t=>t.type==='scene'))for(const c of t.clips||[])remapScene(c.data?.scene);csV4PushHistory();csV4.project=csV4NormalizeProject(project);csV4.selection=null;csV4.selectedTrackId=csV4.project.tracks[0]?.id;csV4Persist();await csRenderSceneWorkspace();csV4Toast(`Portable project imported · ${remap.size} media assets restored.`);return;}const data=csV4NormalizeProject(JSON.parse(await file.text()));csV4PushHistory();csV4.project=data;csV4.selection=null;csV4.selectedTrackId=data.tracks[0]?.id;csV4Persist();await csRenderSceneWorkspace();csV4Toast('Machinima project imported.');}catch(e){csV4Toast('Project import failed: '+e.message,true);}};
 
@@ -5084,7 +5277,7 @@ csRenderSceneWorkspace=async function(){await _csV41RenderSceneWorkspaceFinal();
 
 const _csV41OpenWorkspaceBase=csOpenWorkspace;csOpenWorkspace=function(which){const out=_csV41OpenWorkspaceBase(which);if(which==='scene')setTimeout(()=>csRenderSceneWorkspace(),0);return out;};
 const _csV41DeleteSelectionBase=csV4DeleteSelection;csV4DeleteSelection=function(){_csV41DeleteSelectionBase();csV41GarbageCollectMedia();};
-const _csV41PersistBase=csV4Persist;csV4Persist=function(){csV4.project.engine='character-studio_v4.1.1';csV4.project.autoFollow=csV41.follow;_csV41PersistBase();};
+const _csV41PersistBase=csV4Persist;csV4Persist=function(){csV4.project.engine='character-studio_v4.2.0';csV4.project.autoFollow=csV41.follow;_csV41PersistBase();};
 
 window.StudioAPI.version=CS_V41_VERSION;window.StudioAPI.machinima={...window.StudioAPI.machinima,copy:()=>csV41CopySelection(false),cut:()=>csV41CopySelection(true),paste:csV41PasteSelection,fitTimeline:csV41FitTimeline,exportPortable:csV41DownloadBundle,getCamera:()=>({...csV4CameraSnapshot(),position:csV41CameraPosition()}),setCamera:(camera)=>{csV41ApplyCamera(camera);return csV4CameraSnapshot();},renderWebM:(options)=>{if(options)csV4.project.export={...csV4.project.export,...options};return csV4StartExport();}};
 window.StudioAPI.getCamera=()=>({...csV4CameraSnapshot(),position:csV41CameraPosition()});
@@ -5095,7 +5288,59 @@ csV4Persist();
 document.dispatchEvent(new CustomEvent('studio:machinima-elite-ready',{detail:{version:CS_V41_VERSION,features:['portable-projects','world-space-camera','timeline-dnd','clip-slip','audio-pan','render-profiles']}}));
 
 
-document.querySelector('.ver').textContent='— made by AEiOU · v4.1.1';
+/* ═══════════ v4.2.0 — accessible docked workspace UX ═══════════ */
+const CS_V42_VERSION='4.2.0';
+const CS_V42_UI_KEY='character-studio-machinima-ui-v4.2';
+const csV42Default={layout:'edit',assetsCollapsed:false,inspectorCollapsed:false,timelineFocus:false,stageFocus:false,leftWidth:268,rightWidth:344,stageHeight:44,inspectorQuery:'',closedSections:{}};
+function csV42Read(){try{return {...csV42Default,...JSON.parse(localStorage.getItem(CS_V42_UI_KEY)||'{}')}}catch{return {...csV42Default}}}
+function csV42Write(){try{localStorage.setItem(CS_V42_UI_KEY,JSON.stringify(csV42ui))}catch{}}
+const csV42ui=csV42Read();
+function csV42Svg(name){const p={layout:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 4v16M3 11h18"/>',browser:'<path d="M4 5h6l2 2h8v12H4z"/><path d="M4 9h16"/>',inspector:'<path d="M5 4h14v16H5z"/><path d="M9 4v16M12 8h4M12 12h4M12 16h3"/>',timeline:'<path d="M4 6h16v12H4z"/><path d="M8 6v12M8 10h12M13 10v8"/>',camera:'<path d="M5 7h4l2-2h4l2 2h2v11H5z"/><circle cx="12" cy="12.5" r="3"/>',animation:'<path d="M8 5v14l11-7z"/><path d="M3 5v14"/>',audio:'<path d="M5 9v6h4l5 4V5L9 9z"/><path d="M17 9c1 1 1 5 0 6M19 7c3 3 3 7 0 10"/>',review:'<path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.5"/>',search:'<circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/>',chevLeft:'<path d="m14 6-6 6 6 6"/>',chevRight:'<path d="m10 6 6 6-6 6"/>',spark:'<path d="m12 3 1.4 4.1L17.5 8.5l-4.1 1.4L12 14l-1.4-4.1-4.1-1.4 4.1-1.4z"/><path d="m18 14 .8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8z"/>',close:'<path d="m6 6 12 12M18 6 6 18"/>',play:'<path d="M8 5v14l11-7z"/>',plus:'<path d="M12 5v14M5 12h14"/>',save:'<path d="M5 4h12l2 2v14H5z"/><path d="M8 4v6h8V4M8 20v-6h8v6"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.5 2.5 0 1 1 3.8 2.1c-1.1.7-1.6 1.2-1.6 2.4M12 17h.01"/>'};return `<svg viewBox="0 0 24 24" aria-hidden="true">${p[name]||p.layout}</svg>`;}
+function csV42ApplyShellState(shell=document.getElementById('csProShell')){if(!shell)return;shell.style.setProperty('--ux-assets-w',`${Math.max(210,Math.min(420,+csV42ui.leftWidth||268))}px`);shell.style.setProperty('--ux-inspector-w',`${Math.max(280,Math.min(460,+csV42ui.rightWidth||344))}px`);shell.style.setProperty('--ux-stage-h',`${Math.max(28,Math.min(76,+csV42ui.stageHeight||44))}%`);shell.classList.toggle('assets-collapsed',!!csV42ui.assetsCollapsed);shell.classList.toggle('inspector-collapsed',!!csV42ui.inspectorCollapsed);shell.classList.toggle('timeline-focus',!!csV42ui.timelineFocus);shell.classList.toggle('stage-focus',!!csV42ui.stageFocus);shell.classList.toggle('mobile-panel-open',innerWidth<981&&(!csV42ui.assetsCollapsed||!csV42ui.inspectorCollapsed));document.querySelectorAll('[data-ux-layout]').forEach(b=>{const on=b.dataset.uxLayout===csV42ui.layout;b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on));});const ab=document.getElementById('csUxToggleAssets'),ib=document.getElementById('csUxToggleInspector'),tb=document.getElementById('csUxFocusTimeline');if(ab){ab.classList.toggle('on',!csV42ui.assetsCollapsed);ab.setAttribute('aria-pressed',String(!csV42ui.assetsCollapsed));}if(ib){ib.classList.toggle('on',!csV42ui.inspectorCollapsed);ib.setAttribute('aria-pressed',String(!csV42ui.inspectorCollapsed));}if(tb){tb.classList.toggle('on',!!csV42ui.timelineFocus);tb.setAttribute('aria-pressed',String(!!csV42ui.timelineFocus));}}
+function csV42SelectTrack(type){const t=csV4.project.tracks.find(x=>x.type===type);if(t)csV4.selectedTrackId=t.id;}
+function csV42SetLayout(layout){const compact=innerWidth<981;csV42ui.layout=layout;csV42ui.timelineFocus=false;csV42ui.stageFocus=false;if(layout==='edit'){csV42ui.assetsCollapsed=compact;csV42ui.inspectorCollapsed=compact;csV42ui.stageHeight=44;csV4.assetFilter='all';}else if(layout==='animation'){csV42ui.assetsCollapsed=false;csV42ui.inspectorCollapsed=compact;csV42ui.stageHeight=36;csV4.assetFilter='animation';csV4.inspectorTab='clip';csV42SelectTrack('animation');}else if(layout==='camera'){csV42ui.assetsCollapsed=true;csV42ui.inspectorCollapsed=false;csV42ui.stageHeight=54;csV4.inspectorTab='camera';csV42SelectTrack('camera');}else if(layout==='audio'){csV42ui.assetsCollapsed=false;csV42ui.inspectorCollapsed=compact;csV42ui.stageHeight=31;csV4.assetFilter='audio';csV4.inspectorTab='clip';csV42SelectTrack('music');}else if(layout==='review'){csV42ui.assetsCollapsed=true;csV42ui.inspectorCollapsed=true;csV42ui.stageHeight=72;csV42ui.stageFocus=true;}csV42Write();csRenderSceneWorkspace();}
+function csV42CommandBar(){return `<div class="cs-ux-commandbar" id="csUxCommandbar" role="toolbar" aria-label="Machinima workspace layouts"><span class="label">Workspace</span>${[['edit','layout','Edit'],['animation','animation','Animate'],['camera','camera','Camera'],['audio','audio','Audio'],['review','review','Review']].map(([v,i,n])=>`<button type="button" data-ux-layout="${v}" title="Switch to the ${n} workspace">${csV42Svg(i)}<span>${n}</span></button>`).join('')}<span class="divider"></span><button id="csUxToggleAssets" title="Show or hide the Production Browser">${csV42Svg('browser')}<span>Browser</span></button><button id="csUxToggleInspector" title="Show or hide the Properties inspector">${csV42Svg('inspector')}<span>Properties</span></button><button id="csUxFocusTimeline" title="Maximize timeline editing space">${csV42Svg('timeline')}<span>Timeline</span></button><span class="push"></span><button id="csUxCommands" title="Search tools and commands (Ctrl+K)">${csV42Svg('search')}<span>Commands</span><kbd>Ctrl K</kbd></button></div>`;}
+function csV42WireCommandBar(){document.querySelectorAll('[data-ux-layout]').forEach(b=>b.onclick=()=>csV42SetLayout(b.dataset.uxLayout));const a=document.getElementById('csUxToggleAssets'),i=document.getElementById('csUxToggleInspector'),t=document.getElementById('csUxFocusTimeline'),c=document.getElementById('csUxCommands');if(a)a.onclick=()=>{const opening=csV42ui.assetsCollapsed;csV42ui.assetsCollapsed=!csV42ui.assetsCollapsed;if(innerWidth<981&&opening)csV42ui.inspectorCollapsed=true;csV42ui.layout='custom';csV42Write();csV42ApplyShellState();};if(i)i.onclick=()=>{const opening=csV42ui.inspectorCollapsed;csV42ui.inspectorCollapsed=!csV42ui.inspectorCollapsed;if(innerWidth<981&&opening)csV42ui.assetsCollapsed=true;csV42ui.layout='custom';csV42Write();csV42ApplyShellState();};if(t)t.onclick=()=>{csV42ui.timelineFocus=!csV42ui.timelineFocus;csV42ui.stageFocus=false;csV42ui.layout='custom';csV42Write();csV42ApplyShellState();};if(c)c.onclick=csV42ShowCommands;csV42ApplyShellState();}
+function csV42PanelHeaders(){const ah=document.querySelector('.cs-pro-assets .cs-pro-panel-head');if(ah){const strong=ah.querySelector('strong');if(strong&&!strong.closest('.cs-ux-panel-title')){const wrap=document.createElement('span');wrap.className='cs-ux-panel-title';strong.replaceWith(wrap);wrap.append(strong);const sub=document.createElement('span');sub.className='cs-ux-panel-sub';sub.textContent='Scenes, animation and media';wrap.append(sub);}if(!ah.querySelector('#csUxCollapseAssets')){const b=document.createElement('button');b.type='button';b.id='csUxCollapseAssets';b.className='cs-pro-iconbtn cs-ux-collapse';b.title='Collapse Production Browser';b.innerHTML=csV42Svg(csV42ui.assetsCollapsed?'chevRight':'chevLeft');b.onclick=()=>{const opening=csV42ui.assetsCollapsed;csV42ui.assetsCollapsed=!csV42ui.assetsCollapsed;if(innerWidth<981&&opening)csV42ui.inspectorCollapsed=true;csV42Write();csV42ApplyShellState();b.innerHTML=csV42Svg(csV42ui.assetsCollapsed?'chevRight':'chevLeft');};ah.append(b);}}
+const inspector=document.querySelector('.cs-pro-inspector');if(inspector&&!inspector.querySelector('.cs-ux-inspector-head')){const h=document.createElement('div');h.className='cs-ux-inspector-head';h.innerHTML=`<span class="cs-ux-panel-title"><strong>Properties</strong><span class="cs-ux-panel-sub">Context-aware editing controls</span></span><span class="push"></span><button type="button" class="cs-pro-iconbtn cs-ux-collapse" id="csUxCollapseInspector" title="Collapse Properties">${csV42Svg('chevRight')}</button>`;inspector.prepend(h);h.querySelector('button').onclick=()=>{const opening=csV42ui.inspectorCollapsed;csV42ui.inspectorCollapsed=!csV42ui.inspectorCollapsed;if(innerWidth<981&&opening)csV42ui.assetsCollapsed=true;csV42Write();csV42ApplyShellState();};const tabs=inspector.querySelector('.cs-pro-tabs');const search=document.createElement('div');search.className='cs-ux-inspector-search';search.innerHTML=`${csV42Svg('search')}<input id="csUxInspectorSearch" type="search" placeholder="Find a setting…" value="${csEscape(csV42ui.inspectorQuery||'')}" aria-label="Filter inspector settings">`;tabs.after(search);const input=search.querySelector('input');input.oninput=()=>{csV42ui.inspectorQuery=input.value;csV42Write();csV42FilterInspector(input.value);};}}
+function csV42FilterInspector(query=''){const q=String(query).trim().toLowerCase();document.querySelectorAll('.cs-pro-inspector-scroll .cs-pro-section').forEach(section=>{const match=!q||section.textContent.toLowerCase().includes(q);section.classList.toggle('filtered-out',!match);if(q&&match)section.classList.remove('collapsed');});}
+function csV42Accordions(){document.querySelectorAll('.cs-pro-inspector-scroll .cs-pro-section').forEach((section,index)=>{const h=section.querySelector(':scope>h3');if(!h||h.dataset.uxAccordion)return;const key=`${csV4.inspectorTab}:${h.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-')}:${index}`;h.dataset.uxAccordion=key;h.setAttribute('role','button');h.setAttribute('tabindex','0');const collapsed=!!csV42ui.closedSections[key];section.classList.toggle('collapsed',collapsed);h.setAttribute('aria-expanded',String(!collapsed));const toggle=()=>{section.classList.toggle('collapsed');const closed=section.classList.contains('collapsed');h.setAttribute('aria-expanded',String(!closed));csV42ui.closedSections[key]=closed;csV42Write();};h.onclick=toggle;h.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}};});csV42FilterInspector(csV42ui.inspectorQuery);}
+function csV42GroupTools(){const stage=document.querySelector('.cs-pro-stage-tools');if(stage&&!stage.querySelector('.cs-ux-toolgroup')){const children=[...stage.children].filter(x=>!x.classList.contains('push'));const pushIndex=children.findIndex(x=>x.id==='csProInspectorToggle');const left=children.slice(0,pushIndex<0?4:pushIndex),right=children.slice(pushIndex<0?4:pushIndex);stage.innerHTML='';const lg=document.createElement('span');lg.className='cs-ux-toolgroup';left.forEach(x=>lg.append(x));const rg=document.createElement('span');rg.className='cs-ux-toolgroup right';right.forEach(x=>rg.append(x));stage.append(lg,rg);}const transport=document.querySelector('.cs-pro-transport');if(transport&&!transport.querySelector('.cs-ux-toolgroup')){const ids=[['csProTimecode','csProGoStart','csProStepBack','csProPlay','csProStepNext','csProGoEnd'],['csProLoop','csProMarkIn','csProMarkOut'],['csProAddMarker','csProAddKey'],['csProPlaybackState']];const nodes=new Map([...transport.children].map(n=>[n.id,n]));transport.innerHTML='';ids.forEach((group,idx)=>{const g=document.createElement('span');g.className='cs-ux-toolgroup'+(idx===3?' right':'');group.forEach(id=>{const n=nodes.get(id);if(n)g.append(n)});transport.append(g);});}}
+function csV42AssetsPolish(){const foot=document.querySelector('.cs-pro-assets-foot');if(foot&&!foot.querySelector('.cs-ux-foot-title'))foot.insertAdjacentHTML('afterbegin','<div class="cs-ux-foot-title">Add media to the active timeline</div>');document.querySelectorAll('.cs-pro-asset[data-payload]').forEach(card=>{let payload;try{payload=JSON.parse(card.dataset.payload)}catch{return;}card.dataset.kind=payload.kind||payload.type||'';const copy=card.querySelector('.cs-pro-asset-copy');if(copy&&!copy.querySelector('.cs-ux-asset-badge')){const badge=document.createElement('span');badge.className='cs-ux-asset-badge';badge.textContent=payload.kind==='animation'?`${Number(payload.duration||0).toFixed(2)}s · draggable`:payload.kind==='project'?'Open project':'Drag to timeline';copy.append(badge);}if(payload.kind==='animation'&&!card.querySelector('.cs-ux-preview-anim')){const add=card.querySelector('.cs-pro-asset-add');const preview=document.createElement('button');preview.type='button';preview.className='cs-pro-iconbtn cs-ux-preview-anim';preview.title='Preview this animation in the viewport';preview.innerHTML=csV42Svg('play');preview.onclick=e=>{e.stopPropagation();window.StudioAPI?.playAnimation?.(payload.animationIndex);csV4Toast(`Previewing ${payload.name}`);};add?.before(preview);}});const empty=document.querySelector('.cs-pro-asset-list .cs-empty-gallery');if(empty&&!empty.querySelector('.cs-ux-start-card'))empty.innerHTML=`${csV42Svg('spark')}<b>Build your first shot</b><span>Use the same three-step flow every time.</span><div style="display:grid;gap:6px;width:100%;margin-top:12px"><div class="cs-ux-start-card"><span class="num">1</span><div><b>Load a character</b><span>Open a GLB or a saved Character asset.</span></div></div><div class="cs-ux-start-card"><span class="num">2</span><div><b>Add performance</b><span>Drag animation, dialogue and music onto tracks.</span></div></div><div class="cs-ux-start-card"><span class="num">3</span><div><b>Direct the camera</b><span>Add camera keys, markers and render a master.</span></div></div></div>`;}
+function csV42EmptyStage(){const no=document.querySelector('.cs-pro-no-model');if(!no)return;no.innerHTML=`<div class="cs-ux-empty-stage">${csV42Svg('camera')}<h3>Start with a character or saved production</h3><p>Load a model to direct animation and camera movement, or open a saved Character or Machinima project from the Library.</p><div class="cs-ux-empty-actions"><button type="button" class="cs-pro-primary" id="csUxLoadModel">${csV42Svg('plus')}Load model</button><button type="button" class="cs-pro-btn" id="csUxOpenLibrary">${csV42Svg('browser')}Open Library</button></div></div>`;no.querySelector('#csUxLoadModel').onclick=()=>document.getElementById('fileModel').click();no.querySelector('#csUxOpenLibrary').onclick=()=>csOpenWorkspace('library');}
+function csV42AnimationInspector(){if(csV4.selection?.kind!=='clip')return;const found=csV4FindClip(csV4.selection.id);if(!found||found.track.type!=='animation')return;const body=document.querySelector('.cs-pro-inspector-scroll .cs-pro-section .cs-pro-section-body');if(!body||body.querySelector('.cs-ux-animation-settings'))return;const actions=body.querySelector('.cs-pro-row');const box=document.createElement('div');box.className='cs-ux-animation-settings';box.innerHTML=`<div class="cs-pro-field"><label>Playback behavior</label><select id="csUxAnimLoop"><option value="loop"${found.clip.data.loop!==false?' selected':''}>Loop source animation</option><option value="once"${found.clip.data.loop===false?' selected':''}>Play once / hold last frame</option></select></div><div class="cs-pro-row"><button type="button" class="cs-pro-btn" id="csUxPreviewAnimation">${csV42Svg('play')}Preview source</button><span class="cs-pro-subtle">${csEscape(found.clip.data.animationName||found.clip.name)}</span></div>`;actions?.before(box);box.querySelector('#csUxAnimLoop').onchange=e=>{csV4PushHistory();found.clip.data.loop=e.target.value==='loop';csV4Persist();};box.querySelector('#csUxPreviewAnimation').onclick=()=>window.StudioAPI?.playAnimation?.(found.clip.data.animationIndex??found.clip.data.animationName);}
+function csV42Resizers(shell){if(!shell||shell.querySelector('.cs-ux-resizer'))return;for(const type of ['left','right','horizontal']){const r=document.createElement('div');r.className=`cs-ux-resizer ${type}`;r.setAttribute('role','separator');r.setAttribute('aria-orientation',type==='horizontal'?'horizontal':'vertical');r.tabIndex=0;shell.append(r);r.onpointerdown=e=>{if(innerWidth<981)return;e.preventDefault();r.setPointerCapture(e.pointerId);r.classList.add('active');shell.classList.add('cs-ux-resizing');const rect=shell.getBoundingClientRect(),startX=e.clientX,startY=e.clientY,startL=+csV42ui.leftWidth,startR=+csV42ui.rightWidth,startH=+csV42ui.stageHeight;const move=ev=>{if(type==='left')csV42ui.leftWidth=Math.max(210,Math.min(420,startL+ev.clientX-startX));else if(type==='right')csV42ui.rightWidth=Math.max(280,Math.min(460,startR-(ev.clientX-startX)));else csV42ui.stageHeight=Math.max(28,Math.min(76,startH+(ev.clientY-startY)/rect.height*100));csV42ui.layout='custom';csV42ApplyShellState(shell);};const up=()=>{r.classList.remove('active');shell.classList.remove('cs-ux-resizing');r.removeEventListener('pointermove',move);r.removeEventListener('pointerup',up);r.removeEventListener('pointercancel',up);csV42Write();};r.addEventListener('pointermove',move);r.addEventListener('pointerup',up);r.addEventListener('pointercancel',up);};}}
+function csV42Tooltips(){let tip=document.querySelector('.cs-ux-tooltip');if(!tip){tip=document.createElement('div');tip.className='cs-ux-tooltip';document.body.append(tip);}document.querySelectorAll('.cs-pro-shell [title],.cs-ux-commandbar [title]').forEach(el=>{if(el.dataset.uxTip)return;el.dataset.uxTip='1';el.addEventListener('mouseenter',()=>{const text=el.getAttribute('title');if(!text)return;const r=el.getBoundingClientRect();tip.textContent=text;tip.style.left=Math.min(innerWidth-275,Math.max(8,r.left+r.width/2-80))+'px';tip.style.top=Math.min(innerHeight-50,r.bottom+7)+'px';tip.classList.add('on');});el.addEventListener('mouseleave',()=>tip.classList.remove('on'));el.addEventListener('focus',()=>el.dispatchEvent(new Event('mouseenter')));el.addEventListener('blur',()=>tip.classList.remove('on'));});}
+function csV42EnhanceWorkspace(){if(csWorkspaceState.active!=='scene')return;const content=document.getElementById('csWorkspaceContent'),shell=document.getElementById('csProShell');if(!content||!shell)return;if(innerWidth<981&&!csV42ui.compactInitialized){csV42ui.assetsCollapsed=true;csV42ui.inspectorCollapsed=true;csV42ui.compactInitialized=true;csV42Write();}if(!document.getElementById('csUxCommandbar'))content.insertAdjacentHTML('afterbegin',csV42CommandBar());if(!shell.querySelector('.cs-ux-dock-scrim')){const scrim=document.createElement('button');scrim.type='button';scrim.className='cs-ux-dock-scrim';scrim.setAttribute('aria-label','Close open panel');scrim.onclick=()=>{csV42ui.assetsCollapsed=true;csV42ui.inspectorCollapsed=true;csV42Write();csV42ApplyShellState();};shell.append(scrim);}csV42WireCommandBar();csV42PanelHeaders();csV42GroupTools();csV42AssetsPolish();csV42EmptyStage();csV42AnimationInspector();csV42Accordions();csV42Resizers(shell);csV42Tooltips();csV42ApplyShellState(shell);shell.style.setProperty('--pro-zoom-grid',`${csV4.project.zoom}px`);shell.setAttribute('aria-label','Machinima Studio editing workspace');document.querySelector('.cs-pro-assets')?.setAttribute('aria-label','Production Browser');document.querySelector('.cs-pro-inspector')?.setAttribute('aria-label','Properties inspector');document.querySelector('.cs-pro-timeline')?.setAttribute('aria-label','Multitrack timeline');}
+function csV42Commands(){return [{name:'Load model or character',desc:'Open a GLB, GLTF or saved character bundle.',icon:'plus',keys:'Ctrl O',run:()=>document.getElementById('fileModel').click()},{name:'Open Asset Library',desc:'Browse saved characters, scenes, media and projects.',icon:'browser',keys:'',run:()=>csOpenWorkspace('library')},{name:'Save current character',desc:'Package the loaded character and all current settings.',icon:'save',keys:'Ctrl Alt S',run:()=>document.getElementById('btnSaveCharacterLibrary')?.click()},{name:'Edit workspace',desc:'Show browser, stage, properties and timeline.',icon:'layout',keys:'1',run:()=>csV42SetLayout('edit')},{name:'Animation workspace',desc:'Prioritize animation assets and timeline editing.',icon:'animation',keys:'2',run:()=>csV42SetLayout('animation')},{name:'Camera workspace',desc:'Prioritize the stage and camera properties.',icon:'camera',keys:'3',run:()=>csV42SetLayout('camera')},{name:'Audio workspace',desc:'Prioritize music, dialogue, SFX and timeline space.',icon:'audio',keys:'4',run:()=>csV42SetLayout('audio')},{name:'Review workspace',desc:'Hide side panels for a clean playback view.',icon:'review',keys:'5',run:()=>csV42SetLayout('review')},{name:'Add timeline marker',desc:'Create a marker at the current playhead.',icon:'plus',keys:'M',run:()=>csV4AddMarker()},{name:'Add camera key',desc:'Capture the current camera at the playhead.',icon:'camera',keys:'K',run:()=>csV4AddCameraKey()},{name:'Fit entire timeline',desc:'Fit the full project duration into view.',icon:'timeline',keys:'F',run:()=>csV41FitTimeline()},{name:'Save machinima project',desc:'Save the current production to the Library.',icon:'save',keys:'Ctrl S',run:()=>csV4SaveProjectToLibrary()},{name:'Keyboard shortcuts',desc:'Open the complete machinima keyboard reference.',icon:'help',keys:'?',run:()=>csV41ShowHelp()}];}
+function csV42ShowCommands(){document.querySelector('.cs-ux-command-palette')?.remove();const overlay=document.createElement('div');overlay.className='cs-ux-command-palette';overlay.innerHTML=`<div class="cs-ux-command-card" role="dialog" aria-modal="true" aria-label="Command palette"><div class="cs-ux-command-search">${csV42Svg('search')}<input type="search" placeholder="Search actions, panels and tools…" aria-label="Search commands"><button type="button" class="cs-pro-iconbtn" data-close title="Close">${csV42Svg('close')}</button></div><div class="cs-ux-command-list"></div><div class="cs-ux-command-foot">Enter to run · ↑↓ to navigate · Esc to close</div></div>`;document.body.append(overlay);const input=overlay.querySelector('input'),list=overlay.querySelector('.cs-ux-command-list');let rows=[],active=0;const close=()=>overlay.remove();const render=()=>{const q=input.value.trim().toLowerCase(),cmds=csV42Commands().filter(c=>!q||`${c.name} ${c.desc}`.toLowerCase().includes(q));list.innerHTML=cmds.map((c,i)=>`<button type="button" class="cs-ux-command-item ${i===active?'active':''}" data-command="${i}">${csV42Svg(c.icon)}<span><b>${csEscape(c.name)}</b><span>${csEscape(c.desc)}</span></span>${c.keys?`<kbd>${csEscape(c.keys)}</kbd>`:'<span></span>'}</button>`).join('')||'<div class="cs-pro-note">No matching commands.</div>';rows=cmds;list.querySelectorAll('[data-command]').forEach(b=>b.onclick=()=>{rows[+b.dataset.command]?.run();close();});};input.oninput=()=>{active=0;render();};input.onkeydown=e=>{if(e.key==='Escape')close();else if(e.key==='ArrowDown'){e.preventDefault();active=Math.min(Math.max(0,rows.length-1),active+1);render();}else if(e.key==='ArrowUp'){e.preventDefault();active=Math.max(0,active-1);render();}else if(e.key==='Enter'&&rows[active]){e.preventDefault();rows[active].run();close();}};overlay.onclick=e=>{if(e.target===overlay||e.target.closest('[data-close]'))close();};render();setTimeout(()=>input.focus(),0);}
+const _csV42RenderSceneWorkspace=csRenderSceneWorkspace;
+csRenderSceneWorkspace=async function(){await _csV42RenderSceneWorkspace();if(csWorkspaceState.active==='scene')csV42EnhanceWorkspace();};
+const _csV42OpenWorkspace=csOpenWorkspace;
+csOpenWorkspace=function(which){const out=_csV42OpenWorkspace(which);if(which==='scene')setTimeout(csV42EnhanceWorkspace,0);return out;};
+const _csV42SyncDom=csV4SyncDom;
+csV4SyncDom=function(){_csV42SyncDom();const shell=document.getElementById('csProShell');if(shell)shell.style.setProperty('--pro-zoom-grid',`${csV4.project.zoom}px`);};
+document.addEventListener('keydown',e=>{if(csWorkspaceState.active!=='scene')return;const tag=(e.target?.tagName||'').toLowerCase(),editing=['input','select','textarea'].includes(tag)||e.target?.isContentEditable;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();e.stopImmediatePropagation();csV42ShowCommands();return;}if(editing)return;if(!e.ctrlKey&&!e.metaKey&&!e.altKey&&['1','2','3','4','5'].includes(e.key)){e.preventDefault();csV42SetLayout({1:'edit',2:'animation',3:'camera',4:'audio',5:'review'}[e.key]);}},true);
+window.StudioAPI.version=CS_V42_VERSION;window.StudioAPI.machinima={...window.StudioAPI.machinima,setWorkspace:csV42SetLayout,getWorkspace:()=>({...csV42ui}),showCommands:csV42ShowCommands};
+try{if(typeof CS_V41_VERSION!=='undefined')window.__CHARACTER_STUDIO_RELEASE__=CS_V42_VERSION}catch{}
+document.dispatchEvent(new CustomEvent('studio:workspace-ux-ready',{detail:{version:CS_V42_VERSION,features:['dock-layouts','resizable-panels','accordion-inspector','command-palette','animation-preview','accessible-tooltips']}}));
+
+
+/* v4.2.0 — main Character Studio panel navigation */
+function csV42MainSectionTitle(sec){return sec.textContent.replace(/^[⌄›\s]+/,'').trim();}
+function csV42MainLevel(side,title){const coreLeft=['Character Customization','Sculpt','Geoset Visibility','Viewport Settings','Backdrop & Post FX'];const coreRight=['Texture Library','Texture Align & Warp','Character Equipper','Gearset Creator','Appearance JSON','Capture & Export','Scene Studio (Chroma Room)','Asset Library'];return (side==='left'?coreLeft:coreRight).includes(title)?'core':'advanced';}
+function csV42RefreshMainOpen(body){body.querySelectorAll('.sec').forEach(sec=>{const panel=sec.nextElementSibling;const visible=panel?.classList.contains('secbody')&&getComputedStyle(panel).display!=='none';sec.classList.toggle('cs-main-open',!!visible);sec.setAttribute('aria-expanded',String(!!visible));});}
+function csV42FilterMainPanel(side){const body=document.getElementById(side==='left'?'leftBody':'rightBody');if(!body)return;const q=String(csV42ui[`main${side==='left'?'Left':'Right'}Query`]||'').trim().toLowerCase(),scope=csV42ui[`main${side==='left'?'Left':'Right'}Scope`]||'all';let shown=0;body.querySelectorAll('.sec').forEach(sec=>{const title=sec.dataset.uxTitle||csV42MainSectionTitle(sec),level=sec.dataset.uxLevel||csV42MainLevel(side,title),matchQ=!q||`${title} ${sec.nextElementSibling?.textContent||''}`.toLowerCase().includes(q),matchScope=scope==='all'||level===scope,show=matchQ&&matchScope;sec.classList.toggle('cs-main-filtered',!show);if(sec.nextElementSibling?.classList.contains('secbody'))sec.nextElementSibling.classList.toggle('cs-main-filtered',!show);if(show)shown++;});const count=body.querySelector('.cs-main-section-count strong');if(count)count.textContent=shown;let empty=body.querySelector('.cs-main-empty-filter');if(!shown){if(!empty){empty=document.createElement('div');empty.className='cs-main-empty-filter';empty.textContent='No settings match this search and panel filter.';body.append(empty);}}else empty?.remove();}
+function csV42MainCollapse(side,value){const key=side==='left'?'mainLeftCollapsed':'mainRightCollapsed';csV42ui[key]=value??!csV42ui[key];csV42Write();csV42ApplyMainLayout();}
+function csV42ApplyMainLayout(){const app=document.getElementById('app');if(!app)return;app.style.setProperty('--main-left-w',`${Math.max(240,Math.min(430,+csV42ui.mainLeftWidth||330))}px`);app.style.setProperty('--main-right-w',`${Math.max(260,Math.min(460,+csV42ui.mainRightWidth||350))}px`);app.classList.toggle('main-left-collapsed',!!csV42ui.mainLeftCollapsed);app.classList.toggle('main-right-collapsed',!!csV42ui.mainRightCollapsed);for(const side of ['left','right']){const b=document.querySelector(`#${side}Body .cs-main-collapse`);if(b)b.innerHTML=csV42Svg(csV42ui[side==='left'?'mainLeftCollapsed':'mainRightCollapsed']?(side==='left'?'chevRight':'chevLeft'):(side==='left'?'chevLeft':'chevRight'));}}
+function csV42EnhanceMainPanel(side){const body=document.getElementById(side==='left'?'leftBody':'rightBody');if(!body)return;body.querySelector('.cs-main-panel-head')?.remove();const title=side==='left'?'Character':'Materials & Output',sub=side==='left'?'Shape, geosets and viewport':'Textures, gear, scenes and export',queryKey=`main${side==='left'?'Left':'Right'}Query`,scopeKey=`main${side==='left'?'Left':'Right'}Scope`;const head=document.createElement('div');head.className='cs-main-panel-head';head.innerHTML=`<div class="cs-main-head-row"><span class="cs-main-title"><strong>${title}</strong><span>${sub}</span></span><span class="push"></span><button type="button" data-main-expand title="Expand all sections">${csV42Svg('plus')}</button><button type="button" data-main-collapse-all title="Collapse all sections">${csV42Svg('close')}</button><button type="button" class="cs-main-collapse" title="Collapse ${title} panel">${csV42Svg(side==='left'?'chevLeft':'chevRight')}</button></div><div class="cs-main-search">${csV42Svg('search')}<input type="search" placeholder="Find settings…" value="${csEscape(csV42ui[queryKey]||'')}" aria-label="Search ${title} settings"></div><div class="cs-main-scope">${[['all','All'],['core','Core'],['advanced','Advanced']].map(([v,n])=>`<button type="button" data-main-scope="${v}" class="${(csV42ui[scopeKey]||'all')===v?'on':''}">${n}</button>`).join('')}</div><div class="cs-main-section-count"><span>Visible sections</span><strong>0</strong></div>`;body.prepend(head);body.querySelectorAll('.sec').forEach((sec,i)=>{const t=csV42MainSectionTitle(sec);sec.dataset.uxTitle=t;sec.dataset.uxLevel=csV42MainLevel(side,t);sec.setAttribute('role','button');sec.setAttribute('tabindex','0');sec.addEventListener('click',()=>setTimeout(()=>csV42RefreshMainOpen(body),0));sec.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();sec.click();}});});const input=head.querySelector('input');input.oninput=()=>{csV42ui[queryKey]=input.value;csV42Write();csV42FilterMainPanel(side);};head.querySelectorAll('[data-main-scope]').forEach(b=>b.onclick=()=>{csV42ui[scopeKey]=b.dataset.mainScope;csV42Write();head.querySelectorAll('[data-main-scope]').forEach(x=>x.classList.toggle('on',x===b));csV42FilterMainPanel(side);});head.querySelector('[data-main-expand]').onclick=()=>{body.querySelectorAll('.sec:not(.cs-main-filtered)').forEach(sec=>{const panel=sec.nextElementSibling;if(panel?.classList.contains('secbody')&&getComputedStyle(panel).display==='none')sec.click();});};head.querySelector('[data-main-collapse-all]').onclick=()=>{body.querySelectorAll('.sec:not(.cs-main-filtered)').forEach(sec=>{const panel=sec.nextElementSibling;if(panel?.classList.contains('secbody')&&getComputedStyle(panel).display!=='none')sec.click();});};head.querySelector('.cs-main-collapse').onclick=()=>csV42MainCollapse(side);csV42RefreshMainOpen(body);csV42FilterMainPanel(side);csV42ApplyMainLayout();}
+function csV42MainResizers(){const app=document.getElementById('app');if(!app||app.querySelector('.cs-main-resizer'))return;for(const side of ['left','right']){const r=document.createElement('div');r.className=`cs-main-resizer ${side}`;r.setAttribute('role','separator');r.setAttribute('aria-orientation','vertical');r.tabIndex=0;app.append(r);r.onpointerdown=e=>{if(innerWidth<981)return;e.preventDefault();r.setPointerCapture(e.pointerId);r.classList.add('active');const start=e.clientX,base=+(side==='left'?csV42ui.mainLeftWidth||330:csV42ui.mainRightWidth||350);const move=ev=>{if(side==='left')csV42ui.mainLeftWidth=Math.max(240,Math.min(430,base+ev.clientX-start));else csV42ui.mainRightWidth=Math.max(260,Math.min(460,base-(ev.clientX-start)));csV42ApplyMainLayout();};const up=()=>{r.classList.remove('active');r.removeEventListener('pointermove',move);r.removeEventListener('pointerup',up);r.removeEventListener('pointercancel',up);csV42Write();};r.addEventListener('pointermove',move);r.addEventListener('pointerup',up);r.addEventListener('pointercancel',up);};}}
+const _csV42RenderLeftMain=renderLeft;renderLeft=function(){_csV42RenderLeftMain();csV42EnhanceMainPanel('left');csV42MainResizers();};
+const _csV42RenderRightMain=renderRight;renderRight=function(){_csV42RenderRightMain();csV42EnhanceMainPanel('right');csV42MainResizers();};
+window.StudioAPI.panels={get:()=>({leftCollapsed:!!csV42ui.mainLeftCollapsed,rightCollapsed:!!csV42ui.mainRightCollapsed,leftWidth:+csV42ui.mainLeftWidth||330,rightWidth:+csV42ui.mainRightWidth||350}),toggleLeft:()=>csV42MainCollapse('left'),toggleRight:()=>csV42MainCollapse('right'),showCore:side=>{const key=`main${side==='right'?'Right':'Left'}Scope`;csV42ui[key]='core';csV42Write();csV42EnhanceMainPanel(side==='right'?'right':'left');}};
+
+
+document.querySelector('.ver').textContent='— made by AEiOU · v4.2.0';
 document.dispatchEvent(new CustomEvent('studio:machinima-ready',{detail:{version:CS_V4_VERSION,project:csV4.project.name,tracks:csV4.project.tracks.length}}));
 
 

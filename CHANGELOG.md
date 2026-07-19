@@ -1,5 +1,25 @@
 # Changelog
 
+## 4.2.0 — 2026-07-19
+
+### Unified professional workspace
+- Added five task-focused Machinima layouts: Edit, Animate, Camera, Audio, and Review.
+- Added collapsible and pointer-resizable Production Browser, Properties, stage, and timeline docks with persisted dimensions.
+- Added a searchable command palette, panel visibility controls, keyboard layout switching, richer tool grouping, and accessible delayed tooltips.
+- Rebuilt the Properties inspector as searchable, keyboard-accessible accordion sections with persisted open states.
+- Added compact single-panel overlays with click-away dismissal instead of off-screen or overlapping docks.
+
+### Main editor usability
+- Added sticky Character and Materials & Output panel headers with setting search, All/Core/Advanced scopes, visible-section counts, expand/collapse-all actions, and dock collapse controls.
+- Added resizable main-editor side docks and a public `StudioAPI.panels` surface.
+- Improved section hierarchy, spacing, active-state visibility, metal textures, borders, depth, controls, empty states, and reduced-motion behavior throughout.
+
+### Animation and workflow polish
+- Added a dedicated Animation workspace, draggable duration badges, direct viewport animation preview, loop/hold behavior controls for selected animation clips, and guided first-shot onboarding.
+- Updated desktop and compact responsive behavior, release assertions, docs, screenshots, and QA evidence.
+- Prioritized Open Model, Save Character, Library, and Scene Studio in the compact top bar so primary workspace actions never scroll out of view.
+- Routed Machinima autosave through storage-safe helpers so restricted contexts degrade silently instead of logging repeated persistence warnings.
+
 ## 4.1.1 — 2026-07-19
 
 - Added a dedicated top-bar Save Character action and full `character` Library record type.
