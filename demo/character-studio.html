@@ -295,7 +295,7 @@ body.v40-scene-active #csWorkspaceContent,.cs-pro-shell{background:linear-gradie
 @media(max-width:1080px){body.v40-scene-active header .ver,body.v40-scene-active header #animSel,body.v40-scene-active header #btnPlay,body.v40-scene-active header #btnSources,body.v40-scene-active header #status,body.v40-scene-active header #btnRandom,body.v40-scene-active header #btnReset,body.v40-scene-active header #btnExport{display:none}body.v40-scene-active header{gap:5px;overflow:hidden}header button,header select{white-space:nowrap}}
 @media(max-width:780px){body.v40-scene-active header #btnSaveCharacterLibrary{display:inline-flex}.cs-pro-inspector{top:100px}}
 
-/* ═══════════ v4.2.0 — Unified Workspace UX & Metal Panel System ═══════════ */
+/* ═══════════ v4.2.1 — Unified Workspace UX & Metal Panel System ═══════════ */
 :root{
   --ux-assets-w:268px;
   --ux-inspector-w:344px;
@@ -439,7 +439,7 @@ body.v40-scene-active #csWorkspaceContent{display:flex;flex-direction:column;min
 @media(max-width:680px){.cs-ux-commandbar button span{display:none}.cs-ux-commandbar{padding-inline:5px}.cs-pro-shell{grid-template-columns:42px minmax(0,1fr)}.cs-pro-timecode{min-width:88px}.cs-pro-track-row{--pro-row-h:48px}.cs-pro-field{grid-template-columns:1fr}.cs-pro-field>label{padding-top:4px}.cs-ux-empty-stage{margin:12px;padding:18px}.cs-ux-panel-sub{display:none!important}}
 @media(prefers-reduced-motion:reduce){.cs-pro-shell,.cs-pro-asset,.cs-pro-clip,.cs-pro-section-body,.cs-ux-commandbar button,.cs-pro-primary,.cs-pro-btn,.cs-pro-iconbtn,.cs-ux-tooltip{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 
-/* v4.2.0 compact overlay correction */
+/* v4.2.1 compact overlay correction */
 @media(max-width:980px){
   .cs-pro-inspector{grid-column:auto!important;grid-row:auto!important;left:auto!important;right:0!important;top:0!important;bottom:0!important}
   .cs-pro-shell:not(.inspector-collapsed) .cs-pro-inspector{transform:translateX(0)!important}
@@ -449,11 +449,11 @@ body.v40-scene-active #csWorkspaceContent{display:flex;flex-direction:column;min
   .cs-pro-shell.mobile-panel-open .cs-pro-stage,.cs-pro-shell.mobile-panel-open .cs-pro-timeline{filter:saturate(.75) brightness(.7)}
 }
 
-/* v4.2.0 panel typography correction */
+/* v4.2.1 panel typography correction */
 .cs-ux-panel-sub{display:block;margin-top:3px;color:#858c96;font:8.5px/1 var(--mono);letter-spacing:0;text-transform:none;text-shadow:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cs-ux-inspector-head .cs-ux-panel-title{min-width:0;line-height:1}.cs-ux-inspector-head strong{display:block;font:700 10px/1 Segoe UI,system-ui,sans-serif;letter-spacing:.09em;text-transform:uppercase}
 
-/* ═══════════ v4.2.0 — Main editor dock & section polish ═══════════ */
+/* ═══════════ v4.2.1 — Main editor dock & section polish ═══════════ */
 #app{--main-left-w:330px;--main-right-w:350px;position:relative;grid-template-columns:var(--main-left-w) minmax(0,1fr) var(--main-right-w);transition:grid-template-columns .2s cubic-bezier(.2,.8,.2,1)}
 #app.main-left-collapsed{--main-left-w:44px}
 #app.main-right-collapsed{--main-right-w:44px}
@@ -488,6 +488,13 @@ body.v40-scene-active #csWorkspaceContent{display:flex;flex-direction:column;min
 @media(max-width:760px){#app{--main-left-w:44px;--main-right-w:44px}.cs-main-panel-head{height:100%;margin:0;padding:7px 5px}.cs-main-panel-head>:not(.cs-main-head-row){display:none}.cs-main-head-row{flex-direction:column}.cs-main-title,.cs-main-head-row .push,.cs-main-head-row button:not(.cs-main-collapse){display:none}.cs-main-collapse{display:grid!important}}
 @media(max-width:980px){header{gap:5px;overflow:hidden}header .ver,header #animSel,header #btnPlay,header #btnSources,header #status,header #btnRandom,header #btnReset,header #btnExport{display:none!important}header .spacer{min-width:0}header #btnOpen{white-space:nowrap}.top-workspaces{margin-left:0}}
 
+
+/* v4.2.1 — automatic alpha-matte transparency */
+.alpha-matte-summary{display:flex;align-items:center;gap:8px;padding:8px 9px;margin-bottom:8px;border:1px solid #101216;border-radius:4px;background:linear-gradient(180deg,#292d33,#202328);box-shadow:inset 0 1px 0 #ffffff0c;color:#a9afb7;font-size:10px}
+.alpha-matte-summary strong{color:#edf0f4}.alpha-matte-summary .push{margin-left:auto}.alpha-matte-badge{padding:3px 6px;border:1px solid #173f6a;border-radius:3px;background:#214e82;color:#dcecff;font:700 8px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.alpha-matte-preview{display:grid;grid-template-columns:124px minmax(0,1fr);gap:9px;align-items:center;margin:8px 0;padding:8px;border:1px solid #101216;border-radius:4px;background:#181a1e}.alpha-matte-preview canvas{width:124px;height:82px;border:1px solid #090a0c;border-radius:3px;background-color:#1c1f24;background-image:linear-gradient(45deg,#30343b 25%,transparent 25%,transparent 75%,#30343b 75%),linear-gradient(45deg,#30343b 25%,#1b1e23 25%,#1b1e23 75%,#30343b 75%);background-size:16px 16px;background-position:0 0,8px 8px;box-shadow:inset 0 0 10px #0009}.alpha-matte-preview b{display:block;margin-bottom:4px;color:#e3e6ea;font-size:10px}.alpha-matte-preview span{display:block;color:#838b95;font-size:9px;line-height:1.4}
+.alpha-matte-grid{display:grid;grid-template-columns:112px minmax(0,1fr);gap:6px 8px;align-items:center}.alpha-matte-grid>label{color:#9ea5ae;font-size:9.5px}.alpha-matte-grid select,.alpha-matte-grid input[type=range]{width:100%}.alpha-matte-range{display:grid;grid-template-columns:minmax(0,1fr) 42px;gap:6px;align-items:center}.alpha-matte-range output{text-align:right;color:#9fc3ec;font:9px var(--mono)}
+@media(max-width:980px){.alpha-matte-preview{grid-template-columns:96px minmax(0,1fr)}.alpha-matte-preview canvas{width:96px;height:66px}}
 </style>
 </head>
 <body>
@@ -560,7 +567,7 @@ body.v40-scene-active #csWorkspaceContent{display:flex;flex-direction:column;min
 </div>
 <script type="module">
 /**
- * Character Studio v4.2.0 — pure WebGL2 + Machinima Studio Pro
+ * Character Studio v4.2.1 — pure WebGL2 + Machinima Studio Pro
  * - Load GLB/GLTF (+ .bj if glTF magic)
  * - Geoset visibility toggles (all mesh nodes)
  * - Head sculpt + gear-safe body sculpt
@@ -835,6 +842,7 @@ uniform sampler2D uTex; uniform sampler2D uMR; uniform sampler2D uNorm; uniform 
 uniform vec3 uTint; uniform float uUseTex; uniform float uHasMR; uniform float uHasNorm; uniform float uHasEmis; uniform float uHasOcc;
 uniform vec4 uBaseColor; uniform float uMetal; uniform float uRough; uniform vec3 uEmisF;
 uniform vec3 uCam; uniform float uUnlit; uniform float uCutoff; uniform float uExposure;
+uniform int uAlphaMatteMode; uniform float uMatteThreshold; uniform float uMatteSoftness;
 uniform vec2 uUvOffset; uniform vec2 uUvScale; uniform vec2 uUvPivot; uniform vec2 uUvShear; uniform vec2 uUvWarp; uniform float uUvRotation;
 uniform float uEyeEnabled; uniform float uEyeFeather; uniform vec4 uEyeLRegion; uniform vec4 uEyeRRegion;
 uniform vec2 uEyeLOffset; uniform vec2 uEyeLScale; uniform vec2 uEyeLShear; uniform vec2 uEyeLWarp; uniform float uEyeLRotation;
@@ -895,12 +903,20 @@ vec3 lit(vec3 N,vec3 V,vec3 L,vec3 col,vec3 albedo,float metal,float rough){
 }
 void main(){
   vec2 sampleUv=mappedUv(vUv);
-  vec4 bc=uBaseColor*vec4(uTint,1.0);
-  if(uUseTex>0.5){ vec4 t=texture(uTex,sampleUv); if(t.a<uCutoff) discard; bc*=vec4(srgb2lin(t.rgb),t.a); }
+  vec4 bc=uBaseColor*vec4(uTint,1.0); float outAlpha=clamp(bc.a,0.0,1.0);
+  if(uUseTex>0.5){
+    vec4 t=texture(uTex,sampleUv); float matte=1.0;
+    if(uAlphaMatteMode==1) matte=t.a;
+    else if(uAlphaMatteMode==2){float l=max(t.r,max(t.g,t.b));matte=t.a*smoothstep(uMatteThreshold,min(1.0,uMatteThreshold+uMatteSoftness),l);}
+    else if(uAlphaMatteMode==3){float l=1.0-min(t.r,min(t.g,t.b));matte=t.a*smoothstep(uMatteThreshold,min(1.0,uMatteThreshold+uMatteSoftness),l);}
+    if(uAlphaMatteMode>0)outAlpha*=matte;
+    bc.rgb*=srgb2lin(t.rgb);
+  }
+  if(uAlphaMatteMode>0&&outAlpha<uCutoff)discard;
   if(uUnlit>0.5){
     vec3 N=normalize(vN);
     float ndl=clamp(dot(N,normalize(vec3(0.55,0.75,0.35))),0.0,1.0)*0.55+0.45;
-    o=vec4(pow(bc.rgb*ndl,vec3(1.0/2.2)),1.0); return;
+    o=vec4(pow(bc.rgb*ndl,vec3(1.0/2.2)),uAlphaMatteMode>0?outAlpha:1.0); return;
   }
   float metal=uMetal, rough=uRough;
   if(uHasMR>0.5){ vec3 mr=texture(uMR,sampleUv).rgb; rough*=mr.g; metal*=mr.b; }
@@ -918,7 +934,7 @@ void main(){
   c+=amb*bc.rgb*(1.0-metal)*ao + amb*Fa*(1.0-rough)*ao;
   vec3 em=uEmisF; if(uHasEmis>0.5) em*=srgb2lin(texture(uEmis,sampleUv).rgb);
   c+=em;
-  o=vec4(pow(aces(c),vec3(1.0/2.2)),1.0);
+  o=vec4(pow(aces(c),vec3(1.0/2.2)),uAlphaMatteMode>0?outAlpha:1.0);
 }`;
 function sh(t,s){const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);if(!gl.getShaderParameter(x,gl.COMPILE_STATUS))console.error(gl.getShaderInfoLog(x));return x;}
 const prog=gl.createProgram();
@@ -929,6 +945,7 @@ const U={ mvp:_loc('uMVP'), nmat:_loc('uNmat'), model:_loc('uModel'), boneTex:_l
   tint:_loc('uTint'), useTex:_loc('uUseTex'), hasMR:_loc('uHasMR'), hasNorm:_loc('uHasNorm'), hasEmis:_loc('uHasEmis'), hasOcc:_loc('uHasOcc'),
   baseColor:_loc('uBaseColor'), metal:_loc('uMetal'), rough:_loc('uRough'), emisF:_loc('uEmisF'),
   cam:_loc('uCam'), unlit:_loc('uUnlit'), cutoff:_loc('uCutoff'), exposure:_loc('uExposure'),
+  alphaMatteMode:_loc('uAlphaMatteMode'), matteThreshold:_loc('uMatteThreshold'), matteSoftness:_loc('uMatteSoftness'),
   uvOffset:_loc('uUvOffset'), uvScale:_loc('uUvScale'), uvPivot:_loc('uUvPivot'), uvShear:_loc('uUvShear'), uvWarp:_loc('uUvWarp'), uvRotation:_loc('uUvRotation'),
   eyeEnabled:_loc('uEyeEnabled'), eyeFeather:_loc('uEyeFeather'), eyeLRegion:_loc('uEyeLRegion'), eyeRRegion:_loc('uEyeRRegion'),
   eyeLOffset:_loc('uEyeLOffset'), eyeLScale:_loc('uEyeLScale'), eyeLShear:_loc('uEyeLShear'), eyeLWarp:_loc('uEyeLWarp'), eyeLRotation:_loc('uEyeLRotation'),
@@ -965,6 +982,50 @@ let uvEditorScope='full';
 let uvEditorClipboard=null;
 let playing=true, animTime=0, animIndex=-1;
 
+const alphaInfoCache=new WeakMap();
+function csSmooth01(x){x=Math.max(0,Math.min(1,x));return x*x*(3-2*x);}
+function analyzeBitmapAlpha(source){
+  if(!source)return {hasAlpha:false,blackMatteCandidate:false,whiteMatteCandidate:false,suggestedMode:'opaque',alphaCoverage:0,borderDark:0,borderLight:0};
+  const cached=alphaInfoCache.get(source);if(cached)return cached;
+  const cv=document.createElement('canvas'),size=64;cv.width=size;cv.height=size;
+  const ctx=cv.getContext('2d',{willReadFrequently:true});ctx.clearRect(0,0,size,size);ctx.drawImage(source,0,0,size,size);
+  const px=ctx.getImageData(0,0,size,size).data;let alpha=0,border=0,borderDark=0,borderLight=0,interiorBright=0,interiorDark=0,interior=0,minLum=1,maxLum=0;
+  for(let y=0;y<size;y++)for(let x=0;x<size;x++){
+    const i=(y*size+x)*4,r=px[i]/255,g=px[i+1]/255,b=px[i+2]/255,a=px[i+3]/255,lum=Math.max(r,g,b);
+    if(a<.985)alpha++;
+    minLum=Math.min(minLum,lum);maxLum=Math.max(maxLum,lum);
+    const edge=x<7||y<7||x>=size-7||y>=size-7;
+    if(edge){border++;if(lum<.09)borderDark++;if(Math.min(r,g,b)>.91)borderLight++;}
+    else{interior++;if(lum>.22)interiorBright++;if(lum<.72)interiorDark++;}
+  }
+  const alphaCoverage=alpha/(size*size),bd=borderDark/Math.max(1,border),bl=borderLight/Math.max(1,border),ib=interiorBright/Math.max(1,interior),id=interiorDark/Math.max(1,interior),range=maxLum-minLum;
+  const hasAlpha=alphaCoverage>.004;
+  const blackMatteCandidate=!hasAlpha&&bd>.62&&ib>.018&&range>.2;
+  const whiteMatteCandidate=!hasAlpha&&bl>.72&&id>.08&&range>.2;
+  const info={hasAlpha,alphaCoverage,borderDark:bd,borderLight:bl,blackMatteCandidate,whiteMatteCandidate,suggestedMode:hasAlpha?'alpha':blackMatteCandidate?'black':whiteMatteCandidate?'white':'opaque'};
+  alphaInfoCache.set(source,info);return info;
+}
+const materialAlphaSettings={};let selectedAlphaMaterial=0;
+const ALPHA_MODE_CODES={opaque:0,alpha:1,black:2,white:3};
+const ALPHA_FX_RE=/alpha|billboard|card|candle|fire|flame|glow|halo|light|particle|spark|smoke|spell|trail|beam|aura|fx|effect/i;
+function normalizeMaterialAlphaSetting(v){v=v||{};const mode=['auto','opaque','alpha','black','white'].includes(v.mode)?v.mode:'auto',blend=['auto','normal','additive'].includes(v.blend)?v.blend:'auto';return {mode,blend,threshold:Math.max(0,Math.min(.95,Number.isFinite(+v.threshold)?+v.threshold:.035)),softness:Math.max(.001,Math.min(.95,Number.isFinite(+v.softness)?+v.softness:.16)),cutoff:Math.max(0,Math.min(.95,Number.isFinite(+v.cutoff)?+v.cutoff:.008))};}
+function getMaterialAlphaSetting(index,create=true){if(materialAlphaSettings[index])return materialAlphaSettings[index];if(!create)return normalizeMaterialAlphaSetting();const src=model?.materials?.[index]?.alphaMatte||model?.json?.materials?.[index]?.extras?.characterStudioAlphaMatte;return materialAlphaSettings[index]=normalizeMaterialAlphaSetting(src);}
+function materialTextureBitmap(index,mat){return texOverrideBmpMat[index]||bakedLayerCanvas?.[index]||model?.textureImages?.[mat?.texIndex]?.bmp||model?.images?.[mat?.texIndex]?.bmp||null;}
+function resolveMaterialAlphaState(index,mat){
+  const cfg=getMaterialAlphaSetting(index),bmp=materialTextureBitmap(index,mat),info=analyzeBitmapAlpha(bmp),gltfAlpha=mat?.alphaMode==='BLEND'||mat?.alphaMode==='MASK'||Number(mat?.baseColor?.[3])<.999;
+  let mode=cfg.mode;
+  if(mode==='auto'){
+    if(settings.autoAlphaMattes===false)mode=gltfAlpha?'alpha':'opaque';
+    else if(info.hasAlpha)mode='alpha';
+    else if(info.blackMatteCandidate||(ALPHA_FX_RE.test(mat?.name||'')&&info.borderDark>.42))mode='black';
+    else if(info.whiteMatteCandidate)mode='white';
+    else mode=gltfAlpha?'alpha':'opaque';
+  }
+  let blend=cfg.blend;if(blend==='auto')blend=(mode==='black'&&ALPHA_FX_RE.test(mat?.name||''))?'additive':'normal';
+  return {...cfg,mode,modeCode:ALPHA_MODE_CODES[mode]||0,blend,transparent:mode!=='opaque',info,bmp};
+}
+function exportMaterialAlphaSettings(){const out={};if(!model)return out;model.materials.forEach((m,i)=>{const cfg=normalizeMaterialAlphaSetting(getMaterialAlphaSetting(i)),r=resolveMaterialAlphaState(i,m);out[i]={...cfg,resolvedMode:r.mode,resolvedBlend:r.blend,material:m.name||`mat_${i}`,texture:m.texIndex??null};});return out;}
+function restoreMaterialAlphaSettings(v){for(const k of Object.keys(materialAlphaSettings))delete materialAlphaSettings[k];if(v&&typeof v==='object')for(const [k,cfg] of Object.entries(v))materialAlphaSettings[k]=normalizeMaterialAlphaSetting(cfg);}
 function createGLTex(bmp) {
   const t=gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D,t);
   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);
@@ -1204,6 +1265,7 @@ async function loadModelFromFile(file, options={}) {
     alphaMode: m.alphaMode || 'OPAQUE',
     alphaCutoff: m.alphaCutoff ?? 0.5,
     doubleSided: !!m.doubleSided,
+    alphaMatte: m.extras?.characterStudioAlphaMatte || json.asset?.extras?.characterStudio?.materialAlphaSettings?.[i] || null,
   }));
 
   // geosets / drawables
@@ -1364,6 +1426,9 @@ async function loadModelFromFile(file, options={}) {
     generator: json.asset?.generator,
   };
   texOverrideMat={}; texOverrideBmpMat={};
+  restoreMaterialAlphaSettings(json.asset?.extras?.characterStudio?.materialAlphaSettings);
+  materials.forEach((m,i)=>{if(m.alphaMatte)materialAlphaSettings[i]=normalizeMaterialAlphaSetting(m.alphaMatte);else getMaterialAlphaSetting(i,true);});
+  selectedAlphaMaterial=Math.min(selectedAlphaMaterial,Math.max(0,materials.length-1));
   for(const k of Object.keys(geosetTextureTransforms))delete geosetTextureTransforms[k];
   selectedTextureGeosetName=null;
   baseTextureName=null;
@@ -1597,7 +1662,7 @@ function csRenderFrame(now){
   updateAnimation(dt);
   csBeginFrameFx();
 
-  gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE);
+  gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE); gl.disable(gl.BLEND); gl.depthMask(true);
   csApplyViewportClear();
 
   targetY = model ? (model.yMin+model.yMax)*0.5 + panY : panY;
@@ -1620,43 +1685,35 @@ function csRenderFrame(now){
       gl.activeTexture(gl.TEXTURE7); uploadBones(); gl.uniform1i(U.boneTex,7);
     } else gl.uniform1i(U.skinned,0);
 
-    for (const d of model.drawables) {
-      if (!d.geo.visible) continue;
+    const drawModelDrawable=(d,alphaState)=>{
       const mat=model.materials[d.matIndex]||{};
-      let tex = texOverrideMat[d.matIndex];
-      if (!tex && mat.texIndex!=null) tex=model.glTex[mat.texIndex];
+      let tex=texOverrideMat[d.matIndex];if(!tex&&mat.texIndex!=null)tex=model.glTex[mat.texIndex];
       let tint=[1,1,1];
-      if (viewMode==='matid'){ tex=null; tint=idColor(d.matIndex); }
-      else if (viewMode==='groups'){ tex=null; tint=idColor(groupIdxOf(d.geo.group)); }
-      else {
-        if (d.geo.mode==='body' || d.geo.mode==='head') tint=hexRgb(colors.skin);
-        if (/hair|facial/i.test(d.geo.name)) tint=hexRgb(colors.hair);
-        if (/eyes/i.test(d.geo.name) && !/glow/i.test(d.geo.name)) tint=hexRgb(colors.eyes);
+      if(viewMode==='matid'){tex=null;tint=idColor(d.matIndex);}else if(viewMode==='groups'){tex=null;tint=idColor(groupIdxOf(d.geo.group));}else{
+        if(d.geo.mode==='body'||d.geo.mode==='head')tint=hexRgb(colors.skin);
+        if(/hair|facial/i.test(d.geo.name))tint=hexRgb(colors.hair);
+        if(/eyes/i.test(d.geo.name)&&!/glow/i.test(d.geo.name))tint=hexRgb(colors.eyes);
       }
-
-      // GLTF node transform is mandatory: each geoset node can have its own bind transform.
-      gl.uniformMatrix4fv(U.model,false,model.nodeWorld[d.nodeIndex]||mat4I());
-      bindGeosetUvTransform(d.geo);
-      gl.uniform3fv(U.tint,tint);
-      gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tex||null);
-      gl.uniform1i(U.tex,0);
-      gl.uniform1f(U.useTex, tex?1:0);
-      const unlit=(viewMode!=='tex')?1:0;
-      gl.uniform1f(U.unlit,unlit);
-      gl.uniform4fv(U.baseColor, unlit?[1,1,1,1]:(mat.baseColor||[1,1,1,1]));
-      gl.uniform1f(U.metal, mat.metallic??0);
-      gl.uniform1f(U.rough, mat.roughness??0.9);
-      { const _e=mat.emissive||[0,0,0]; const _g=(/glow|eye/i.test(mat.name||'')?(window.__eyeGlow??1):1);
-        gl.uniform3fv(U.emisF,[_e[0]*_g,_e[1]*_g,_e[2]*_g]); }
-      gl.uniform1f(U.cutoff, mat.alphaMode==='MASK'?(mat.alphaCutoff??0.5):0.08);
-      bindAux(1,U.mr,U.hasMR,mat.mrIndex); bindAux(2,U.norm,U.hasNorm,mat.normIndex);
-      bindAux(3,U.emis,U.hasEmis,mat.emisIndex); bindAux(4,U.occ,U.hasOcc,mat.occIndex);
-      gl.uniform1i(U.skinned, d.skinned && model.skin ? 1 : 0);
-
-      gl.bindVertexArray(d.vao);
-      gl.drawElements(gl.TRIANGLES, d.indexCount, gl.UNSIGNED_INT, 0);
+      gl.uniformMatrix4fv(U.model,false,model.nodeWorld[d.nodeIndex]||mat4I());bindGeosetUvTransform(d.geo);gl.uniform3fv(U.tint,tint);
+      gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,tex||null);gl.uniform1i(U.tex,0);gl.uniform1f(U.useTex,tex?1:0);
+      const unlit=(viewMode!=='tex')?1:0;gl.uniform1f(U.unlit,unlit);gl.uniform4fv(U.baseColor,unlit?[1,1,1,1]:(mat.baseColor||[1,1,1,1]));
+      gl.uniform1f(U.metal,mat.metallic??0);gl.uniform1f(U.rough,mat.roughness??.9);
+      {const _e=mat.emissive||[0,0,0],_g=(/glow|eye/i.test(mat.name||'')?(window.__eyeGlow??1):1);gl.uniform3fv(U.emisF,[_e[0]*_g,_e[1]*_g,_e[2]*_g]);}
+      gl.uniform1i(U.alphaMatteMode,unlit?0:(alphaState?.modeCode||0));gl.uniform1f(U.cutoff,alphaState?.cutoff??.008);gl.uniform1f(U.matteThreshold,alphaState?.threshold??.035);gl.uniform1f(U.matteSoftness,alphaState?.softness??.16);
+      bindAux(1,U.mr,U.hasMR,mat.mrIndex);bindAux(2,U.norm,U.hasNorm,mat.normIndex);bindAux(3,U.emis,U.hasEmis,mat.emisIndex);bindAux(4,U.occ,U.hasOcc,mat.occIndex);
+      gl.uniform1i(U.skinned,d.skinned&&model.skin?1:0);if(mat.doubleSided)gl.disable(gl.CULL_FACE);else gl.enable(gl.CULL_FACE);
+      gl.bindVertexArray(d.vao);gl.drawElements(gl.TRIANGLES,d.indexCount,gl.UNSIGNED_INT,0);
+    };
+    const opaque=[],transparent=[];
+    for(const d of model.drawables){if(!d.geo.visible)continue;const mat=model.materials[d.matIndex]||{},a=viewMode==='tex'?resolveMaterialAlphaState(d.matIndex,mat):{mode:'opaque',modeCode:0,transparent:false,blend:'normal',cutoff:.008,threshold:.035,softness:.16};(a.transparent?transparent:opaque).push({d,a});}
+    gl.disable(gl.BLEND);gl.depthMask(true);for(const item of opaque)drawModelDrawable(item.d,item.a);
+    if(transparent.length){
+      transparent.sort((A,B)=>{const am=model.nodeWorld[A.d.nodeIndex]||mat4I(),bm=model.nodeWorld[B.d.nodeIndex]||mat4I();const ad=(am[12]-ex)**2+(am[13]-ey)**2+(am[14]-ez)**2,bd=(bm[12]-ex)**2+(bm[13]-ey)**2+(bm[14]-ez)**2;return bd-ad;});
+      gl.enable(gl.BLEND);gl.depthMask(false);
+      for(const item of transparent){if(item.a.blend==='additive')gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);else gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);drawModelDrawable(item.d,item.a);}
+      gl.depthMask(true);gl.disable(gl.BLEND);
     }
-    gl.bindVertexArray(null);
+    gl.enable(gl.CULL_FACE);gl.bindVertexArray(null);
   }
   csDrawScene(now,dt);
   csEndFrameFx();
@@ -1836,6 +1893,8 @@ function loadAppearance(a){
   if(a.headMorphs) Object.assign(headVals,a.headMorphs);
   if(a.bodyMorphs) Object.assign(bodyVals,a.bodyMorphs);
   if(a.colors) Object.assign(colors,a.colors);
+  if(a.alphaMattePolicy?.enabled!=null){settings.autoAlphaMattes=!!a.alphaMattePolicy.enabled;persistSettings();}
+  if(a.materialAlphaSettings)restoreMaterialAlphaSettings(a.materialAlphaSettings);
   if(a.geosetVisibility && model) model.geosets.forEach(g=>{ if(a.geosetVisibility[g.name]!=null) g.visible=a.geosetVisibility[g.name]; });
   for(const k of Object.keys(geosetTextureTransforms))delete geosetTextureTransforms[k];
   if(a.geosetTextureTransforms&&typeof a.geosetTextureTransforms==='object')for(const [name,cfg] of Object.entries(a.geosetTextureTransforms))geosetTextureTransforms[name]=normalizeGeosetTextureTransform(cfg);
@@ -2268,7 +2327,7 @@ function renderRight(){
     const br=document.createElement('div'); br.className='btnrow';
     br.innerHTML=`<button type="button" id="gsExp">Export JSON</button><button type="button" id="gsImp">Import JSON</button>`;
     c.appendChild(br);
-    br.querySelector('#gsExp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({version:1,engine:'character-studio_v4.2.0',gearsets},null,2)],{type:'application/json'}));a.download='gearsets.json';a.click();};
+    br.querySelector('#gsExp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({version:1,engine:'character-studio_v4.2.1',gearsets},null,2)],{type:'application/json'}));a.download='gearsets.json';a.click();};
     br.querySelector('#gsImp').onclick=()=>fileGearset.click();
     c.insertAdjacentHTML('beforeend','<div class="hint">Gearsets store slot variants + texture names. Textures resolve from the loaded texture library. Saved locally and exportable as JSON for game wiring.</div>');
   }
@@ -2287,11 +2346,12 @@ function body_appendSlotStatus(card,group){
 }
 function getAppearance(){
   const geosetVisibility={}; if(model) model.geosets.forEach(g=>geosetVisibility[g.name]=g.visible);
-  return {version:2,engine:'character-studio_v4.2.0',model:model?.fileName||null,
+  return {version:2,engine:'character-studio_v4.2.1',model:model?.fileName||null,
     headMorphs:{...headVals},bodyMorphs:{...bodyVals},geosetVisibility,colors:{...colors},
     equippedTextures:{...slotTexChoice},baseTexture:baseTextureName,textureFolder:texFolderName||null,viewMode,
     geosetTextureTransforms:compactUvTransforms(),
     materialTextureOverrides:Object.keys(texOverrideMat).reduce((o,k)=>{o[k]='external';return o;},{}),
+    alphaMattePolicy:{version:1,enabled:settings.autoAlphaMattes!==false,defaultMode:'auto'},materialAlphaSettings:exportMaterialAlphaSettings(),
     animationIndex:animIndex>=0?animIndex:null};
 }
 document.getElementById('folderTex').onchange=async e=>{
@@ -2305,7 +2365,7 @@ document.getElementById('folderTex').onchange=async e=>{
 
 // ═══════════ v2.0 — CHARACTER STUDIO - made by AEiOU: content packs, StudioAPI, headless, settings ═══════════
 
-const settings=Object.assign({fov:40,autoRotate:false,rotateSpeed:0.5,bg:1},(()=>{try{return JSON.parse(localStorage.getItem('cs_settings')||'{}');}catch{return{};}})());
+const settings=Object.assign({fov:40,autoRotate:false,rotateSpeed:0.5,bg:1,autoAlphaMattes:true},(()=>{try{return JSON.parse(localStorage.getItem('cs_settings')||'{}');}catch{return{};}})());
 function persistSettings(){try{localStorage.setItem('cs_settings',JSON.stringify(settings));}catch{}}
 
 let pack=null;
@@ -2375,7 +2435,7 @@ async function readZipEntryData(file,ent){
 async function loadPackFromZip(file){
   setStatus('Reading content pack \u201c'+file.name+'\u201d \u2026');
   const entries=(await readZipEntries(file)).filter(e=>!e.dir);
-  const glbs=entries.filter(e=>/\.(glb|gltf)$/i.test(e.name)).sort((a,b)=>b.usize-a.usize);
+  const glbs=entries.filter(e=>/\.(glb|gltf)$/i.test(e.name)).sort((a,b)=>(/_runtime_alpha_ready\.glb$/i.test(b.name)?1:0)-(/_runtime_alpha_ready\.glb$/i.test(a.name)?1:0)||b.usize-a.usize);
   const imgs=entries.filter(e=>/\.(png|jpe?g|webp|bmp|gif)$/i.test(e.name));
   const texts=entries.filter(e=>/\.(txt|json|md|csv)$/i.test(e.name)&&e.usize<512*1024);
   pack={name:file.name.replace(/\.zip$/i,''),files:entries.map(e=>({name:e.name,size:e.usize})),texts:{},manifest:null};
@@ -2442,7 +2502,7 @@ renderRight=function(){ _renderRightV15(); appendPackSection(); };
 
 // ── StudioAPI: scriptable surface for agents / automation / headless ──
 const StudioAPI={
-  version:'4.2.0',
+  version:'4.2.1',
   brand:'CHARACTER STUDIO - made by AEiOU',
   loadFile:f=>loadModelFromFile(f),
   loadPack:f=>loadPackFromZip(f),
@@ -2465,6 +2525,7 @@ const StudioAPI={
   readPackDoc:n=>pack?.texts?.[n]??null,
   settings,
   setSetting:(k,v)=>{settings[k]=v;persistSettings();return settings;},
+  setAutoAlphaMattes:on=>{settings.autoAlphaMattes=!!on;persistSettings();renderRight();return settings.autoAlphaMattes;},
   screenshot:()=>canvas.toDataURL('image/png'),
 };
 window.StudioAPI=StudioAPI;
@@ -2472,7 +2533,7 @@ window.StudioAPI=StudioAPI;
 // ── headless mode: ?headless=1 hides all chrome, StudioAPI drives everything ──
 if(new URLSearchParams(location.search).get('headless')==='1') document.body.classList.add('headless');
 
-document.dispatchEvent(new CustomEvent('studio:ready',{detail:{version:'4.2.0',brand:StudioAPI.brand,headless:document.body.classList.contains('headless')}}));
+document.dispatchEvent(new CustomEvent('studio:ready',{detail:{version:'4.2.1',brand:StudioAPI.brand,headless:document.body.classList.contains('headless')}}));
 window.__studioReady=true;
 
 renderLeft(); renderRight();
@@ -2542,7 +2603,7 @@ Object.assign(window.StudioAPI,{
     boneCount:(model&&model.skin)?model.skin.joints.length:0,
     poseHash:(model&&model.skin)?Array.from(model.skin.boneMats.slice(0,128)).reduce((h,x)=>(h*31+Math.round(x*1000))|0,0):0 }),
 });
-window.StudioAPI.version='4.2.0';
+window.StudioAPI.version='4.2.1';
 
 
 /* ═══════════ v3.0 Tier 2 — undo/redo · projects · profiles · texture layers · pack authoring ═══════════ */
@@ -2721,7 +2782,7 @@ function idb(){
   });
 }
 function projectRecord(name){
-  return { name, savedAt:new Date().toISOString(), engine:'character-studio_v4.2.0',
+  return { name, savedAt:new Date().toISOString(), engine:'character-studio_v4.2.1',
     appearance:(model?getAppearance():null), gearsets:JSON.parse(JSON.stringify(gearsets)),
     settings:{...settings}, texLayers:JSON.parse(JSON.stringify(texLayers)),
     modelName:(window._modelFileRef&&window._modelFileRef.name)||null,
@@ -2862,11 +2923,12 @@ async function bitmapPng(bmp){
   return canvasPng(cv);
 }
 function genManifest(name,version){
-  return { name, version, generated:new Date().toISOString(), engine:'character-studio_v4.2.0', profile:activeProfile.id,
+  return { name, version, generated:new Date().toISOString(), engine:'character-studio_v4.2.1', profile:activeProfile.id,
     model: model?{ name:(window._modelFileRef&&window._modelFileRef.name)||null, geosets:model.geosets.length,
       bones:model.skin?model.skin.joints.length:0, animations:model.animations.length }:null,
     geosetGroups: model?[...new Set(model.geosets.map(g=>g.group))]:[],
     textures:[...texLib.keys()].map(k=>k.split('/').pop()),
+    alphaMattePolicy:{version:1,enabled:settings.autoAlphaMattes!==false,defaultMode:'auto'},materialAlphaSettings:exportMaterialAlphaSettings(),
     appearance: model?getAppearance():null };
 }
 async function buildPack(opts){
@@ -2876,7 +2938,7 @@ async function buildPack(opts){
   const enc=new TextEncoder();
   const files=[];
   const add=(n,data)=>files.push({name:`${base}/${n}`,data});
-  add('version.txt',enc.encode(`${base}\nengine: character-studio_v4.2.0\ngenerated: ${new Date().toISOString()}\n`));
+  add('version.txt',enc.encode(`${base}\nengine: character-studio_v4.2.1\ngenerated: ${new Date().toISOString()}\n`));
   const manifest=genManifest(name,version);
   const v=validateManifest(manifest);
   if(!v.ok) throw new Error('generated manifest invalid: '+v.errors.join('; '));
@@ -2887,7 +2949,7 @@ async function buildPack(opts){
   }
   add('gearsets.json',enc.encode(JSON.stringify(gearsets,null,2)));
   add('studio/character_state.json',enc.encode(JSON.stringify({
-    version:1,engine:'character-studio_v4.2.0',savedAt:new Date().toISOString(),
+    version:1,engine:'character-studio_v4.2.1',savedAt:new Date().toISOString(),
     appearance:model?getAppearance():null,settings:{...settings},gearsets:JSON.parse(JSON.stringify(gearsets)),
     animation:{index:animIndex,time:animTime,playing,speed:animSpeed},view:{yaw,pitch,dist,targetY}
   },null,2)));
@@ -2903,7 +2965,9 @@ async function buildPack(opts){
     }
   }
   if(opts&&opts.includeModel&&window._modelFileRef){
-    add(`models/${window._modelFileRef.name}`,new Uint8Array(await window._modelFileRef.arrayBuffer()));
+    const srcName=window._modelFileRef.name,baseName=srcName.replace(/\.(glb|gltf|bj)$/i,'');
+    add(`models/source/${srcName}`,new Uint8Array(await window._modelFileRef.arrayBuffer()));
+    if(model){const runtime=await exportGlbBytesAsync({includeHidden:true});add(`models/${baseName}_runtime_alpha_ready.glb`,runtime.bytes);add('runtime/material_alpha.json',enc.encode(JSON.stringify({version:1,engine:'character-studio_v4.2.1',defaultOn:settings.autoAlphaMattes!==false,materials:exportMaterialAlphaSettings(),runtimeModel:`models/${baseName}_runtime_alpha_ready.glb`,alphaBakedMaterials:runtime.alphaBakedMaterials},null,2)));}
   }
   if(opts&&opts.includePreview!==false){
     const durl=document.getElementById('gl').toDataURL('image/png');
@@ -2912,7 +2976,7 @@ async function buildPack(opts){
     add('preview/preview.png',u8);
   }
   add('docs/integration_notes.txt',enc.encode(
-`${base}\nAuthored with CHARACTER STUDIO - made by AEiOU (v4.2.0).\n\nLayout:\n  customization/customization_manifest.json  machine-readable manifest (validated)\n  appearance.json                             portable appearance state\n  geoset_list.txt                             geoset name / group / default visibility\n  textures/                                   texture library + baked atlases (PNG)\n  models/                                     source model (optional)\n  preview/preview.png                         viewport render\n  SHA256SUMS.txt                              integrity (sha256sum -c compatible)\n`));
+`${base}\nAuthored with CHARACTER STUDIO - made by AEiOU (v4.2.1).\n\nLayout:\n  customization/customization_manifest.json  machine-readable manifest (validated)\n  appearance.json                             portable appearance state\n  geoset_list.txt                             geoset name / group / default visibility\n  textures/                                   texture library + baked atlases (PNG)\n  models/*_runtime_alpha_ready.glb            customized game-ready GLB with baked alpha mattes\n  models/source/                              original source model (optional)\n  runtime/material_alpha.json                  per-material transparency policy and mapping\n  preview/preview.png                         viewport render\n  SHA256SUMS.txt                              integrity (sha256sum -c compatible)\n`));
   const sums=[];
   for(const f of files) sums.push(`${await sha256Hex(f.data)}  ${f.name}`);
   files.push({name:`${base}/SHA256SUMS.txt`,data:enc.encode(sums.join('\n')+'\n')});
@@ -2970,6 +3034,8 @@ Object.assign(window.StudioAPI,{
   getGeosetTextureTransform:name=>cloneJson(getGeosetTextureTransform(name,true)),
   setGeosetTextureTransform:(name,cfg)=>{if(!model?.geosets.some(g=>g.name===name))return false;geosetTextureTransforms[name]=normalizeGeosetTextureTransform(cfg);selectedTextureGeosetName=name;renderLeft();renderRight();maybeRecord();return true;},
   resetGeosetTextureTransform:name=>{delete geosetTextureTransforms[name];renderLeft();renderRight();maybeRecord();return true;},
+  getMaterialAlphaSettings:()=>exportMaterialAlphaSettings(),
+  setMaterialAlphaSetting:(index,cfg)=>{if(!model?.materials?.[index])return false;materialAlphaSettings[index]=normalizeMaterialAlphaSetting(cfg);renderRight();return resolveMaterialAlphaState(index,model.materials[index]);},
   selectTextureGeoset:name=>{if(!model?.geosets.some(g=>g.name===name))return false;selectedTextureGeosetName=name;secState['Texture Align & Warp']=true;renderLeft();renderRight();return true;},
   validateManifest, buildPack, exportPack,
 });
@@ -3018,14 +3084,16 @@ function exportGlbBytes(opts={}){
   }
   const uvMeta=compactUvTransforms();
   for(const [name,cfg] of Object.entries(uvMeta)){const g=model.geosets.find(x=>x.name===name);if(!g)continue;const nd=json.nodes[g.nodeIndex];nd.extras={...(nd.extras||{}),characterStudioTextureTransform:cfg};}
-  json.asset=json.asset||{};json.asset.extras={...(json.asset.extras||{}),characterStudio:{version:'4.2.0',geosetTextureTransforms:uvMeta}};
+  const alphaMeta=exportMaterialAlphaSettings();
+  (json.materials||[]).forEach((jm,i)=>{const cfg=alphaMeta[i]||normalizeMaterialAlphaSetting(),resolved=cfg.resolvedMode||'opaque';jm.extras={...(jm.extras||{}),characterStudioAlphaMatte:{schema:1,mode:cfg.mode,resolvedMode:resolved,blend:cfg.blend,resolvedBlend:cfg.resolvedBlend,threshold:cfg.threshold,softness:cfg.softness,cutoff:cfg.cutoff,defaultOn:settings.autoAlphaMattes!==false}};if(resolved!=='opaque'){jm.alphaMode='BLEND';delete jm.alphaCutoff;}});
+  json.asset=json.asset||{};json.asset.extras={...(json.asset.extras||{}),characterStudio:{version:'4.2.1',geosetTextureTransforms:uvMeta,alphaMattePolicy:{version:1,enabled:settings.autoAlphaMattes!==false,defaultMode:'auto'},materialAlphaSettings:alphaMeta}};
   if(!includeHidden){
     for(const g of model.geosets){
       if(!g.visible&&json.nodes[g.nodeIndex]&&json.nodes[g.nodeIndex].mesh!=null){ delete json.nodes[g.nodeIndex].mesh; strippedNodes++; }
     }
   }
   json.asset=json.asset||{};
-  json.asset.generator='CHARACTER STUDIO - made by AEiOU (v4.2.0)';
+  json.asset.generator='CHARACTER STUDIO - made by AEiOU (v4.2.1)';
   const enc=new TextEncoder();
   let jbytes=enc.encode(JSON.stringify(json));
   const jpad=(4-(jbytes.length%4))%4;
@@ -3040,21 +3108,73 @@ function exportGlbBytes(opts={}){
   out.set(new Uint8Array(bin),bo+8);
   return { bytes:out, baked, skippedBake, strippedNodes };
 }
+
+function csAlphaMatteImageData(source,state,w=124,h=82){
+  const cv=document.createElement('canvas');cv.width=w;cv.height=h;const ctx=cv.getContext('2d',{willReadFrequently:true});ctx.clearRect(0,0,w,h);if(!source)return {canvas:cv,data:null};ctx.drawImage(source,0,0,w,h);const img=ctx.getImageData(0,0,w,h),p=img.data;
+  if(state.mode!=='opaque')for(let i=0;i<p.length;i+=4){const r=p[i]/255,g=p[i+1]/255,b=p[i+2]/255,oa=p[i+3]/255;let a=oa;if(state.mode==='black'){const x=(Math.max(r,g,b)-state.threshold)/Math.max(.001,state.softness);a*=csSmooth01(x);}else if(state.mode==='white'){const x=((1-Math.min(r,g,b))-state.threshold)/Math.max(.001,state.softness);a*=csSmooth01(x);}if(a<state.cutoff)a=0;p[i+3]=Math.round(Math.max(0,Math.min(1,a))*255);}ctx.putImageData(img,0,0);return {canvas:cv,data:img};
+}
+function drawAlphaMattePreview(canvas,index){if(!canvas||!model)return;const mat=model.materials[index]||{},state=resolveMaterialAlphaState(index,mat),ctx=canvas.getContext('2d');canvas.width=248;canvas.height=164;ctx.clearRect(0,0,canvas.width,canvas.height);const tile=16;for(let y=0;y<canvas.height;y+=tile)for(let x=0;x<canvas.width;x+=tile){ctx.fillStyle=((x/tile+y/tile)&1)?'#24282e':'#3a3f47';ctx.fillRect(x,y,tile,tile);}if(state.bmp){const out=csAlphaMatteImageData(state.bmp,state,canvas.width,canvas.height).canvas;ctx.drawImage(out,0,0,canvas.width,canvas.height);}else{ctx.fillStyle='#8b939d';ctx.font='20px Segoe UI';ctx.textAlign='center';ctx.fillText('No base-color texture',canvas.width/2,canvas.height/2);}}
+function appendAlphaMatteSection(){
+  const host=document.getElementById('rightBody');if(!host)return;const c=section(host,'Alpha Mattes & Transparency',true);
+  if(!model){c.innerHTML='<div class="hint">Load a model to inspect and override material transparency.</div>';return;}
+  selectedAlphaMaterial=Math.max(0,Math.min(model.materials.length-1,selectedAlphaMaterial));const mat=model.materials[selectedAlphaMaterial]||{},state=resolveMaterialAlphaState(selectedAlphaMaterial,mat),suggested=model.materials.reduce((n,m,i)=>n+(resolveMaterialAlphaState(i,m).mode!=='opaque'?1:0),0);
+  const opts=model.materials.map((m,i)=>`<option value="${i}" ${i===selectedAlphaMaterial?'selected':''}>${i}: ${csEscape(m.name||`Material ${i}`)}</option>`).join('');
+  c.innerHTML=`<div class="alpha-matte-summary"><strong>Automatic matte repair</strong><span>${suggested}/${model.materials.length} transparent</span><span class="push"></span><span class="alpha-matte-badge">Default on</span></div>
+    <label class="row"><input type="checkbox" id="amGlobal" ${settings.autoAlphaMattes!==false?'checked':''}> Automatically use texture alpha and convert detected black/white mattes to transparency</label>
+    <div class="hint">Auto is safe for normal opaque skin and armor. It activates only when a real alpha channel or a card-style matte is detected. Override any material below.</div>
+    <div class="row"><label style="min-width:108px">Material</label><select id="amMaterial" style="min-width:0;flex:1">${opts}</select></div>
+    <div class="alpha-matte-preview"><canvas id="amPreview" aria-label="Alpha matte preview"></canvas><div><b>${csEscape(mat.name||`Material ${selectedAlphaMaterial}`)}</b><span>Resolved: ${csEscape(state.mode)} · ${csEscape(state.blend)} blend<br>Source: ${state.info.hasAlpha?'real alpha channel':state.info.blackMatteCandidate?'black matte detected':state.info.whiteMatteCandidate?'white matte detected':'opaque/undetected'}</span></div></div>
+    <div class="alpha-matte-grid"><label>Transparency mode</label><select id="amMode"><option value="auto">Auto (recommended)</option><option value="alpha">Use texture alpha</option><option value="black">Black matte → transparent</option><option value="white">White matte → transparent</option><option value="opaque">Force opaque</option></select>
+    <label>Blend</label><select id="amBlend"><option value="auto">Auto</option><option value="normal">Normal alpha</option><option value="additive">Additive glow</option></select>
+    <label>Matte threshold</label><div class="alpha-matte-range"><input type="range" id="amThreshold" min="0" max="0.5" step="0.005"><output id="amThresholdOut"></output></div>
+    <label>Edge softness</label><div class="alpha-matte-range"><input type="range" id="amSoftness" min="0.005" max="0.5" step="0.005"><output id="amSoftnessOut"></output></div>
+    <label>Alpha cutoff</label><div class="alpha-matte-range"><input type="range" id="amCutoff" min="0" max="0.5" step="0.005"><output id="amCutoffOut"></output></div></div>
+    <div class="btnrow"><button type="button" id="amAutoAll">Auto for all</button><button type="button" id="amBlack">Black matte selected</button><button type="button" id="amOpaque">Force opaque selected</button></div>
+    <div class="hint">Saved Character packs and runtime GLB exports embed these settings and bake alpha-ready PNG textures so the same result is available in game runtimes.</div>`;
+  const cfg=getMaterialAlphaSetting(selectedAlphaMaterial),mode=c.querySelector('#amMode'),blend=c.querySelector('#amBlend');mode.value=cfg.mode;blend.value=cfg.blend;
+  const wireRange=(id,key)=>{const el=c.querySelector('#'+id),out=c.querySelector('#'+id+'Out');el.value=cfg[key];const sync=()=>{out.textContent=(+el.value).toFixed(3);cfg[key]=+el.value;drawAlphaMattePreview(c.querySelector('#amPreview'),selectedAlphaMaterial);};el.oninput=sync;el.onchange=()=>{sync();persistSettings();};sync();};
+  wireRange('amThreshold','threshold');wireRange('amSoftness','softness');wireRange('amCutoff','cutoff');
+  c.querySelector('#amGlobal').onchange=e=>{settings.autoAlphaMattes=e.target.checked;persistSettings();renderRight();setStatus(e.target.checked?'Automatic alpha-matte repair enabled':'Automatic alpha-matte repair disabled');};
+  c.querySelector('#amMaterial').onchange=e=>{selectedAlphaMaterial=+e.target.value;renderRight();};mode.onchange=e=>{cfg.mode=e.target.value;renderRight();};blend.onchange=e=>{cfg.blend=e.target.value;renderRight();};
+  c.querySelector('#amAutoAll').onclick=()=>{for(const k of Object.keys(materialAlphaSettings))delete materialAlphaSettings[k];model.materials.forEach((_,i)=>materialAlphaSettings[i]=normalizeMaterialAlphaSetting({mode:'auto'}));renderRight();setStatus('All materials reset to automatic alpha-matte detection');};
+  c.querySelector('#amBlack').onclick=()=>{cfg.mode='black';renderRight();setStatus(`Black matte transparency enabled for ${mat.name||`material ${selectedAlphaMaterial}`}`);};
+  c.querySelector('#amOpaque').onclick=()=>{cfg.mode='opaque';renderRight();setStatus(`${mat.name||`Material ${selectedAlphaMaterial}`} forced opaque`);};
+  drawAlphaMattePreview(c.querySelector('#amPreview'),selectedAlphaMaterial);
+}
+
+
+function csPackGlb(json,binInput){
+  const enc=new TextEncoder();let jbytes=enc.encode(JSON.stringify(json)),bin=binInput instanceof Uint8Array?binInput:new Uint8Array(binInput);const jpad=(4-jbytes.length%4)%4;if(jpad){const t=new Uint8Array(jbytes.length+jpad);t.set(jbytes);t.fill(0x20,jbytes.length);jbytes=t;}const bpad=(4-bin.length%4)%4,total=12+8+jbytes.length+8+bin.length+bpad,out=new Uint8Array(total),dv=new DataView(out.buffer);dv.setUint32(0,0x46546c67,true);dv.setUint32(4,2,true);dv.setUint32(8,total,true);dv.setUint32(12,jbytes.length,true);dv.setUint32(16,0x4e4f534a,true);out.set(jbytes,20);const bo=20+jbytes.length;dv.setUint32(bo,bin.length+bpad,true);dv.setUint32(bo+4,0x004e4942,true);out.set(bin,bo+8);return out;
+}
+function csCanvasPngBytes(cv){return new Promise((resolve,reject)=>cv.toBlob(async b=>b?resolve(new Uint8Array(await b.arrayBuffer())):reject(new Error('PNG encoding failed')),'image/png'));}
+async function csAlphaReadyTextureBytes(source,state){const w=source.width||source.videoWidth||1,h=source.height||source.videoHeight||1,cv=document.createElement('canvas');cv.width=w;cv.height=h;const ctx=cv.getContext('2d',{willReadFrequently:true});ctx.drawImage(source,0,0,w,h);if(state.mode!=='opaque'){const img=ctx.getImageData(0,0,w,h),p=img.data;for(let i=0;i<p.length;i+=4){const r=p[i]/255,g=p[i+1]/255,b=p[i+2]/255,oa=p[i+3]/255;let a=oa;if(state.mode==='black'){const x=(Math.max(r,g,b)-state.threshold)/Math.max(.001,state.softness);a*=csSmooth01(x);}else if(state.mode==='white'){const x=((1-Math.min(r,g,b))-state.threshold)/Math.max(.001,state.softness);a*=csSmooth01(x);}if(a<state.cutoff)a=0;p[i+3]=Math.round(Math.max(0,Math.min(1,a))*255);}ctx.putImageData(img,0,0);}return csCanvasPngBytes(cv);}
+async function exportGlbBytesAsync(opts={}){
+  const base=exportGlbBytes(opts),parsed=parseGlb(base.bytes.buffer.slice(base.bytes.byteOffset,base.bytes.byteOffset+base.bytes.byteLength)),json=parsed.json;let bin=new Uint8Array(parsed.bin||new ArrayBuffer(0));json.bufferViews=json.bufferViews||[];json.images=json.images||[];json.textures=json.textures||[];json.materials=json.materials||[];const bakedAlpha=[];
+  const append=bytes=>{const pad=(4-bin.length%4)%4,next=new Uint8Array(bin.length+pad+bytes.length);next.set(bin);next.set(bytes,bin.length+pad);const offset=bin.length+pad;bin=next;return offset;};
+  for(let i=0;i<model.materials.length;i++){
+    const mat=model.materials[i],state=resolveMaterialAlphaState(i,mat);if(state.mode==='opaque'||!state.bmp)continue;
+    const bytes=await csAlphaReadyTextureBytes(state.bmp,state),offset=append(bytes),viewIndex=json.bufferViews.push({buffer:0,byteOffset:offset,byteLength:bytes.length})-1,imageIndex=json.images.push({name:`character_studio_alpha_mat_${i}`,mimeType:'image/png',bufferView:viewIndex})-1;
+    const srcTex=mat.texIndex!=null?json.textures[mat.texIndex]:null,texIndex=json.textures.push({source:imageIndex,...(srcTex?.sampler!=null?{sampler:srcTex.sampler}:{})})-1,jm=json.materials[i]||{};jm.pbrMetallicRoughness=jm.pbrMetallicRoughness||{};jm.pbrMetallicRoughness.baseColorTexture={...(jm.pbrMetallicRoughness.baseColorTexture||{}),index:texIndex};jm.alphaMode='BLEND';jm.extras={...(jm.extras||{}),characterStudioAlphaMatte:{...(jm.extras?.characterStudioAlphaMatte||{}),bakedIntoTexture:true,runtimePortable:true}};bakedAlpha.push(i);
+  }
+  json.buffers=json.buffers||[{}];json.buffers[0]=json.buffers[0]||{};json.buffers[0].byteLength=bin.length;json.asset=json.asset||{};json.asset.extras={...(json.asset.extras||{}),characterStudio:{...(json.asset.extras?.characterStudio||{}),alphaReadyRuntime:true,alphaBakedMaterials:bakedAlpha}};
+  return {...base,bytes:csPackGlb(json,bin),alphaBaked:bakedAlpha.length,alphaBakedMaterials:bakedAlpha};
+}
+
 function appendModelExportSection(){
   const host=document.getElementById('rightBody'); if(!host||!model) return;
   const c=section(host,'Model Export',false);
   c.insertAdjacentHTML('beforeend',`
-    <div class="hint">Bakes current sculpt morphs into vertex data and strips hidden geosets. Per-geoset texture alignment is embedded as Character Studio node/asset metadata for runtime shader wiring; embedded textures export as-is.</div>
+    <div class="hint">Bakes current sculpt morphs into vertex data and strips hidden geosets. Per-geoset texture alignment is embedded as Character Studio node/asset metadata. Resolved texture alpha and detected black/white mattes are baked into embedded PNG alpha channels for game-ready GLB output.</div>
     <div class="row"><label><input type="checkbox" id="geIncHidden"> keep hidden geosets</label></div>
     <div class="btnrow"><button type="button" id="geExport" class="wide">Export GLB</button></div>`);
   c.querySelector('#geExport').onclick=()=>{
     const btn=c.querySelector('#geExport'); btn.disabled=true; btn.textContent='Baking…';
-    setTimeout(()=>{
+    setTimeout(async()=>{
       try{
-        const r=exportGlbBytes({includeHidden:document.getElementById('geIncHidden').checked});
+        const r=await exportGlbBytesAsync({includeHidden:document.getElementById('geIncHidden').checked});
         const nm=(((window._modelFileRef&&window._modelFileRef.name)||'character.glb').replace(/\.(glb|gltf)$/i,''))+'_customized.glb';
         downloadBlob(new Blob([r.bytes],{type:'model/gltf-binary'}),nm);
-        setStatus(`GLB exported: ${nm} · ${(r.bytes.length/1048576).toFixed(1)} MB · ${r.baked} meshes baked · ${r.strippedNodes} hidden geosets stripped`);
+        setStatus(`GLB exported: ${nm} · ${(r.bytes.length/1048576).toFixed(1)} MB · ${r.baked} meshes baked · ${r.alphaBaked||0} alpha-ready materials · ${r.strippedNodes} hidden geosets stripped`);
       }catch(err){ setStatus('GLB export failed: '+err.message); }
       btn.disabled=false; btn.textContent='Export GLB';
     },30);
@@ -3064,6 +3184,7 @@ function appendModelExportSection(){
 renderRight();
 Object.assign(window.StudioAPI,{
   exportGlb:(opts)=>{ const r=exportGlbBytes(opts||{}); window.__glbExport=r.bytes; return {size:r.bytes.length,baked:r.baked,skippedBake:r.skippedBake,strippedNodes:r.strippedNodes}; },
+  exportGlbRuntime:async(opts)=>{const r=await exportGlbBytesAsync(opts||{});window.__glbExport=r.bytes;return {size:r.bytes.length,baked:r.baked,alphaBaked:r.alphaBaked,skippedBake:r.skippedBake,strippedNodes:r.strippedNodes};},
 });
 
 
@@ -4219,7 +4340,7 @@ function csRenderSpriteSheet(opts={}){
     canvas.width=prev.w; canvas.height=prev.h;
     csRenderFrame(performance.now());
   }
-  const meta={version:1,engine:'character-studio_v4.2.0',directions:dirs,cell:{w:cell,h:cell},cols,rows,
+  const meta={version:1,engine:'character-studio_v4.2.1',directions:dirs,cell:{w:cell,h:cell},cols,rows,
     order:'row-major, clockwise turnaround starting at the current camera yaw',
     yawRadians:yaws.map(v=>Number(v.toFixed(6))),transparent,
     projection:settings.ortho?'orthographic':'perspective',fov:settings.fov,generated:new Date().toISOString()};
@@ -4254,7 +4375,7 @@ function csLibExt(rec){
 }
 function csSafeFileName(s){ return String(s||'asset').replace(/[^\w.\- ]+/g,'_').replace(/\s+/g,'_').slice(0,80)||'asset'; }
 async function libSave(type,name,payload,meta={}){
-  const rec={id:csLibId(),type,name:String(name||type),createdAt:new Date().toISOString(),meta,engine:'character-studio_v4.2.0'};
+  const rec={id:csLibId(),type,name:String(name||type),createdAt:new Date().toISOString(),meta,engine:'character-studio_v4.2.1'};
   if(typeof payload==='string') rec.json=payload;
   else if(payload&&typeof payload.json==='string'){
     rec.json=payload.json;
@@ -4298,7 +4419,7 @@ async function libExportAll(){
     if(rec.previewBlob){ preview='library/'+rec.type+'/'+csSafeFileName(rec.name)+'_'+rec.id.slice(0,8)+'_preview.png'; files.push({name:preview,data:new Uint8Array(await rec.previewBlob.arrayBuffer())}); }
     manifest.push({id:rec.id,type:rec.type,name:rec.name,createdAt:rec.createdAt,file:rel,preview,bytes:data.length,meta:rec.meta||{}});
   }
-  files.push({name:'library/library_manifest.json',data:enc.encode(JSON.stringify({version:1,engine:'character-studio_v4.2.0',exported:new Date().toISOString(),items:manifest},null,2))});
+  files.push({name:'library/library_manifest.json',data:enc.encode(JSON.stringify({version:1,engine:'character-studio_v4.2.1',exported:new Date().toISOString(),items:manifest},null,2))});
   const sums=[];
   for(const f of files) sums.push(`${await sha256Hex(f.data)}  ${f.name}`);
   files.push({name:'SHA256SUMS.txt',data:enc.encode(sums.join('\n')+'\n')});
@@ -4706,12 +4827,12 @@ async function csSaveCurrentCharacterAsset(){
   try{
     const previewBlob=await csCanvasBlob();
     const packName=csSafeFileName(name).replace(/_+$/,'')||'character_asset';
-    const built=await buildPack({name:packName,version:'1.0.0',includeModel:true,includeTextures:true,includePreview:true});
+    const built=await buildPack({name:packName,version:'1.1.0',includeModel:true,includeTextures:true,includePreview:true});
     const blob=new Blob([built.bytes],{type:'application/zip'});
     const saved=await libSave('character',name,{blob,previewBlob,mime:'application/zip'},{
-      model:model.fileName||window._modelFileRef.name||null,format:'character-studio/content-pack',packVersion:'1.0.0',
+      model:model.fileName||window._modelFileRef.name||null,format:'character-studio/content-pack',packVersion:'1.1.0',
       geosets:model.geosets?.length||0,animations:model.animations?.length||0,textures:texLib.size,gearsets:gearsets.length,
-      bytes:blob.size,files:built.files.length,restorable:true
+      bytes:blob.size,files:built.files.length,restorable:true,autoAlphaMattes:settings.autoAlphaMattes!==false,alphaMaterials:model.materials.filter((m,i)=>resolveMaterialAlphaState(i,m).mode!=='opaque').length
     });
     setStatus(`Character “${name}” saved to Asset Library · ${built.files.length} files · ${(blob.size/1048576).toFixed(1)} MB`);
     if(csWorkspaceState.active==='library'){csWorkspaceState.library.selected=saved.id;await csRenderLibraryWorkspace();}
@@ -4757,7 +4878,7 @@ async function csSaveCurrentGearsets(){
   const typed=prompt('Gearset collection name','Gearsets '+new Date().toLocaleDateString());
   if(typed===null) return null;
   const name=typed.trim()||'Gearsets';
-  await libSave('gearset',name,JSON.stringify({version:1,engine:'character-studio_v4.2.0',gearsets},null,2),{count:gearsets.length});
+  await libSave('gearset',name,JSON.stringify({version:1,engine:'character-studio_v4.2.1',gearsets},null,2),{count:gearsets.length});
   setStatus(`${gearsets.length} gearset(s) saved to Asset Library`); return name;
 }
 async function csImportLibraryFiles(files){
@@ -4972,7 +5093,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&csWorkspaceState.ac
    v4.1.1 — MACHINIMA STUDIO PRO
    Professional offline nonlinear scene, camera, animation and audio editor.
    ═══════════════════════════════════════════════════════════════════════════ */
-const CS_V4_VERSION='4.2.0';
+const CS_V4_VERSION='4.2.1';
 const CS_V4_PROJECT_KEY='cs_machinima_project_v1';
 const CS_V4_UI_KEY='cs_machinima_ui_v1';
 const CS_V4_TRACK_TYPES={
@@ -4991,7 +5112,7 @@ function csV4DefaultTrack(type,index=0){
 }
 function csV4DefaultProject(){
   const camera=csV4DefaultTrack('camera'); camera.name='Main Camera'; camera.keyframes=[{id:csV4Id('key'),time:0,camera:csV4CameraSnapshot()}];
-  return {version:1,engine:'character-studio_v4.2.0',id:csV4Id('project'),name:'Untitled Machinima',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),fps:30,duration:30,playhead:0,zoom:76,loop:false,loopStart:0,loopEnd:30,snap:true,snapMode:'all',safeFrame:true,
+  return {version:1,engine:'character-studio_v4.2.1',id:csV4Id('project'),name:'Untitled Machinima',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),fps:30,duration:30,playhead:0,zoom:76,loop:false,loopStart:0,loopEnd:30,snap:true,snapMode:'all',safeFrame:true,
     tracks:[camera,csV4DefaultTrack('scene'),csV4DefaultTrack('animation'),csV4DefaultTrack('video'),csV4DefaultTrack('effect'),csV4DefaultTrack('music'),csV4DefaultTrack('dialogue'),csV4DefaultTrack('sfx')],markers:[],baseScene:csV4Clone(csNormalizeScene(sceneState))};
 }
 function csV4NormalizeClip(c,type){
@@ -4999,7 +5120,7 @@ function csV4NormalizeClip(c,type){
 }
 function csV4NormalizeProject(raw){
   const base=csV4DefaultProject(),p=raw&&typeof raw==='object'?raw:{};
-  const out={...base,...p}; out.version=1; out.engine='character-studio_v4.2.0'; out.id=String(p.id||base.id); out.name=String(p.name||base.name).slice(0,120); out.fps=[24,25,30,50,60].includes(+p.fps)?+p.fps:30; out.duration=csV4Clamp(p.duration||30,1,7200); out.playhead=csV4Clamp(p.playhead||0,0,out.duration); out.zoom=csV4Clamp(p.zoom||76,24,260); out.loop=!!p.loop; out.loopStart=csV4Clamp(p.loopStart||0,0,out.duration); out.loopEnd=csV4Clamp(p.loopEnd||out.duration,out.loopStart+1/out.fps,out.duration); out.snap=p.snap!==false; out.snapMode=['all','frames','markers','edges','scenes'].includes(p.snapMode)?p.snapMode:'all'; out.safeFrame=p.safeFrame!==false; out.markers=Array.isArray(p.markers)?p.markers.map(m=>({id:String(m.id||csV4Id('marker')),time:csV4Clamp(m.time,0,out.duration),name:String(m.name||'Marker').slice(0,80),color:m.color||'amber'})).sort((a,b)=>a.time-b.time):[];
+  const out={...base,...p}; out.version=1; out.engine='character-studio_v4.2.1'; out.id=String(p.id||base.id); out.name=String(p.name||base.name).slice(0,120); out.fps=[24,25,30,50,60].includes(+p.fps)?+p.fps:30; out.duration=csV4Clamp(p.duration||30,1,7200); out.playhead=csV4Clamp(p.playhead||0,0,out.duration); out.zoom=csV4Clamp(p.zoom||76,24,260); out.loop=!!p.loop; out.loopStart=csV4Clamp(p.loopStart||0,0,out.duration); out.loopEnd=csV4Clamp(p.loopEnd||out.duration,out.loopStart+1/out.fps,out.duration); out.snap=p.snap!==false; out.snapMode=['all','frames','markers','edges','scenes'].includes(p.snapMode)?p.snapMode:'all'; out.safeFrame=p.safeFrame!==false; out.markers=Array.isArray(p.markers)?p.markers.map(m=>({id:String(m.id||csV4Id('marker')),time:csV4Clamp(m.time,0,out.duration),name:String(m.name||'Marker').slice(0,80),color:m.color||'amber'})).sort((a,b)=>a.time-b.time):[];
   out.tracks=(Array.isArray(p.tracks)&&p.tracks.length?p.tracks:base.tracks).map((t,i)=>{const type=CS_V4_TRACK_TYPES[t.type]?t.type:'animation';const n={...csV4DefaultTrack(type,i),...t,type};n.id=String(t.id||csV4Id('track'));n.name=String(t.name||CS_V4_TRACK_TYPES[type].label).slice(0,80);n.muted=!!t.muted;n.solo=!!t.solo;n.locked=!!t.locked;n.hidden=!!t.hidden;n.volume=csV4Clamp(t.volume??1,0,2);n.handheld=csV4Clamp(t.handheld??0,0,1);n.clips=Array.isArray(t.clips)?t.clips.map(c=>csV4NormalizeClip(c,type)):[];n.keyframes=Array.isArray(t.keyframes)?t.keyframes.map(k=>({id:String(k.id||csV4Id('key')),time:csV4Clamp(k.time,0,out.duration),camera:{...csV4CameraSnapshot(),...(k.camera||{})}})).sort((a,b)=>a.time-b.time):[];return n;});
   if(!out.tracks.some(t=>t.type==='camera')){const c=csV4DefaultTrack('camera');c.keyframes=[{id:csV4Id('key'),time:0,camera:csV4CameraSnapshot()}];out.tracks.unshift(c);} out.baseScene=csNormalizeScene(p.baseScene||base.baseScene); return out;
 }
@@ -5179,7 +5300,7 @@ document.addEventListener('keydown',e=>{if(csWorkspaceState.active!=='scene')ret
    Portable projects, exact 3D camera rigs, audio mixing, professional timeline
    ergonomics, hardened media lifecycle, configurable renders and shortcuts.
    ═══════════════════════════════════════════════════════════════════════════ */
-const CS_V41_VERSION='4.2.0';
+const CS_V41_VERSION='4.2.1';
 const CS_V41_BUNDLE_FORMAT='character-studio/machinima-bundle';
 const CS_V41_MARKER_COLORS={amber:'#f3b34c',cyan:'#55d8ff',green:'#52d39b',red:'#ef6b76',violet:'#a78bfa',white:'#d9e5ef'};
 const csV41={clipboard:null,follow:true,fit:false,dragAsset:null,markerDrag:null,exportStream:null,exportRange:null,renderStart:0,renderEnd:0,renderWallStart:0,sceneHydrateToken:0,helpOpen:false};
@@ -5194,7 +5315,7 @@ function csV41ApplyCamera(cam){if(!cam)return;yaw=csV41Num(cam.yaw,yaw);pitch=cs
 csV4CameraSnapshot=function(){return {yaw:csV41Num(yaw),pitch:csV41Num(pitch),dist:Math.max(.05,csV41Num(dist,2.2)),panX:csV41Num(panX),panY:csV41Num(panY),panZ:csV41Num(panZ),fov:csV4Clamp(settings.fov||40,10,120),ease:'smooth',shake:0};};
 csV4NormalizeClip=function(c,type){const min=1/120;return {id:String(c?.id||csV4Id('clip')),name:String(c?.name||CS_V4_TRACK_TYPES[type]?.label||'Clip').slice(0,160),start:Math.max(0,csV41Num(c?.start)),duration:Math.max(min,csV41Num(c?.duration,1)),sourceIn:Math.max(0,csV41Num(c?.sourceIn)),speed:csV4Clamp(c?.speed??1,.05,8),volume:csV4Clamp(c?.volume??1,0,2),pan:csV4Clamp(c?.pan??0,-1,1),fadeIn:Math.max(0,csV41Num(c?.fadeIn)),fadeOut:Math.max(0,csV41Num(c?.fadeOut)),sourceId:c?.sourceId||null,sourceDuration:Math.max(0,csV41Num(c?.sourceDuration)),linkGroup:c?.linkGroup||null,color:c?.color||null,data:c?.data&&typeof c.data==='object'?c.data:{},type};};
 const _csV41NormalizeProjectBase=csV4NormalizeProject;
-csV4NormalizeProject=function(raw){const out=_csV41NormalizeProjectBase(raw);out.engine='character-studio_v4.2.0';out.version=2;out.autoFollow=raw?.autoFollow!==false;out.motionDuration=csV4Clamp(raw?.motionDuration??2,.1,60);out.motionEase=['smooth','linear','easeIn','easeOut','hold','cut'].includes(raw?.motionEase)?raw.motionEase:'smooth';out.export={resolution:raw?.export?.resolution||'1080p',width:csV4Clamp(raw?.export?.width||1920,320,7680),height:csV4Clamp(raw?.export?.height||1080,180,4320),bitrateMbps:csV4Clamp(raw?.export?.bitrateMbps||18,2,120),range:['project','loop'].includes(raw?.export?.range)?raw.export.range:'project'};out.markers=(out.markers||[]).map((m,i)=>({...m,color:CS_V41_MARKER_COLORS[m.color]?m.color:['amber','cyan','green','violet'][i%4],note:String(raw?.markers?.find?.(x=>x.id===m.id)?.note||m.note||'').slice(0,500)}));out.tracks=out.tracks.map(t=>({...t,pan:csV4Clamp(t.pan??0,-1,1),clips:(t.clips||[]).map(c=>csV4NormalizeClip(c,t.type)),keyframes:(t.keyframes||[]).map(k=>({...k,camera:{...csV4CameraSnapshot(),...(k.camera||{}),panX:csV41Num(k.camera?.panX),panZ:csV41Num(k.camera?.panZ)}}))}));out.duration=Math.max(out.duration,Math.ceil(csV41ProjectEnd(out)||out.duration));return out;};
+csV4NormalizeProject=function(raw){const out=_csV41NormalizeProjectBase(raw);out.engine='character-studio_v4.2.1';out.version=2;out.autoFollow=raw?.autoFollow!==false;out.motionDuration=csV4Clamp(raw?.motionDuration??2,.1,60);out.motionEase=['smooth','linear','easeIn','easeOut','hold','cut'].includes(raw?.motionEase)?raw.motionEase:'smooth';out.export={resolution:raw?.export?.resolution||'1080p',width:csV4Clamp(raw?.export?.width||1920,320,7680),height:csV4Clamp(raw?.export?.height||1080,180,4320),bitrateMbps:csV4Clamp(raw?.export?.bitrateMbps||18,2,120),range:['project','loop'].includes(raw?.export?.range)?raw.export.range:'project'};out.markers=(out.markers||[]).map((m,i)=>({...m,color:CS_V41_MARKER_COLORS[m.color]?m.color:['amber','cyan','green','violet'][i%4],note:String(raw?.markers?.find?.(x=>x.id===m.id)?.note||m.note||'').slice(0,500)}));out.tracks=out.tracks.map(t=>({...t,pan:csV4Clamp(t.pan??0,-1,1),clips:(t.clips||[]).map(c=>csV4NormalizeClip(c,t.type)),keyframes:(t.keyframes||[]).map(k=>({...k,camera:{...csV4CameraSnapshot(),...(k.camera||{}),panX:csV41Num(k.camera?.panX),panZ:csV41Num(k.camera?.panZ)}}))}));out.duration=Math.max(out.duration,Math.ceil(csV41ProjectEnd(out)||out.duration));return out;};
 csV4.project=csV4NormalizeProject(csV4.project);csV41.follow=csV4.project.autoFollow;
 
 csV4CameraAt=function(track,time){const ks=[...(track.keyframes||[])].sort((a,b)=>a.time-b.time);if(!ks.length)return null;if(time<=ks[0].time)return {...csV4CameraSnapshot(),...ks[0].camera};if(time>=ks.at(-1).time)return {...csV4CameraSnapshot(),...ks.at(-1).camera};let a=ks[0],b=ks[1];for(let i=0;i<ks.length-1;i++)if(time>=ks[i].time&&time<=ks[i+1].time){a=ks[i];b=ks[i+1];break;}const span=Math.max(.0001,b.time-a.time),u=csV4Ease((time-a.time)/span,b.camera.ease||a.camera.ease||'smooth'),lerp=(x,y)=>csV41Num(x)+(csV41Num(y)-csV41Num(x))*u;return {yaw:csV4AngleLerp(csV41Num(a.camera.yaw),csV41Num(b.camera.yaw),u),pitch:lerp(a.camera.pitch,b.camera.pitch),dist:lerp(a.camera.dist,b.camera.dist),panX:lerp(a.camera.panX,b.camera.panX),panY:lerp(a.camera.panY,b.camera.panY),panZ:lerp(a.camera.panZ,b.camera.panZ),fov:lerp(a.camera.fov,b.camera.fov),shake:lerp(a.camera.shake,b.camera.shake),ease:b.camera.ease||a.camera.ease||'smooth'};};
@@ -5265,7 +5386,7 @@ const _csV41TickBase=csV4Tick;
 csV4Tick=function(now){if(csV4.exporting&&csV4.playing){const dt=Math.min(.1,Math.max(0,(now-csV4.lastTick)/1000));csV4.lastTick=now;let next=csV4.project.playhead+dt;if(next>=csV41.renderEnd){csV4.project.playhead=csV41.renderEnd;csV4ApplyAtTime(csV4.project.playhead,true);csV4SyncDom();csV4FinishExport();return;}csV4.project.playhead=next;csV4ApplyAtTime(next,true);csV4SyncDom();return;}_csV41TickBase(now);};
 
 async function csV41ProjectMediaRecords(project=csV4.project){const ids=new Set();for(const t of project.tracks)for(const c of t.clips||[])if(c.sourceId)ids.add(c.sourceId);const collectScene=s=>{if(!s)return;if(s.sky?.sourceId)ids.add(s.sky.sourceId);for(const f of Object.values(s.faces||{}))if(f?.sourceId)ids.add(f.sourceId);};collectScene(project.baseScene);for(const t of project.tracks.filter(t=>t.type==='scene'))for(const c of t.clips)collectScene(c.data?.scene);const rows=[];for(const id of ids){const r=await libGet(id);if(r?.blob)rows.push(r);}return rows;}
-async function csV41DownloadBundle(){try{const enc=new TextEncoder(),project=csV4Clone(csV4.project),media=await csV41ProjectMediaRecords(project),files=[],manifest=[];for(const r of media){const ext=csLibExt(r),path=`media/${csSafeFileName(r.name)}_${r.id.slice(0,8)}${ext}`,data=new Uint8Array(await r.blob.arrayBuffer());files.push({name:path,data});manifest.push({oldId:r.id,name:r.name,type:r.type,mime:r.mime||r.blob.type,path,meta:r.meta||{}});}const bundle={format:CS_V41_BUNDLE_FORMAT,version:1,engine:'character-studio_v4.2.0',createdAt:new Date().toISOString(),project,media:manifest};files.push({name:'project.json',data:enc.encode(JSON.stringify(bundle,null,2))});const sums=[];for(const f of files)sums.push(`${await sha256Hex(f.data)}  ${f.name}`);files.push({name:'SHA256SUMS.txt',data:enc.encode(sums.join('\n')+'\n')});downloadBlob(new Blob([zipStore(files)],{type:'application/zip'}),`${csSafeFileName(project.name)}_portable_machinima.zip`);csV4Toast(`Portable project exported with ${media.length} media asset${media.length===1?'':'s'}.`);}catch(e){csV4Toast('Portable export failed: '+e.message,true);}}
+async function csV41DownloadBundle(){try{const enc=new TextEncoder(),project=csV4Clone(csV4.project),media=await csV41ProjectMediaRecords(project),files=[],manifest=[];for(const r of media){const ext=csLibExt(r),path=`media/${csSafeFileName(r.name)}_${r.id.slice(0,8)}${ext}`,data=new Uint8Array(await r.blob.arrayBuffer());files.push({name:path,data});manifest.push({oldId:r.id,name:r.name,type:r.type,mime:r.mime||r.blob.type,path,meta:r.meta||{}});}const bundle={format:CS_V41_BUNDLE_FORMAT,version:1,engine:'character-studio_v4.2.1',createdAt:new Date().toISOString(),project,media:manifest};files.push({name:'project.json',data:enc.encode(JSON.stringify(bundle,null,2))});const sums=[];for(const f of files)sums.push(`${await sha256Hex(f.data)}  ${f.name}`);files.push({name:'SHA256SUMS.txt',data:enc.encode(sums.join('\n')+'\n')});downloadBlob(new Blob([zipStore(files)],{type:'application/zip'}),`${csSafeFileName(project.name)}_portable_machinima.zip`);csV4Toast(`Portable project exported with ${media.length} media asset${media.length===1?'':'s'}.`);}catch(e){csV4Toast('Portable export failed: '+e.message,true);}}
 csV4DownloadProject=csV41DownloadBundle;
 csV4ImportProjectFile=async function(file){try{if(/\.zip$/i.test(file.name)||file.type.includes('zip')){const entries=(await readZipEntries(file)).filter(e=>!e.dir),pj=entries.find(e=>e.name==='project.json'||/\/project\.json$/i.test(e.name));if(!pj)throw new Error('Portable project is missing project.json');const bundle=JSON.parse(new TextDecoder().decode(await readZipEntryData(file,pj)));if(bundle.format!==CS_V41_BUNDLE_FORMAT)throw new Error('Unsupported project bundle format');const remap=new Map();for(const item of bundle.media||[]){const ent=entries.find(e=>e.name===item.path);if(!ent)continue;const data=await readZipEntryData(file,ent),blob=new Blob([data],{type:item.mime||'application/octet-stream'}),saved=await libSave(item.type||'file',item.name,{blob},{...(item.meta||{}),importedFrom:file.name});remap.set(item.oldId,saved.id);}const project=csV4Clone(bundle.project);for(const t of project.tracks||[])for(const c of t.clips||[])if(remap.has(c.sourceId))c.sourceId=remap.get(c.sourceId);const remapScene=s=>{if(!s)return;if(remap.has(s.sky?.sourceId))s.sky.sourceId=remap.get(s.sky.sourceId);for(const f of Object.values(s.faces||{}))if(remap.has(f.sourceId))f.sourceId=remap.get(f.sourceId);};remapScene(project.baseScene);for(const t of (project.tracks||[]).filter(t=>t.type==='scene'))for(const c of t.clips||[])remapScene(c.data?.scene);csV4PushHistory();csV4.project=csV4NormalizeProject(project);csV4.selection=null;csV4.selectedTrackId=csV4.project.tracks[0]?.id;csV4Persist();await csRenderSceneWorkspace();csV4Toast(`Portable project imported · ${remap.size} media assets restored.`);return;}const data=csV4NormalizeProject(JSON.parse(await file.text()));csV4PushHistory();csV4.project=data;csV4.selection=null;csV4.selectedTrackId=data.tracks[0]?.id;csV4Persist();await csRenderSceneWorkspace();csV4Toast('Machinima project imported.');}catch(e){csV4Toast('Project import failed: '+e.message,true);}};
 
@@ -5277,7 +5398,7 @@ csRenderSceneWorkspace=async function(){await _csV41RenderSceneWorkspaceFinal();
 
 const _csV41OpenWorkspaceBase=csOpenWorkspace;csOpenWorkspace=function(which){const out=_csV41OpenWorkspaceBase(which);if(which==='scene')setTimeout(()=>csRenderSceneWorkspace(),0);return out;};
 const _csV41DeleteSelectionBase=csV4DeleteSelection;csV4DeleteSelection=function(){_csV41DeleteSelectionBase();csV41GarbageCollectMedia();};
-const _csV41PersistBase=csV4Persist;csV4Persist=function(){csV4.project.engine='character-studio_v4.2.0';csV4.project.autoFollow=csV41.follow;_csV41PersistBase();};
+const _csV41PersistBase=csV4Persist;csV4Persist=function(){csV4.project.engine='character-studio_v4.2.1';csV4.project.autoFollow=csV41.follow;_csV41PersistBase();};
 
 window.StudioAPI.version=CS_V41_VERSION;window.StudioAPI.machinima={...window.StudioAPI.machinima,copy:()=>csV41CopySelection(false),cut:()=>csV41CopySelection(true),paste:csV41PasteSelection,fitTimeline:csV41FitTimeline,exportPortable:csV41DownloadBundle,getCamera:()=>({...csV4CameraSnapshot(),position:csV41CameraPosition()}),setCamera:(camera)=>{csV41ApplyCamera(camera);return csV4CameraSnapshot();},renderWebM:(options)=>{if(options)csV4.project.export={...csV4.project.export,...options};return csV4StartExport();}};
 window.StudioAPI.getCamera=()=>({...csV4CameraSnapshot(),position:csV41CameraPosition()});
@@ -5288,8 +5409,8 @@ csV4Persist();
 document.dispatchEvent(new CustomEvent('studio:machinima-elite-ready',{detail:{version:CS_V41_VERSION,features:['portable-projects','world-space-camera','timeline-dnd','clip-slip','audio-pan','render-profiles']}}));
 
 
-/* ═══════════ v4.2.0 — accessible docked workspace UX ═══════════ */
-const CS_V42_VERSION='4.2.0';
+/* ═══════════ v4.2.1 — accessible docked workspace UX ═══════════ */
+const CS_V42_VERSION='4.2.1';
 const CS_V42_UI_KEY='character-studio-machinima-ui-v4.2';
 const csV42Default={layout:'edit',assetsCollapsed:false,inspectorCollapsed:false,timelineFocus:false,stageFocus:false,leftWidth:268,rightWidth:344,stageHeight:44,inspectorQuery:'',closedSections:{}};
 function csV42Read(){try{return {...csV42Default,...JSON.parse(localStorage.getItem(CS_V42_UI_KEY)||'{}')}}catch{return {...csV42Default}}}
@@ -5326,7 +5447,7 @@ try{if(typeof CS_V41_VERSION!=='undefined')window.__CHARACTER_STUDIO_RELEASE__=C
 document.dispatchEvent(new CustomEvent('studio:workspace-ux-ready',{detail:{version:CS_V42_VERSION,features:['dock-layouts','resizable-panels','accordion-inspector','command-palette','animation-preview','accessible-tooltips']}}));
 
 
-/* v4.2.0 — main Character Studio panel navigation */
+/* v4.2.1 — main Character Studio panel navigation */
 function csV42MainSectionTitle(sec){return sec.textContent.replace(/^[⌄›\s]+/,'').trim();}
 function csV42MainLevel(side,title){const coreLeft=['Character Customization','Sculpt','Geoset Visibility','Viewport Settings','Backdrop & Post FX'];const coreRight=['Texture Library','Texture Align & Warp','Character Equipper','Gearset Creator','Appearance JSON','Capture & Export','Scene Studio (Chroma Room)','Asset Library'];return (side==='left'?coreLeft:coreRight).includes(title)?'core':'advanced';}
 function csV42RefreshMainOpen(body){body.querySelectorAll('.sec').forEach(sec=>{const panel=sec.nextElementSibling;const visible=panel?.classList.contains('secbody')&&getComputedStyle(panel).display!=='none';sec.classList.toggle('cs-main-open',!!visible);sec.setAttribute('aria-expanded',String(!!visible));});}
@@ -5336,11 +5457,11 @@ function csV42ApplyMainLayout(){const app=document.getElementById('app');if(!app
 function csV42EnhanceMainPanel(side){const body=document.getElementById(side==='left'?'leftBody':'rightBody');if(!body)return;body.querySelector('.cs-main-panel-head')?.remove();const title=side==='left'?'Character':'Materials & Output',sub=side==='left'?'Shape, geosets and viewport':'Textures, gear, scenes and export',queryKey=`main${side==='left'?'Left':'Right'}Query`,scopeKey=`main${side==='left'?'Left':'Right'}Scope`;const head=document.createElement('div');head.className='cs-main-panel-head';head.innerHTML=`<div class="cs-main-head-row"><span class="cs-main-title"><strong>${title}</strong><span>${sub}</span></span><span class="push"></span><button type="button" data-main-expand title="Expand all sections">${csV42Svg('plus')}</button><button type="button" data-main-collapse-all title="Collapse all sections">${csV42Svg('close')}</button><button type="button" class="cs-main-collapse" title="Collapse ${title} panel">${csV42Svg(side==='left'?'chevLeft':'chevRight')}</button></div><div class="cs-main-search">${csV42Svg('search')}<input type="search" placeholder="Find settings…" value="${csEscape(csV42ui[queryKey]||'')}" aria-label="Search ${title} settings"></div><div class="cs-main-scope">${[['all','All'],['core','Core'],['advanced','Advanced']].map(([v,n])=>`<button type="button" data-main-scope="${v}" class="${(csV42ui[scopeKey]||'all')===v?'on':''}">${n}</button>`).join('')}</div><div class="cs-main-section-count"><span>Visible sections</span><strong>0</strong></div>`;body.prepend(head);body.querySelectorAll('.sec').forEach((sec,i)=>{const t=csV42MainSectionTitle(sec);sec.dataset.uxTitle=t;sec.dataset.uxLevel=csV42MainLevel(side,t);sec.setAttribute('role','button');sec.setAttribute('tabindex','0');sec.addEventListener('click',()=>setTimeout(()=>csV42RefreshMainOpen(body),0));sec.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();sec.click();}});});const input=head.querySelector('input');input.oninput=()=>{csV42ui[queryKey]=input.value;csV42Write();csV42FilterMainPanel(side);};head.querySelectorAll('[data-main-scope]').forEach(b=>b.onclick=()=>{csV42ui[scopeKey]=b.dataset.mainScope;csV42Write();head.querySelectorAll('[data-main-scope]').forEach(x=>x.classList.toggle('on',x===b));csV42FilterMainPanel(side);});head.querySelector('[data-main-expand]').onclick=()=>{body.querySelectorAll('.sec:not(.cs-main-filtered)').forEach(sec=>{const panel=sec.nextElementSibling;if(panel?.classList.contains('secbody')&&getComputedStyle(panel).display==='none')sec.click();});};head.querySelector('[data-main-collapse-all]').onclick=()=>{body.querySelectorAll('.sec:not(.cs-main-filtered)').forEach(sec=>{const panel=sec.nextElementSibling;if(panel?.classList.contains('secbody')&&getComputedStyle(panel).display!=='none')sec.click();});};head.querySelector('.cs-main-collapse').onclick=()=>csV42MainCollapse(side);csV42RefreshMainOpen(body);csV42FilterMainPanel(side);csV42ApplyMainLayout();}
 function csV42MainResizers(){const app=document.getElementById('app');if(!app||app.querySelector('.cs-main-resizer'))return;for(const side of ['left','right']){const r=document.createElement('div');r.className=`cs-main-resizer ${side}`;r.setAttribute('role','separator');r.setAttribute('aria-orientation','vertical');r.tabIndex=0;app.append(r);r.onpointerdown=e=>{if(innerWidth<981)return;e.preventDefault();r.setPointerCapture(e.pointerId);r.classList.add('active');const start=e.clientX,base=+(side==='left'?csV42ui.mainLeftWidth||330:csV42ui.mainRightWidth||350);const move=ev=>{if(side==='left')csV42ui.mainLeftWidth=Math.max(240,Math.min(430,base+ev.clientX-start));else csV42ui.mainRightWidth=Math.max(260,Math.min(460,base-(ev.clientX-start)));csV42ApplyMainLayout();};const up=()=>{r.classList.remove('active');r.removeEventListener('pointermove',move);r.removeEventListener('pointerup',up);r.removeEventListener('pointercancel',up);csV42Write();};r.addEventListener('pointermove',move);r.addEventListener('pointerup',up);r.addEventListener('pointercancel',up);};}}
 const _csV42RenderLeftMain=renderLeft;renderLeft=function(){_csV42RenderLeftMain();csV42EnhanceMainPanel('left');csV42MainResizers();};
-const _csV42RenderRightMain=renderRight;renderRight=function(){_csV42RenderRightMain();csV42EnhanceMainPanel('right');csV42MainResizers();};
+const _csV42RenderRightMain=renderRight;renderRight=function(){_csV42RenderRightMain();try{appendAlphaMatteSection();}catch(e){console.error(e);}csV42EnhanceMainPanel('right');csV42MainResizers();};
 window.StudioAPI.panels={get:()=>({leftCollapsed:!!csV42ui.mainLeftCollapsed,rightCollapsed:!!csV42ui.mainRightCollapsed,leftWidth:+csV42ui.mainLeftWidth||330,rightWidth:+csV42ui.mainRightWidth||350}),toggleLeft:()=>csV42MainCollapse('left'),toggleRight:()=>csV42MainCollapse('right'),showCore:side=>{const key=`main${side==='right'?'Right':'Left'}Scope`;csV42ui[key]='core';csV42Write();csV42EnhanceMainPanel(side==='right'?'right':'left');}};
 
 
-document.querySelector('.ver').textContent='— made by AEiOU · v4.2.0';
+document.querySelector('.ver').textContent='— made by AEiOU · v4.2.1';
 document.dispatchEvent(new CustomEvent('studio:machinima-ready',{detail:{version:CS_V4_VERSION,project:csV4.project.name,tracks:csV4.project.tracks.length}}));
 
 

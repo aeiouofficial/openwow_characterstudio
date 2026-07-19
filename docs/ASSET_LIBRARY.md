@@ -1,4 +1,4 @@
-# Asset Library — v4.2.0
+# Asset Library — v4.2.1
 
 The Asset Library is the IndexedDB-backed media and preset collection shared by Character Studio, Scene Studio, and Machinima Studio Elite.
 
@@ -65,3 +65,8 @@ await StudioAPI.library.exportAll()
 ## Animation workflow in v4.2
 
 When a model contains animation clips, the Animate workspace shows draggable animation assets with duration badges and a viewport-preview action. Added animation clips expose loop or play-once/hold-last behavior in the Properties inspector.
+
+
+## Alpha-ready character assets (v4.2.1)
+
+Saved Character records use content-pack version 1.1.0. Each pack includes the original source model, a customized `*_runtime_alpha_ready.glb`, `runtime/material_alpha.json`, appearance state, textures, preview, and checksums. Auto alpha-matte repair is enabled by default and all per-material overrides are restored when the Character record is reopened.

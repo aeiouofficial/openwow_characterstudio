@@ -1,7 +1,7 @@
 {
   "name": "@aeiou/character-studio",
-  "version": "4.2.0",
-  "description": "CHARACTER STUDIO - made by AEiOU \u2014 offline WebGL2 character creation and premium browser machinima suite with full-character Library assets, accessible resizable metal workspaces, task-focused editing layouts, a frame-accurate nonlinear timeline, layered stereo audio, portable media bundles, and configurable HD\u20134K WebM masters.",
+  "version": "4.2.1",
+  "description": "CHARACTER STUDIO - made by AEiOU \u2014 offline WebGL2 character creation and premium browser machinima suite with automatic alpha-matte transparency, alpha-ready runtime GLB export, full-character Library assets, accessible resizable metal workspaces, a frame-accurate nonlinear timeline, layered stereo audio, portable media bundles, and configurable HD\u20134K WebM masters.",
   "type": "module",
   "main": "./src/engine/index.ts",
   "exports": {
@@ -18,8 +18,9 @@
     "mcp": "node qa/mcp-server.mjs",
     "qa:v400": "node qa/v400-check.mjs",
     "qa:v411": "node qa/v411-check.mjs",
-    "qa:release": "npm test && npm run qa:v420",
-    "qa:v420": "node qa/v420-check.mjs"
+    "qa:release": "npm test && npm run qa:v400 && npm run qa:v411 && npm run qa:v420 && npm run qa:v421",
+    "qa:v420": "node qa/v420-check.mjs",
+    "qa:v421": "node qa/v421-check.mjs"
   },
   "peerDependencies": {
     "three": ">=0.160.0"
@@ -40,7 +41,8 @@
     "CHANGELOG.md",
     "BUILD_INFO.json",
     "SHA256SUMS.txt",
-    "RELEASE_NOTES_v4.2.0.md"
+    "RELEASE_NOTES_v4.2.0.md",
+    "RELEASE_NOTES_v4.2.1.md"
   ],
   "license": "MIT"
 }

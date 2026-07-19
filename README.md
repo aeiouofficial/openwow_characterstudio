@@ -1,8 +1,8 @@
 # CHARACTER STUDIO — Machinima Studio Elite
 
-**v4.2.0** turns the existing offline-first WebGL2 character editor into a production-oriented browser machinima workstation. It keeps the real Character Studio renderer, scene state, animation state, Asset Library, capture system, and IndexedDB data model while adding a frame-accurate nonlinear editor rather than a disconnected mock timeline.
+**v4.2.1** turns the existing offline-first WebGL2 character editor into a production-oriented browser machinima workstation. It keeps the real Character Studio renderer, scene state, animation state, Asset Library, capture system, and IndexedDB data model while adding a frame-accurate nonlinear editor rather than a disconnected mock timeline.
 
-## What ships in v4.2.0
+## What ships in v4.2.1
 
 
 ### Unified docked workspace UX
@@ -151,9 +151,20 @@ Rendered QA validates application identity, WebGL2 startup, no framework overlay
 - [`docs/ASSET_LIBRARY.md`](docs/ASSET_LIBRARY.md)
 - [`docs/SCENE_AND_CAPTURE.md`](docs/SCENE_AND_CAPTURE.md)
 - [`docs/API.md`](docs/API.md)
+- [`RELEASE_NOTES_v4.2.1.md`](RELEASE_NOTES_v4.2.1.md)
 - [`RELEASE_NOTES_v4.2.0.md`](RELEASE_NOTES_v4.2.0.md)
 - [`RELEASE_NOTES_v4.1.1.md`](RELEASE_NOTES_v4.1.1.md)
 
 ## License
 
 MIT for the code. Production owners remain responsible for the rights and licenses of all models, textures, music, voices, video, and other imported assets.
+
+
+## v4.2.1 — Automatic alpha-matte transparency
+
+- **Auto-fix alpha mattes is enabled by default** for every loaded asset.
+- The renderer detects real texture alpha plus card-style black and white mattes without punching holes into ordinary opaque skin or armor.
+- Every material can override the result with Auto, Texture Alpha, Black Matte, White Matte, or Force Opaque modes, plus threshold, feather, cutoff, and normal/additive blending.
+- Transparent materials render after opaque geometry with correct WebGL blending, disabled depth writes, back-to-front ordering, and double-sided material support.
+- Appearance JSON, projects, Character Library assets, manifests, and exported GLBs retain the policy.
+- Character/content packs include an alpha-baked runtime GLB and `runtime/material_alpha.json` so the result travels into game integration rather than remaining a viewport-only preference.

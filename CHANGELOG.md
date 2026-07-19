@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.2.1 — 2026-07-19 — Automatic Alpha Matte Transparency
+
+- Added default-on smart alpha matte repair for actual alpha channels, black mattes, and white mattes.
+- Added per-material transparency mode, blend, threshold, softness, cutoff, checkerboard preview, and bulk reset controls.
+- Corrected transparent draw ordering, depth writes, blending, and double-sided rendering.
+- Added alpha settings to appearances, projects, manifests, Character Library packages, StudioAPI, and GLB metadata.
+- Added alpha-baked runtime GLB output and portable runtime mapping inside saved character/content packs.
+
+
 ## 4.2.0 — 2026-07-19
 
 ### Unified professional workspace

@@ -1,0 +1,26 @@
+{
+  "version": "4.2.1",
+  "viewport": "1440x900",
+  "webgl2": true,
+  "autoDefault": true,
+  "syntheticFixture": {
+    "materials": 2,
+    "opaqueResolved": "opaque",
+    "matteResolved": "black",
+    "matteBlend": "additive"
+  },
+  "runtimeGlb": {
+    "alphaBakedMaterials": 1,
+    "materialAlphaMode": "BLEND",
+    "cornerAlpha": 0,
+    "centerAlpha": 255,
+    "runtimePortable": true
+  },
+  "characterPack": {
+    "sourceModel": true,
+    "runtimeAlphaReadyModel": true,
+    "materialAlphaMap": true
+  },
+  "consoleErrors": 0,
+  "browser": "Playwright Chromium under Xvfb with software WebGL2; page content injected because direct local navigation was policy-blocked"
+}

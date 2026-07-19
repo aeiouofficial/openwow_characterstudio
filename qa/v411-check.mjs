@@ -5,10 +5,10 @@ const html=fs.readFileSync(new URL('../demo/character-studio.html',import.meta.u
 const pkg=JSON.parse(fs.readFileSync(new URL('../package.json',import.meta.url),'utf8'));
 const build=JSON.parse(fs.readFileSync(new URL('../BUILD_INFO.json',import.meta.url),'utf8'));
 
-assert.equal(pkg.version,'4.2.0');
-assert.equal(build.version,'4.2.0');
+assert.equal(pkg.version,'4.2.1');
+assert.equal(build.version,'4.2.1');
 const required=[
-  'Machinima Studio Elite','CS_V41_VERSION','character-studio_v4.2.0',
+  'Machinima Studio Elite','CS_V41_VERSION','character-studio_v4.2.1',
   'cs-pro-shell','cs-pro-timeline','cs-pro-track-row','cs-pro-clip','cs-pro-key',
   'CS_V4_TRACK_TYPES','Reference Video','Dialogue / Voice','Sound FX',
   'function csV4SplitClip','function csV4SnapTime','function csV4RippleDeleteSelection',

@@ -1,9 +1,9 @@
 {
   "product": "CHARACTER STUDIO - made by AEiOU",
-  "version": "4.2.0",
-  "releaseName": "Unified Workspace UX",
+  "version": "4.2.1",
+  "releaseName": "Automatic Alpha Matte Transparency",
   "releaseDate": "2026-07-19",
-  "baseVersion": "4.1.1",
+  "baseVersion": "4.2.0",
   "entrypoint": "demo/character-studio.html",
   "runtime": "Offline WebGL2 / ES modules / IndexedDB / Web Audio / MediaRecorder",
   "machinimaTracks": [
@@ -23,19 +23,23 @@
     "portability": "Project JSON and portable ZIP with media remapping and SHA256SUMS",
     "render": "Project/loop range, 1080p/1440p/4K/custom, bitrate, progress, cancellation",
     "library": "Top-bar full-character saves with model, textures, current state, preview, checksums, and one-click restoration",
-    "ui": "Resizable brushed-metal docks, five task-focused layouts, searchable accordion inspectors, main-panel search/core filters, command palette, animation previews, compact overlay panels, and accessible tooltips."
+    "ui": "Resizable brushed-metal docks, five task-focused layouts, searchable accordion inspectors, main-panel search/core filters, command palette, animation previews, compact overlay panels, and accessible tooltips.",
+    "materials": "Default-on smart alpha-channel and black/white matte detection, per-material overrides, correct transparent rendering, persisted settings, and alpha-ready runtime GLB baking."
   },
   "qa": {
     "unitTests": 28,
     "passed": 27,
     "skippedOptionalFixture": 1,
     "failed": 0,
-    "releaseSurfaceChecks": 52,
+    "releaseSurfaceChecks": 46,
     "renderedDesktop": true,
     "renderedCompact": true,
     "webgl2Runtime": true,
     "consoleErrors": 0,
     "browserPath": "Playwright Chromium under Xvfb with software WebGL2; Browser plugin unavailable and direct local navigation blocked by policy",
-    "compatibilitySurfaceChecks": 57
+    "compatibilitySurfaceChecks": 136,
+    "browserAlphaMatteFixture": true,
+    "runtimeGlbAlphaBake": true,
+    "characterPackAlphaPersistence": true
   }
 }

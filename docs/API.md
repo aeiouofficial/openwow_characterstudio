@@ -1,4 +1,4 @@
-# CHARACTER STUDIO API — v4.2.0
+# CHARACTER STUDIO API — v4.2.1
 
 The browser API is available on `window.StudioAPI` in `demo/character-studio.html`. The app also exposes automation events and the existing MCP bridge.
 
@@ -61,7 +61,7 @@ StudioAPI.machinima.renderWebM(options)
 
 ## Project schema
 
-Projects normalize to `engine: "character-studio_v4.2.0"`, `version: 2` and contain FPS, duration, playhead, zoom, loop range, snap state, auto-follow state, motion-preset defaults, export settings, markers, a base scene, and ordered tracks.
+Projects normalize to `engine: "character-studio_v4.2.1"`, `version: 2` and contain FPS, duration, playhead, zoom, loop range, snap state, auto-follow state, motion-preset defaults, export settings, markers, a base scene, and ordered tracks.
 
 Track types:
 
@@ -155,3 +155,21 @@ await StudioAPI.library.openCharacter(record)
 ## v4.2 workspace and panel API
 
 `StudioAPI.machinima.setWorkspace('edit'|'animation'|'camera'|'audio'|'review')` selects a task layout. `StudioAPI.machinima.getWorkspace()` returns the persisted workspace UI state. `StudioAPI.machinima.showCommands()` opens the command palette. `StudioAPI.panels` exposes main-editor dock state plus left/right toggles and Core filtering.
+
+
+## Alpha matte API (v4.2.1)
+
+```js
+StudioAPI.setAutoAlphaMattes(true);
+StudioAPI.getMaterialAlphaSettings();
+StudioAPI.setMaterialAlphaSetting(materialIndex, {
+  mode: "auto", // auto | alpha | black | white | opaque
+  blend: "auto", // auto | normal | additive
+  threshold: 0.035,
+  softness: 0.16,
+  cutoff: 0.008
+});
+await StudioAPI.exportGlbRuntime({ includeHidden: false });
+```
+
+`exportGlbRuntime()` bakes resolved mattes into PNG alpha channels and embeds them in the returned GLB. The synchronous `exportGlb()` remains available for compatibility and embeds the complete Character Studio alpha policy as glTF extras.

@@ -1,4 +1,4 @@
-# Machinima Studio Elite — v4.2.0
+# Machinima Studio Elite — v4.2.1
 
 Machinima Studio Elite is the nonlinear production workspace inside Character Studio. It drives the existing live WebGL2 renderer, loaded model, animation system, Scene Studio state, post effects, Asset Library, Web Audio graph, and capture path. Opening or closing the workspace reparents the same canvas; it does not create a second renderer or fork character state.
 

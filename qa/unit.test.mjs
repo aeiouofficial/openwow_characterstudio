@@ -315,7 +315,7 @@ test('csCoverScale crops (never letterboxes) for cover-fit backdrops',()=>{
   assert.deepEqual(Array.from(call('csCoverScale(NaN,-1)')),[1,1]);
 });
 
-test('v4.2.0 unified workspace UX and prior scene/capture features ship in the HTML',()=>{
+test('v4.2.1 alpha matte transparency and prior workspace features ship in the HTML',()=>{
   assert.match(html,/alpha:true,premultipliedAlpha:false,preserveDrawingBuffer:true/);
   assert.match(html,/Scene Studio \(Chroma Room\)/);
   assert.match(html,/'Asset Library'/);
@@ -339,7 +339,7 @@ test('v4.2.0 unified workspace UX and prior scene/capture features ship in the H
   assert.match(html,/uPosterize/);        // post FX shader
   assert.match(html,/csShotAlpha/);       // transparent PNG button
   assert.match(html,/#gl\.cs-alpha/);     // transparency checkerboard CSS
-  assert.match(html,/character-studio_v4\.2\.0/);
+  assert.match(html,/character-studio_v4\.2\.1/);
   assert.match(html,/a\.background=/);    // appearance JSON carries backdrop state
   assert.match(html,/a\.scene=/);         // appearance JSON carries scene state
   assert.match(html,/Machinima Studio/);
@@ -358,7 +358,7 @@ test('v4.2.0 unified workspace UX and prior scene/capture features ship in the H
   assert.match(html,/CS_V41_BUNDLE_FORMAT/);
   assert.match(html,/character-studio\/machinima-bundle/);
   assert.match(html,/function csV41DownloadBundle/);
-  assert.match(html,/CS_V42_VERSION='4\.2\.0'/);
+  assert.match(html,/CS_V42_VERSION='4\.2\.1'/);
   assert.match(html,/cs-ux-commandbar/);
   assert.match(html,/function csV42SetLayout/);
   assert.match(html,/function csV42Accordions/);
